@@ -19,7 +19,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-
+//this is a comment by garcia
 //this is a comment by parker
 public class LoginActivity extends Activity {
     EditText email,password,res_email,code,newpass;
