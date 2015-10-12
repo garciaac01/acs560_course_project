@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-
+//this is a comment by parker
 public class LoginActivity extends Activity {
     EditText email,password,res_email,code,newpass;
     Button login,cont,cont_code,cancel,cancel1,register,forpass;
