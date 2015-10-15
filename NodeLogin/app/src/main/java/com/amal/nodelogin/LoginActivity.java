@@ -62,6 +62,8 @@ public class LoginActivity extends Activity {
                 params = new ArrayList<NameValuePair>();
                 params.add(new BasicNameValuePair("email", emailtxt));
                 params.add(new BasicNameValuePair("password", passwordtxt));
+                Log.d("Login String", params.toString());
+
                 ServerRequest sr = new ServerRequest();
                // JSONObject json = sr.getJSON("http://10.0.2.2:8080/login",params);
                 JSONObject json = sr.getJSON("http://52.23.206.253:8080/login",params);
@@ -115,6 +117,7 @@ public class LoginActivity extends Activity {
 
                         params = new ArrayList<NameValuePair>();
                         params.add(new BasicNameValuePair("email", email_res_txt));
+
 
                         //  JSONObject json = sr.getJSON("http://192.168.56.1:8080/api/resetpass", params);
                       //  JSONObject json = sr.getJSON("http://10.0.2.2:8080/api/resetpass", params);

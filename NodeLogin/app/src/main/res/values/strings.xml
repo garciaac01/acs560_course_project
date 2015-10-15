@@ -6,4 +6,5 @@
     <string name="title_activity_search">SearchActivity</string>
     <string name="search_hint">Enter Product Name</string>
     <string name="search_button_text">Search</string>
+    <string name="profile_search">Search for Products</string>
 </resources>

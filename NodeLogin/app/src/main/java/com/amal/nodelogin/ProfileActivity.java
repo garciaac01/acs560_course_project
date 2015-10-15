@@ -27,7 +27,7 @@ public class ProfileActivity extends Activity {
     SharedPreferences pref;
     String token,grav,oldpasstxt,newpasstxt;
     WebView web;
-    Button chgpass,chgpassfr,cancel,logout;
+    Button chgpass,chgpassfr,cancel,logout, startProductActivity;
     Dialog dlg;
     EditText oldpass,newpass;
     List<NameValuePair> params;
@@ -68,13 +68,13 @@ public class ProfileActivity extends Activity {
                 dlg = new Dialog(ProfileActivity.this);
                 dlg.setContentView(R.layout.chgpassword_frag);
                 dlg.setTitle("Change Password");
-                chgpassfr = (Button)dlg.findViewById(R.id.chgbtn);
+                chgpassfr = (Button) dlg.findViewById(R.id.chgbtn);
 
                 chgpassfr.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        oldpass = (EditText)dlg.findViewById(R.id.oldpass);
-                        newpass = (EditText)dlg.findViewById(R.id.newpass);
+                        oldpass = (EditText) dlg.findViewById(R.id.oldpass);
+                        newpass = (EditText) dlg.findViewById(R.id.newpass);
                         oldpasstxt = oldpass.getText().toString();
                         newpasstxt = newpass.getText().toString();
                         params = new ArrayList<NameValuePair>();
@@ -82,27 +82,27 @@ public class ProfileActivity extends Activity {
                         params.add(new BasicNameValuePair("newpass", newpasstxt));
                         params.add(new BasicNameValuePair("id", token));
                         ServerRequest sr = new ServerRequest();
-                            JSONObject json = sr.getJSON("http://52.23.206.253:8080/api/chgpass",params);
-                       // JSONObject json = sr.getJSON("http://10.0.2.2:8080/api/chgpass",params);
-                        if(json != null){
-                            try{
+                        JSONObject json = sr.getJSON("http://52.23.206.253:8080/api/chgpass", params);
+                        // JSONObject json = sr.getJSON("http://10.0.2.2:8080/api/chgpass",params);
+                        if (json != null) {
+                            try {
                                 String jsonstr = json.getString("response");
-                                if(json.getBoolean("res")){
+                                if (json.getBoolean("res")) {
 
                                     dlg.dismiss();
-                                    Toast.makeText(getApplication(),jsonstr,Toast.LENGTH_SHORT).show();
-                                }else {
-                                    Toast.makeText(getApplication(),jsonstr,Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getApplication(), jsonstr, Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(getApplication(), jsonstr, Toast.LENGTH_SHORT).show();
 
                                 }
-                            }catch (JSONException e) {
+                            } catch (JSONException e) {
                                 e.printStackTrace();
                             }
                         }
 
                     }
                 });
-                cancel = (Button)dlg.findViewById(R.id.cancelbtn);
+                cancel = (Button) dlg.findViewById(R.id.cancelbtn);
                 cancel.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -113,6 +113,14 @@ public class ProfileActivity extends Activity {
             }
         });
 
+        startProductActivity = (Button) findViewById(R.id.btn_profile_search);
+        startProductActivity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(ProfileActivity.this, SearchActivity.class);
+                startActivity(i);
+            }
+        });
 
 
     }

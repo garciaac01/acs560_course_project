@@ -1,27 +1,36 @@
 package com.amal.nodelogin;
 
-import android.support.v7.app.AppCompatActivity;
+import android.app.Activity;
+//import android.support.v7.app.AppCompatActivity;
+import android.content.SharedPreferences;
+
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.apache.http.NameValuePair;
+import org.json.JSONException;
 import org.apache.http.message.BasicNameValuePair;
+
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SearchActivity extends AppCompatActivity {
+public class SearchActivity extends Activity {
 
     EditText productText;
     Button searchButton;
     TextView response;
     List<NameValuePair> productJSON;
+    SharedPreferences pref;
+    String token, TAG = "SearchActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,12 +42,19 @@ public class SearchActivity extends AppCompatActivity {
         response = (TextView) findViewById(R.id.database_response);
         productJSON = new ArrayList<NameValuePair>();
 
+        pref = getSharedPreferences("AppPref", MODE_PRIVATE);
+        token = pref.getString("token", "");
+
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                productJSON.add(new BasicNameValuePair("Product", productText.getText().toString()));
+                String productString = productText.getText().toString();
+                productJSON.add(new BasicNameValuePair("product", productString));
+                //Log.d(TAG, productJSON.toString());
                 ServerRequest sr = new ServerRequest();
-                JSONObject json = sr.getJSON("http://52.23.206.253:8080/login", productJSON);
+                JSONObject json = sr.getJSON("http://52.23.206.253:8080/search", productJSON);
+                //Toast.makeText(SearchActivity.this, json.toString(), Toast.LENGTH_LONG).show();
+
             }
         });
     }

@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_gravity="center"
         android:layout_marginTop="30dp"
-        android:layout_height="80dp"
+        android:layout_height="50dp"
         android:id="@+id/chgbtn"
         android:layout_marginLeft="24dp"
         android:layout_marginRight="24dp"
@@ -28,7 +28,7 @@
         android:layout_width="match_parent"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
-        android:layout_height="80dp"
+        android:layout_height="50dp"
         android:layout_marginLeft="24dp"
         android:layout_marginRight="24dp"
         android:id="@+id/logout"
@@ -36,5 +36,17 @@
         android:textColor="#ffffff"
         android:textAlignment="center"
         android:text="Logout"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp"
+        android:id="@+id/btn_profile_search"
+        android:background="@drawable/btn_blue_back"
+        android:textColor="#ffffff"
+        android:textAlignment="center"
+        android:text="@string/profile_search"/>
 
 </LinearLayout>
