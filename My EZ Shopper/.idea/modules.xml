@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/NodeLogin.iml" filepath="$PROJECT_DIR$/NodeLogin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/My EZ Shopper.iml" filepath="$PROJECT_DIR$/My EZ Shopper.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

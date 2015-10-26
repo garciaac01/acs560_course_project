@@ -53,7 +53,7 @@ public class SearchActivity extends Activity {
                 //Log.d(TAG, productJSON.toString());
                 ServerRequest sr = new ServerRequest();
                 JSONObject json = sr.getJSON("http://52.23.206.253:8080/search", productJSON);
-                //Toast.makeText(SearchActivity.this, json.toString(), Toast.LENGTH_LONG).show();
+                Toast.makeText(SearchActivity.this, json.toString(), Toast.LENGTH_LONG).show();
 
             }
         });

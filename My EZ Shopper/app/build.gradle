@@ -7,7 +7,7 @@ android {
 
 
     defaultConfig {
-        applicationId "com.amal.nodelogin"
+        applicationId "com.amal.myezshopper"
         minSdkVersion 16
         targetSdkVersion 23
         versionCode 1

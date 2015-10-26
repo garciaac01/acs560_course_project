@@ -66,7 +66,7 @@ public class LoginActivity extends Activity {
 
                 ServerRequest sr = new ServerRequest();
                // JSONObject json = sr.getJSON("http://10.0.2.2:8080/login",params);
-                JSONObject json = sr.getJSON("http://52.23.206.253:8080/login",params);
+                JSONObject json = sr.getJSON("http://52.91.100.201:8080/login",params);
 
                 if(json != null){
                     try{
@@ -121,7 +121,7 @@ public class LoginActivity extends Activity {
 
                         //  JSONObject json = sr.getJSON("http://192.168.56.1:8080/api/resetpass", params);
                       //  JSONObject json = sr.getJSON("http://10.0.2.2:8080/api/resetpass", params);
-                        JSONObject json = sr.getJSON("http://52.23.206.253:8080/api/resetpass", params);
+                        JSONObject json = sr.getJSON("http://52.91.100.201:8080/api/resetpass", params);
 
 
                         if (json != null) {
@@ -154,7 +154,7 @@ public class LoginActivity extends Activity {
                                             params.add(new BasicNameValuePair("newpass", npass_txt));
 
                                             //JSONObject json = sr.getJSON("http://10.0.2.2:8080/api/resetpass/chg", params);
-                                            JSONObject json = sr.getJSON("http://52.23.206.253:8080/api/resetpass/chg", params);
+                                            JSONObject json = sr.getJSON("http://52.91.100.201:8080/api/resetpass/chg", params);
 
                                             //   JSONObject json = sr.getJSON("http://192.168.56.1:8080/api/resetpass/chg", params);
 

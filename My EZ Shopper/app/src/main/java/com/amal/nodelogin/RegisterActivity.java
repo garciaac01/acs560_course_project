@@ -52,12 +52,16 @@ public class RegisterActivity extends Activity {
                 emailtxt = email.getText().toString();
                 passwordtxt = password.getText().toString();
                 params = new ArrayList<NameValuePair>();
-                params.add(new BasicNameValuePair("email", emailtxt));
-                params.add(new BasicNameValuePair("password", passwordtxt));
+               params.add(new BasicNameValuePair("email", emailtxt));
+               params.add(new BasicNameValuePair("password", passwordtxt));
+               // params.add(new BasicNameValuePair("name", emailtxt));
+               // params.add(new BasicNameValuePair("description", passwordtxt));
                 ServerRequest sr = new ServerRequest();
                 //JSONObject json = sr.getJSON("http://10.0.2.2:8080/register",params);
-                JSONObject json = sr.getJSON("http://52.23.206.253:8080/register",params);
+                JSONObject json = sr.getJSON("http://52.91.100.201:8080/register",params);
 
+               // JSONObject json = sr.getJSON("http://52.91.100.201:8080/user", null);
+                //Toast.makeText(getApplication(), json.toString(), Toast.LENGTH_LONG).show();
                 if(json != null){
                     try{
                         String jsonstr = json.getString("response");
