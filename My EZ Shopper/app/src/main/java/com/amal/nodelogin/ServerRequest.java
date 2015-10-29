@@ -23,6 +23,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+//TODO modify this class to be async?
 public class ServerRequest {
 
     static InputStream is = null;

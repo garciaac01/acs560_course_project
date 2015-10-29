@@ -7,7 +7,8 @@
                 android:paddingTop="@dimen/activity_vertical_margin"
                 android:paddingBottom="@dimen/activity_vertical_margin"
                 android:orientation="vertical"
-                tools:context="com.amal.nodelogin.SearchActivity">
+                tools:context="com.amal.nodelogin.SearchActivity"
+    android:weightSum="1">
 
     <EditText
         android:layout_width="fill_parent"
@@ -16,7 +17,8 @@
         android:layout_marginLeft="24dp"
         android:layout_marginRight="24dp"
         android:id="@+id/product"
-        android:hint="@string/search_hint"/>
+        android:hint="@string/search_hint"
+        android:layout_weight="0.65" />
 
     <Button
         android:layout_width="wrap_content"

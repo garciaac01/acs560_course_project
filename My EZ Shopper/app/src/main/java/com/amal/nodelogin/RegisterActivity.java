@@ -14,10 +14,12 @@ import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.AbstractHttpEntity;
 import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
@@ -74,21 +76,21 @@ public class RegisterActivity extends Activity {
                 passwordtxt = password.getText().toString();
 
                 try {
+                    //TODO modify to work as async task
                     //Added to remove onMainThreadException
                     StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
                     StrictMode.setThreadPolicy(policy);
 
+                    //Post Data
                     HttpClient httpClient = new DefaultHttpClient();
                     // replace with your url
                     HttpPost httpPost = new HttpPost("http://52.91.100.201:8080/user");
 
 
-                    //Post Data
                     JSONObject obj = new JSONObject();
                     obj.put("name", emailtxt);
                     obj.put("password", passwordtxt);
 
-                    //Encoding POST data
                     try {
                         AbstractHttpEntity entity = null;
                         entity = new ByteArrayEntity(obj.toString().getBytes("UTF8"));
@@ -105,6 +107,15 @@ public class RegisterActivity extends Activity {
                         HttpResponse response = httpClient.execute(httpPost);
                         // write response to log
                         Log.d("Http Post Response:", response.toString());
+                        int statusCode = response.getStatusLine().getStatusCode();
+                        String status = "";
+                        if (statusCode == 200){
+                            status = "Successfully registered!";
+                        }else{
+                            status = "Error registering";
+                        }
+                        //TODO: Remove status code from message
+                        Toast.makeText(getApplication(),status + " " + statusCode,Toast.LENGTH_LONG).show();
                     } catch (ClientProtocolException e) {
                         // Log exception
                         e.printStackTrace();
@@ -123,6 +134,4 @@ public class RegisterActivity extends Activity {
 
     }//end onCreate
 
-
-
-}
+}//end RegisterActivity class
