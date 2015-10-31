@@ -117,7 +117,7 @@ public class ProfileActivity extends Activity {
         startProductActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(ProfileActivity.this, SearchActivity.class);
+                Intent i = new Intent(ProfileActivity.this, SearchActivity2.class);
                 startActivity(i);
             }
         });

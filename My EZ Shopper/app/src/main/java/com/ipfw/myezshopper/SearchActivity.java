@@ -65,28 +65,26 @@ public class SearchActivity extends Activity {
 //            response.setText("You are NOT connected");
 //        }
 
-        // call AsynTask to perform network operation on separate thread
+        // call AsyncTask to perform network operation on separate thread
 //        new HttpAsyncTask().execute("http://hmkcode.appspot.com/rest/controller/get.json");
         new HttpAsyncTask().execute("http://52.91.100.201:8080/user");
 
-        searchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String productString = productText.getText().toString();
-                productJSON.add(new BasicNameValuePair("product", productString));
-
-                //TODO modify to work as async task
-                //Added to remove onMainThreadException
-                StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-                StrictMode.setThreadPolicy(policy);
-
-
-
-
-                Toast.makeText(SearchActivity.this, "", Toast.LENGTH_LONG).show();
-
-            }
-        });//end setOnClickListener
+//        commented out to prevent crashing client
+//        searchButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                String productString = productText.getText().toString();
+//                productJSON.add(new BasicNameValuePair("product", productString));
+//
+//                //TODO modify to work as async task
+//                //Added to remove onMainThreadException
+//                StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+//                StrictMode.setThreadPolicy(policy);
+//
+//                Toast.makeText(SearchActivity.this, "", Toast.LENGTH_LONG).show();
+//
+//            }
+//        });//end setOnClickListener
     }//end onCreate
 
     @Override
@@ -142,8 +140,10 @@ public class SearchActivity extends Activity {
         BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
         String line = "";
         String result = "";
-        while((line = bufferedReader.readLine()) != null)
+        while((line = bufferedReader.readLine()) != null){
             result += line;
+        }
+
 
         inputStream.close();
         return result;
@@ -168,6 +168,11 @@ public class SearchActivity extends Activity {
         // onPostExecute displays the results of the AsyncTask.
         @Override
         protected void onPostExecute(String result) {
+
+            //result coming in is a string of JSON
+
+
+
             Toast.makeText(getBaseContext(), "Received!", Toast.LENGTH_LONG).show();
             productText.setText(result);
         }

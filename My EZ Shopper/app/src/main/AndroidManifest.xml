@@ -30,6 +30,10 @@
             android:name="com.ipfw.myezshopper.SearchActivity"
             android:label="Product Search" >
         </activity>
+        <activity
+            android:name="com.ipfw.myezshopper.SearchActivity2"
+            android:label="Product Search" >
+        </activity>
     </application>
 
 </manifest>
