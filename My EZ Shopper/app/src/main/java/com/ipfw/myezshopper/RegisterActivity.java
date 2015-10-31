@@ -1,4 +1,4 @@
-package com.amal.nodelogin;
+package com.ipfw.myezshopper;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -14,33 +14,17 @@ import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.AbstractHttpEntity;
 import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.List;
-
-import javax.net.ssl.HttpsURLConnection;
 
 
 public class RegisterActivity extends Activity {
@@ -85,7 +69,6 @@ public class RegisterActivity extends Activity {
                     HttpClient httpClient = new DefaultHttpClient();
                     // replace with your url
                     HttpPost httpPost = new HttpPost("http://52.91.100.201:8080/user");
-
 
                     JSONObject obj = new JSONObject();
                     obj.put("name", emailtxt);

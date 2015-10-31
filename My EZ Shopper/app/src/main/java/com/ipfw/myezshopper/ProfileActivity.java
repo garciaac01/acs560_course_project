@@ -1,4 +1,4 @@
-package com.amal.nodelogin;
+package com.ipfw.myezshopper;
 
 import android.app.Activity;
 import android.app.Dialog;

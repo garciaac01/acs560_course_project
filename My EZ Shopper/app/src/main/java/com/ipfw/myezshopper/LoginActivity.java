@@ -1,4 +1,4 @@
-package com.amal.nodelogin;
+package com.ipfw.myezshopper;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -155,10 +155,7 @@ public class LoginActivity extends Activity {
                                             params.add(new BasicNameValuePair("code", code_txt));
                                             params.add(new BasicNameValuePair("newpass", npass_txt));
 
-                                            //JSONObject json = sr.getJSON("http://10.0.2.2:8080/api/resetpass/chg", params);
                                             JSONObject json = sr.getJSON("http://52.91.100.201:8080/api/resetpass/chg", params);
-
-                                            //   JSONObject json = sr.getJSON("http://192.168.56.1:8080/api/resetpass/chg", params);
 
                                             if (json != null) {
                                                 try {

@@ -1,7 +1,7 @@
 //Currently this gets all user information from the db.
 
 
-package com.amal.nodelogin;
+package com.ipfw.myezshopper;
 
 import android.app.Activity;
 //import android.support.v7.app.AppCompatActivity;
@@ -26,16 +26,12 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONException;
 import org.apache.http.message.BasicNameValuePair;
-
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.List;
 
 public class SearchActivity extends Activity {

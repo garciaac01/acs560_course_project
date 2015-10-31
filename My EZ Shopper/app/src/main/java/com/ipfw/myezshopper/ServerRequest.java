@@ -1,5 +1,5 @@
 
-package com.amal.nodelogin;
+package com.ipfw.myezshopper;
 
 
 import android.os.AsyncTask;

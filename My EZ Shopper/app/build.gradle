@@ -7,7 +7,7 @@ android {
 
 
     defaultConfig {
-        applicationId "com.amal.myezshopper"
+        applicationId "com.ipfw.myezshopper"
         minSdkVersion 16
         targetSdkVersion 19
         versionCode 1
