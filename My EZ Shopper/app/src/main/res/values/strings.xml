@@ -14,4 +14,6 @@
     <string name="expiration">Expiration Date</string>
     <string name="description">Description</string>
     <string name="category">Category</string>
+    <string name="title_activity_profile2">ProfileActivity2</string>
+    <string name="submit_deal_button_text">Submit Deal</string>
 </resources>

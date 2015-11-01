@@ -57,7 +57,7 @@ public class LoginActivity extends Activity {
             @Override
             public void onClick(View view) {
 
-                Intent profactivity = new Intent(LoginActivity.this,ProfileActivity.class);
+                Intent profactivity = new Intent(LoginActivity.this,ProfileActivity2.class);
 
                 startActivity(profactivity);
                 finish();
