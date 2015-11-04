@@ -27,7 +27,7 @@
             android:label="Product Search" >
         </activity>
         <activity
-            android:name=".SearchActivity2"
+            android:name=".SearchDealsActivity"
             android:label="Product Search" >
         </activity>
         <activity

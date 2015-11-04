@@ -29,19 +29,21 @@ import java.net.URL;
 
 //import android.support.v7.app.AppCompatActivity;
 
-public class SearchActivity2 extends Activity {
+public class SearchDealsActivity extends Activity {
 
+    EditText txtName;
     EditText productText;
     Button searchButton;
     private TextView tvResponse;
     SharedPreferences pref;
-    String token, TAG = "SearchActivity2";
+    String token, TAG = "SearchDealsActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search2);
 
+        txtName = (EditText) findViewById(R.id.txtName);
         productText = (EditText) findViewById(R.id.product);
         searchButton = (Button) findViewById(R.id.search_button);
         tvResponse = (TextView) findViewById(R.id.database_response);
@@ -50,7 +52,13 @@ public class SearchActivity2 extends Activity {
 
             @Override
             public void onClick(View v) {
-                new JSONTask().execute("http://52.91.100.201:8080/user");
+
+                String inputText = txtName.getText().toString();
+                //TODO tokenize text
+
+                String URL = "http://52.91.100.201:8080/deal?name=" + inputText;
+
+                new JSONTask().execute(URL);
 
             }
         });//end setOnclickListener
@@ -88,7 +96,9 @@ public class SearchActivity2 extends Activity {
                 for (int i = 0; i < parentArray.length(); i++)
                 {
                     JSONObject obj = parentArray.getJSONObject(i);
-                    builtString += obj.getString("name") + " " + obj.getString("password") + " ";
+                    builtString += obj.getString("name") + " " + obj.getDouble("price") + " " +
+                            obj.getString("storeName") + " " + obj.get("expirationDate") + " " +
+                            obj.get("description") + " " + obj.get("category") + "\n";
                 }
                 return builtString;
 
@@ -118,7 +128,7 @@ public class SearchActivity2 extends Activity {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            tvResponse.setText(result.toString());
+            productText.setText(result.toString());
         }
     }
 
