@@ -21,7 +21,7 @@ public class ProfileActivity2 extends FragmentActivity {
         Fragment fragment = fm.findFragmentById(R.id.fragment_container);
 
         if(fragment == null){
-            fragment = new DealFragment();
+            fragment = new ProfileFragment();
             fm.beginTransaction().add(R.id.fragment_container, fragment).commit();
         }
     }

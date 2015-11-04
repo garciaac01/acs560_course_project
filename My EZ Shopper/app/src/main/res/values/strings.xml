@@ -18,4 +18,6 @@
     <string name="submit_deal_button_text">Submit Deal</string>
     <string name="date_picker_title">Select Expiration Date</string>
     <string name="expiration_hint">Set Expiration Date</string>
+    <string name="go_to_new_deal_fragment">+ Deal</string>
+    <string name="go_to_search_fragment">Search Products</string>
 </resources>
