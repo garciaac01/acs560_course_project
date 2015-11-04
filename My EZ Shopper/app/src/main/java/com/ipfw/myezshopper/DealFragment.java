@@ -109,7 +109,7 @@ public class DealFragment extends Fragment implements View.OnClickListener{
 
                 if(!product.equals(""))
                 {
-                    productInformation.put("productName", product);
+                    productInformation.put("name", product);
                 }
 
                 if(!price.equals(""))
