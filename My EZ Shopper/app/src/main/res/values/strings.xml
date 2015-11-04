@@ -16,4 +16,6 @@
     <string name="category">Category</string>
     <string name="title_activity_profile2">ProfileActivity2</string>
     <string name="submit_deal_button_text">Submit Deal</string>
+    <string name="date_picker_title">Select Expiration Date</string>
+    <string name="expiration_hint">Set Expiration Date</string>
 </resources>

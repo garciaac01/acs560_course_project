@@ -1,5 +1,8 @@
 package com.ipfw.myezshopper;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.support.v4.app.FragmentManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -22,6 +25,7 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Date;
 
 /**
  * Created by garci_000 on 10/31/2015.
@@ -31,11 +35,13 @@ public class DealFragment extends Fragment implements View.OnClickListener{
     private EditText productPrice;
     private EditText storeName;
     private EditText locationName;
-    private EditText expirationDate;
+    private Button expirationDate;
     private EditText productDescription;
     private EditText category;
     private Button submitDeal;
     String product, price, store, location, expiration, description, cat;
+    private static final String DIALOG_DATE = "DialogDate";
+    private static final int REQUEST_DATE = 0;
 
 
     @Override
@@ -52,7 +58,16 @@ public class DealFragment extends Fragment implements View.OnClickListener{
         productPrice = (EditText) v.findViewById(R.id.productPrice);
         storeName = (EditText) v.findViewById(R.id.storeName);
         locationName = (EditText) v.findViewById(R.id.locationName);
-        expirationDate = (EditText) v.findViewById(R.id.expirationDate);
+        expirationDate = (Button) v.findViewById(R.id.expirationDate);
+        expirationDate.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                FragmentManager manager = getFragmentManager();
+                DatePickerFragment dialog = new DatePickerFragment();
+                dialog.setTargetFragment(DealFragment.this, REQUEST_DATE);
+                dialog.show(manager, DIALOG_DATE);
+            }
+        });
         productDescription = (EditText) v.findViewById(R.id.productDescription);
         category = (EditText) v.findViewById(R.id.productCategory);
         submitDeal = (Button) v.findViewById(R.id.submit_deal_button);
@@ -172,5 +187,17 @@ public class DealFragment extends Fragment implements View.OnClickListener{
             return null;
         }
 
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+        if(resultCode != Activity.RESULT_OK){
+            return;
+        }
+
+        if(requestCode == REQUEST_DATE){
+            Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
+            expirationDate.setText(date.toString());
+        }
     }
 }
