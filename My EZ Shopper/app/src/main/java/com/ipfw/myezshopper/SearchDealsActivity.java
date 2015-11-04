@@ -26,6 +26,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.StringTokenizer;
 
 //import android.support.v7.app.AppCompatActivity;
 
@@ -52,14 +53,26 @@ public class SearchDealsActivity extends Activity {
 
             @Override
             public void onClick(View v) {
-
+                String concatenatedText = "";
                 String inputText = txtName.getText().toString();
-                //TODO tokenize text
 
-                String URL = "http://52.91.100.201:8080/deal?name=" + inputText;
+                if (inputText == null || inputText.equals("")){
+                    //make toast
+                }
+                else{
+                    StringTokenizer st = new StringTokenizer(inputText, " ");
 
-                new JSONTask().execute(URL);
+                    while (st.hasMoreTokens()){
+                        concatenatedText += st.nextToken() + "+";
+                    }
 
+                    //remove last + symbol
+                    concatenatedText = concatenatedText.substring(0, concatenatedText.length() - 1);
+
+                    String URL = "http://52.91.100.201:8080/deal?name=" + concatenatedText;
+
+                    new JSONTask().execute(URL);
+                }
             }
         });//end setOnclickListener
 
