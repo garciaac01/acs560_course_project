@@ -141,6 +141,10 @@ public class DealFragment extends Fragment implements View.OnClickListener{
                 {
                     productInformation.put("category", cat);
                 }
+                else
+                {
+                    productInformation.put("category", "Not Given");
+                }
 
                 OutputStream os = connection.getOutputStream();
                 os.write(productInformation.toString().getBytes("UTF-8"));

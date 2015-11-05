@@ -44,6 +44,16 @@ public class ProfileFragment extends Fragment {
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, newDeal).addToBackStack(null).commit();
             }
         });
+
+        goToSearchFragment = (Button) v.findViewById(R.id.go_to_search_fragment);
+        goToSearchFragment.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v)
+            {
+                SearchDealsActivity newSearch = new SearchDealsActivity();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, newSearch).addToBackStack(null).commit();
+            }
+        });
         return v;
     }
 

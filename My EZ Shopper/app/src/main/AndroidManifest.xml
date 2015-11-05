@@ -27,10 +27,6 @@
             android:label="Product Search" >
         </activity>
         <activity
-            android:name=".SearchDealsActivity"
-            android:label="Product Search" >
-        </activity>
-        <activity
             android:name=".ProfileActivity2"
             android:label="@string/title_activity_profile2"
             android:theme="@style/AppTheme.NoActionBar" >

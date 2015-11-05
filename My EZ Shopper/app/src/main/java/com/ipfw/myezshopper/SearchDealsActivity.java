@@ -10,7 +10,10 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -30,7 +33,7 @@ import java.util.StringTokenizer;
 
 //import android.support.v7.app.AppCompatActivity;
 
-public class SearchDealsActivity extends Activity {
+public class SearchDealsActivity extends Fragment {
 
     EditText txtName;
     EditText productText;
@@ -40,14 +43,19 @@ public class SearchDealsActivity extends Activity {
     String token, TAG = "SearchDealsActivity";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search2);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);}
 
-        txtName = (EditText) findViewById(R.id.txtName);
-        productText = (EditText) findViewById(R.id.product);
-        searchButton = (Button) findViewById(R.id.search_button);
-        tvResponse = (TextView) findViewById(R.id.database_response);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.activity_search2, container, false);
+       // setContentView(R.layout.activity_search2);
+
+        txtName = (EditText) v.findViewById(R.id.txtName);
+        productText = (EditText) v.findViewById(R.id.product);
+        searchButton = (Button) v.findViewById(R.id.search_button);
+        tvResponse = (TextView) v.findViewById(R.id.database_response);
 
         searchButton.setOnClickListener(new View.OnClickListener() {
 
@@ -76,6 +84,7 @@ public class SearchDealsActivity extends Activity {
             }
         });//end setOnclickListener
 
+        return v;
     }//end onCreate
 
 
