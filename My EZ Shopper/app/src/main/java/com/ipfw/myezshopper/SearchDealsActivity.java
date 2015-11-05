@@ -4,7 +4,6 @@
 
 package com.ipfw.myezshopper;
 
-import android.app.Activity;
 import android.content.SharedPreferences;
 
 import android.os.AsyncTask;
@@ -17,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -67,8 +67,10 @@ public class SearchDealsActivity extends Fragment {
                 String inputText = txtName.getText().toString();
                 String queryText = txtQuery.getText().toString();
 
-                if (inputText == null || inputText.equals("") || queryText == null || queryText.equals("")){
-                    //make toast
+                if (inputText.equals("")){
+                    Toast.makeText(getActivity(), "Query name cannot be blank", Toast.LENGTH_LONG).show();
+                }else if (queryText.equals("")){
+                    Toast.makeText(getActivity(), "Query value cannot be blank", Toast.LENGTH_LONG).show();
                 }
                 else{
                     StringTokenizer st = new StringTokenizer(inputText, " ");
@@ -126,19 +128,21 @@ public class SearchDealsActivity extends Fragment {
 
                 String finalJSON = buffer.toString();
                 JSONArray parentArray = new JSONArray(finalJSON);
-
                 String builtString = "";
 
-                for (int i = 0; i < parentArray.length(); i++)
-                {
-                    JSONObject obj = parentArray.getJSONObject(i);
-                    builtString += obj.getString("name") + " " + obj.getDouble("price") + " " +
-                            obj.getString("storeName") + " " + obj.getString("location") + " " +
-                            obj.get("description") + " " + obj.get("category") + "\n";
+                if (parentArray.length() == 0){
+                    builtString = "No matches";
+                }
+                else{
+                    for (int i = 0; i < parentArray.length(); i++)
+                    {
+                        JSONObject obj = parentArray.getJSONObject(i);
+                        builtString += obj.getString("name") + " " + obj.getDouble("price") + " " +
+                                obj.getString("storeName") + " " + obj.getString("location") + " " +
+                                obj.get("description") + " " + obj.get("category") + "\n";
+                    }
                 }
                 return builtString;
-
-
             }catch(MalformedURLException ex){
                 ex.printStackTrace();
             }catch(IOException ex){
