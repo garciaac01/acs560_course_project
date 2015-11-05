@@ -9,6 +9,12 @@
                 android:orientation="vertical"
                 tools:context="com.ipfw.myezshopper.SearchActivity"
     android:weightSum="1">
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/txtQuery"
+        android:hint="@string/query_hint"
+        android:layout_weight="0.1" />
 
     <EditText
         android:layout_width="match_parent"
@@ -32,6 +38,13 @@
         android:layout_height="wrap_content"
         android:id="@+id/search_button"
         android:text="@string/search_button_text"
+        android:layout_gravity="center"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/search_all_button"
+        android:text="@string/search_all_button_text"
         android:layout_gravity="center"/>
 
     <TextView

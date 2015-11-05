@@ -35,9 +35,9 @@ import java.util.StringTokenizer;
 
 public class SearchDealsActivity extends Fragment {
 
-    EditText txtName;
+    EditText txtName, txtQuery;
     EditText productText;
-    Button searchButton;
+    Button searchButton, searchAllButton;
     private TextView tvResponse;
     SharedPreferences pref;
     String token, TAG = "SearchDealsActivity";
@@ -53,8 +53,10 @@ public class SearchDealsActivity extends Fragment {
        // setContentView(R.layout.activity_search2);
 
         txtName = (EditText) v.findViewById(R.id.txtName);
+        txtQuery = (EditText) v.findViewById(R.id.txtQuery);
         productText = (EditText) v.findViewById(R.id.product);
         searchButton = (Button) v.findViewById(R.id.search_button);
+        searchAllButton = (Button) v.findViewById(R.id.search_all_button);
         tvResponse = (TextView) v.findViewById(R.id.database_response);
 
         searchButton.setOnClickListener(new View.OnClickListener() {
@@ -63,8 +65,9 @@ public class SearchDealsActivity extends Fragment {
             public void onClick(View v) {
                 String concatenatedText = "";
                 String inputText = txtName.getText().toString();
+                String queryText = txtQuery.getText().toString();
 
-                if (inputText == null || inputText.equals("")){
+                if (inputText == null || inputText.equals("") || queryText == null || queryText.equals("")){
                     //make toast
                 }
                 else{
@@ -77,10 +80,21 @@ public class SearchDealsActivity extends Fragment {
                     //remove last + symbol
                     concatenatedText = concatenatedText.substring(0, concatenatedText.length() - 1);
 
-                    String URL = "http://52.91.100.201:8080/deal?name=" + concatenatedText;
+                    String URL = "http://52.91.100.201:8080/deal?" + queryText + "=" + concatenatedText;
 
                     new JSONTask().execute(URL);
                 }
+            }
+        });//end setOnclickListener
+
+        searchAllButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                String URL = "http://52.91.100.201:8080/deal";
+
+                new JSONTask().execute(URL);
             }
         });//end setOnclickListener
 
@@ -119,7 +133,7 @@ public class SearchDealsActivity extends Fragment {
                 {
                     JSONObject obj = parentArray.getJSONObject(i);
                     builtString += obj.getString("name") + " " + obj.getDouble("price") + " " +
-                            obj.getString("storeName") + " " +
+                            obj.getString("storeName") + " " + obj.getString("location") + " " +
                             obj.get("description") + " " + obj.get("category") + "\n";
                 }
                 return builtString;
