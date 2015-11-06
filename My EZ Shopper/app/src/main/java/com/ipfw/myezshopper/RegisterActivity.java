@@ -2,6 +2,7 @@ package com.ipfw.myezshopper;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
@@ -20,10 +21,14 @@ import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HTTP;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
 
@@ -59,56 +64,14 @@ public class RegisterActivity extends Activity {
                 emailtxt = email.getText().toString();
                 passwordtxt = password.getText().toString();
 
-                try {
-                    //TODO modify to work as async task
-                    //Added to remove onMainThreadException
-                    StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-                    StrictMode.setThreadPolicy(policy);
-
-                    //Post Data
-                    HttpClient httpClient = new DefaultHttpClient();
-                    // replace with your url
-                    HttpPost httpPost = new HttpPost("http://52.91.100.201:8080/user");
-
-                    JSONObject obj = new JSONObject();
-                    obj.put("name", emailtxt);
-                    obj.put("password", passwordtxt);
-
-                    try {
-                        AbstractHttpEntity entity = null;
-                        entity = new ByteArrayEntity(obj.toString().getBytes("UTF8"));
-                        entity.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
-                        httpPost.setEntity(entity);
-
-                    } catch (UnsupportedEncodingException e) {
-                        // log exception
-                        e.printStackTrace();
-                    }
-
-                    //making POST request.
-                    try {
-                        HttpResponse response = httpClient.execute(httpPost);
-                        // write response to log
-                        Log.d("Http Post Response:", response.toString());
-                        int statusCode = response.getStatusLine().getStatusCode();
-                        String status = "";
-                        if (statusCode == 200){
-                            status = "Successfully registered!";
-                        }else{
-                            status = "Error registering";
-                        }
-                        //TODO: Remove status code from message
-                        Toast.makeText(getApplication(),status + " " + statusCode,Toast.LENGTH_LONG).show();
-                    } catch (ClientProtocolException e) {
-                        // Log exception
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        // Log exception
-                        e.printStackTrace();
-                    }
-
-                } catch (Exception ex){
-
+                if (emailtxt.equals("")){
+                    Toast.makeText(getApplication(), "User name cannot be blank", Toast.LENGTH_LONG).show();
+                }
+                else if (passwordtxt.equals("")){
+                    Toast.makeText(getApplication(), "Password cannot be blank", Toast.LENGTH_LONG).show();
+                }else{
+                    String URL = "http://52.91.100.201:8080/user";
+                    new JSONTask().execute(URL);
                 }
 
             }//end onClick
@@ -116,5 +79,79 @@ public class RegisterActivity extends Activity {
         });//end setOnClickListener
 
     }//end onCreate
+
+    public class JSONTask extends AsyncTask<String,String, String> {
+        @Override
+        protected String doInBackground(String... params) {
+            HttpURLConnection connection = null;
+            BufferedReader br = null;
+
+            try {
+                URL object = new URL(params[0]);
+                connection = (HttpURLConnection) object.openConnection();
+                connection.setDoInput(true);
+                connection.setDoOutput(true);
+                connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+
+                connection.setRequestProperty("Accept", "application/json");
+                connection.setRequestMethod("POST");
+
+
+                JSONObject registerInformation = new JSONObject();
+
+                registerInformation.put("name", emailtxt);
+                registerInformation.put("password", passwordtxt);
+
+                OutputStream os = connection.getOutputStream();
+                os.write(registerInformation.toString().getBytes("UTF-8"));
+                os.flush();
+
+                StringBuilder sb = new StringBuilder();
+                int HttpResult = connection.getResponseCode();
+                if (HttpResult == HttpURLConnection.HTTP_OK) {
+                    br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "utf-8"));
+                    String line = null;
+                    while ((line = br.readLine()) != null) {
+                        sb.append(line + "\n");
+                    }
+
+                    br.close();
+
+                    System.out.println("" + sb.toString());
+                    return "Successfully added";
+                } else if (HttpResult ==HttpURLConnection.HTTP_FORBIDDEN){
+                    String msg = "User name already exists";
+                    return msg;
+                }
+            } catch (MalformedURLException ex) {
+                ex.printStackTrace();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } finally {
+                if (connection != null) {
+                    connection.disconnect();
+                }
+                try {
+                    if (br != null) {
+                        br.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            Toast.makeText(getApplication(), result, Toast.LENGTH_LONG).show();
+            //todo if result is OK, then show profile page
+        }
+
+    }
 
 }//end RegisterActivity class

@@ -81,23 +81,22 @@ public class SearchDealsActivity extends Fragment {
                 queryText = parent.getItemAtPosition(position).toString();
 
                 if(queryText.equals("Product Name")){
-                    txtName.setHint("Enter Product Name".toString());
+                    txtName.setHint("Enter Product Name");
                     queryText = "name";
                 }
                 else if(queryText.equals("Store Name")){
-                    txtName.setHint("Enter Store Name".toString());
+                    txtName.setHint("Enter Store Name");
                     queryText = "storeName";
                 }
                 else if(queryText.equals("Location")){
-                    txtName.setHint("Enter Location".toString());
+                    txtName.setHint("Enter Location");
                     queryText = "location";
                 }
                 else if(queryText.equals("Category")){
-                    txtName.setHint("Enter Category".toString());
+                    txtName.setHint("Enter Category");
                     queryText = "category";
                 }
 
-                Toast.makeText(getActivity(), queryText, Toast.LENGTH_SHORT).show();
             }
 
             @Override
