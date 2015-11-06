@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,6 +26,7 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -85,7 +87,14 @@ public class DealFragment extends Fragment implements View.OnClickListener{
         expiration = expirationDate.getText().toString();
         description = productDescription.getText().toString();
         cat = category.getText().toString();
-        new JSONTask().execute("http://52.91.100.201:8080/deal");
+
+        try {
+            Double.parseDouble(price);
+            new JSONTask().execute("http://52.91.100.201:8080/deal");
+        }catch(NumberFormatException e)
+        {
+            Toast.makeText(getActivity(), R.string.invalid_price, Toast.LENGTH_SHORT).show();
+        }
     }
 
     public class JSONTask extends AsyncTask<String,String, String> {
@@ -111,30 +120,48 @@ public class DealFragment extends Fragment implements View.OnClickListener{
                 {
                     productInformation.put("name", product);
                 }
-
-                if(!price.equals(""))
+                else
                 {
-                    productInformation.put("price", Double.parseDouble(price));
+                    productInformation.put("name", "No Product Given");
                 }
+
+                productInformation.put("price", Double.parseDouble(price));
+
 
                 if(!store.equals(""))
                 {
                     productInformation.put("storeName", store);
+                }
+                else
+                {
+                    productInformation.put("storeName", "No Store Given");
                 }
 
                 if(!location.equals(""))
                 {
                     productInformation.put("location", location);
                 }
+                else
+                {
+                    productInformation.put("location", "No Location Given");
+                }
 
-                if(!expiration.equals(""))
+                if(!expiration.equals("Set Expiration Date"))
                 {
                     productInformation.put("expirationDate", expiration);
+                }
+                else
+                {
+                    productInformation.put("expirationDate", "No Expiration Date Given");
                 }
 
                 if(!description.equals(""))
                 {
                     productInformation.put("description", description);
+                }
+                else
+                {
+                    productInformation.put("description", "No description given");
                 }
 
                 if(!cat.equals(""))
@@ -200,7 +227,8 @@ public class DealFragment extends Fragment implements View.OnClickListener{
         }
 
         if(requestCode == REQUEST_DATE){
-            Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
+            //Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
+            String date = data.getStringExtra(DatePickerFragment.EXTRA_DATE);
             expirationDate.setText(date.toString());
         }
     }

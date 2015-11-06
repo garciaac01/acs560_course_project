@@ -22,4 +22,6 @@
     <string name="expiration_hint">Set Expiration Date</string>
     <string name="go_to_new_deal_fragment">+ Deal</string>
     <string name="go_to_search_fragment">Search Products</string>
+    <string name="invalid_price">Please Enter a Valid Price</string>
+    <string name="spinner_category_title">Search By...</string>
 </resources>

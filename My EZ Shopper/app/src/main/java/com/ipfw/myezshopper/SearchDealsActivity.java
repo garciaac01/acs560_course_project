@@ -13,8 +13,11 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,18 +32,21 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 //import android.support.v7.app.AppCompatActivity;
 
 public class SearchDealsActivity extends Fragment {
 
-    EditText txtName, txtQuery;
+    EditText txtName;
     EditText productText;
+    Spinner categorySpinner;
     Button searchButton, searchAllButton;
     private TextView tvResponse;
     SharedPreferences pref;
-    String token, TAG = "SearchDealsActivity";
+    String token, TAG = "SearchDealsActivity", queryText;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,11 +59,52 @@ public class SearchDealsActivity extends Fragment {
        // setContentView(R.layout.activity_search2);
 
         txtName = (EditText) v.findViewById(R.id.txtName);
-        txtQuery = (EditText) v.findViewById(R.id.txtQuery);
+        categorySpinner = (Spinner) v.findViewById(R.id.category_spinner);
         productText = (EditText) v.findViewById(R.id.product);
         searchButton = (Button) v.findViewById(R.id.search_button);
         searchAllButton = (Button) v.findViewById(R.id.search_all_button);
         tvResponse = (TextView) v.findViewById(R.id.database_response);
+
+        List<String> categories = new ArrayList<String>();
+        categories.add("Product Name");
+        categories.add("Store Name");
+        categories.add("Location");
+        categories.add("Category");
+
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, categories);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        categorySpinner.setAdapter(dataAdapter);
+
+        categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                queryText = parent.getItemAtPosition(position).toString();
+
+                if(queryText.equals("Product Name")){
+                    txtName.setHint("Enter Product Name".toString());
+                    queryText = "name";
+                }
+                else if(queryText.equals("Store Name")){
+                    txtName.setHint("Enter Store Name".toString());
+                    queryText = "storeName";
+                }
+                else if(queryText.equals("Location")){
+                    txtName.setHint("Enter Location".toString());
+                    queryText = "location";
+                }
+                else if(queryText.equals("Category")){
+                    txtName.setHint("Enter Category".toString());
+                    queryText = "category";
+                }
+
+                Toast.makeText(getActivity(), queryText, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         searchButton.setOnClickListener(new View.OnClickListener() {
 
@@ -65,7 +112,7 @@ public class SearchDealsActivity extends Fragment {
             public void onClick(View v) {
                 String concatenatedText = "";
                 String inputText = txtName.getText().toString();
-                String queryText = txtQuery.getText().toString();
+                //queryText = txtQuery.getText().toString();
 
                 if (inputText.equals("")){
                     Toast.makeText(getActivity(), "Query name cannot be blank", Toast.LENGTH_LONG).show();

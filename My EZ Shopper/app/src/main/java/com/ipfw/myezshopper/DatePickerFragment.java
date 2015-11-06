@@ -49,14 +49,15 @@ public class DatePickerFragment extends DialogFragment {
                 int year = mDatePicker.getYear();
                 int month = mDatePicker.getMonth();
                 int day = mDatePicker.getDayOfMonth();
-                Date date = new GregorianCalendar(year, month, day).getTime();
+                //Date date = new GregorianCalendar(year, month, day).getTime();
+                String date = month + "/" + day + "/" + year;
                 sendResult(Activity.RESULT_OK, date);
             }
         }).create();
 
     }
 
-    public void sendResult(int resultCode, Date date){
+    public void sendResult(int resultCode, String date){
         if(getTargetFragment() == null){
             return;
         }

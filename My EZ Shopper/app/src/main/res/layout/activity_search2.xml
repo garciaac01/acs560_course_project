@@ -9,12 +9,22 @@
                 android:orientation="vertical"
                 tools:context="com.ipfw.myezshopper.SearchActivity"
     android:weightSum="1">
-    <EditText
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/txtQuery"
-        android:hint="@string/query_hint"
-        android:layout_weight="0.1" />
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/spinner_category_title"
+            android:layout_margin="12dp"/>
+    <Spinner
+        android:id="@+id/category_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="12dp">
+    </Spinner>
+    </LinearLayout>
 
     <EditText
         android:layout_width="match_parent"
