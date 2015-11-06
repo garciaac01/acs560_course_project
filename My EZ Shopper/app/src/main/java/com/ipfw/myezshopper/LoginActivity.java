@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -16,6 +17,13 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +35,7 @@ public class LoginActivity extends Activity {
     SharedPreferences pref;
     Dialog reset;
     ServerRequest sr;
+    boolean allowLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,47 +65,20 @@ public class LoginActivity extends Activity {
 
             @Override
             public void onClick(View view) {
+                allowLogin = false;
+                emailtxt = email.getText().toString();
+                passwordtxt = password.getText().toString();
 
-                Intent profactivity = new Intent(LoginActivity.this,ProfileActivity2.class);
+                if (emailtxt.equals("")){
+                    Toast.makeText(getApplication(), "User name cannot be blank", Toast.LENGTH_LONG).show();
+                }
+                else if (passwordtxt.equals("")){
+                    Toast.makeText(getApplication(), "Password cannot be blank", Toast.LENGTH_LONG).show();
+                }else{
+                    String URL = "http://52.91.100.201:8080/user";
+                    new JSONTask().execute(URL);
+                }
 
-                startActivity(profactivity);
-                finish();
-
-//                Commented out for enabling access to Profile activity without actual login
-//                emailtxt = email.getText().toString();
-//                passwordtxt = password.getText().toString();
-//                params = new ArrayList<NameValuePair>();
-//                params.add(new BasicNameValuePair("email", emailtxt));
-//                params.add(new BasicNameValuePair("password", passwordtxt));
-//                Log.d("Login String", params.toString());
-//
-//                ServerRequest sr = new ServerRequest();
-//               // JSONObject json = sr.getJSON("http://10.0.2.2:8080/login",params);
-//                JSONObject json = sr.getJSON("http://52.91.100.201:8080/login",params);
-//
-//                if(json != null){
-//                    try{
-//                        String jsonstr = json.getString("response");
-//                        if(json.getBoolean("res")){
-//                            String token = json.getString("token");
-//                            String grav = json.getString("grav");
-//                            SharedPreferences.Editor edit = pref.edit();
-//                            //Storing Data using SharedPreferences
-//                            edit.putString("token", token);
-//                            edit.putString("grav", grav);
-//                            edit.commit();
-//                            Intent profactivity = new Intent(LoginActivity.this,ProfileActivity.class);
-//
-//                            startActivity(profactivity);
-//                            finish();
-//                        }
-//
-//                        Toast.makeText(getApplication(),jsonstr,Toast.LENGTH_LONG).show();
-//
-//                    }catch (JSONException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
             }//end event handler
         });//end login setOnClickListener
 
@@ -193,5 +175,88 @@ public class LoginActivity extends Activity {
         });//end forgetPassword setListener
 
     }//end onCreate
+
+    public class JSONTask extends AsyncTask<String,String, String> {
+        @Override
+        protected String doInBackground(String... params) {
+            HttpURLConnection connection = null;
+            BufferedReader br = null;
+
+            try {
+                URL object = new URL(params[0]);
+                connection = (HttpURLConnection) object.openConnection();
+                connection.setDoInput(true);
+                connection.setDoOutput(true);
+                connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+
+                connection.setRequestProperty("Accept", "application/json");
+                connection.setRequestMethod("POST");
+
+
+                JSONObject loginInformation = new JSONObject();
+
+                loginInformation.put("name", emailtxt);
+                loginInformation.put("password", passwordtxt);
+                loginInformation.put("type", "login");
+
+                OutputStream os = connection.getOutputStream();
+                os.write(loginInformation.toString().getBytes("UTF-8"));
+                os.flush();
+
+                StringBuilder sb = new StringBuilder();
+                int HttpResult = connection.getResponseCode();
+                if (HttpResult == HttpURLConnection.HTTP_OK) {
+                    allowLogin = true;
+                    br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "utf-8"));
+                    String line = null;
+                    while ((line = br.readLine()) != null) {
+                        sb.append(line + "\n");
+                    }
+
+                    br.close();
+
+                    System.out.println("" + sb.toString());
+                    return "Successfully logged in!";
+                } else if (HttpResult ==HttpURLConnection.HTTP_FORBIDDEN){
+                   return "Incorrect password";
+                } else if (HttpResult == HttpURLConnection.HTTP_NOT_FOUND){
+                    return "Incorrect user name";
+                }
+
+            } catch (MalformedURLException ex) {
+                ex.printStackTrace();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } finally {
+                if (connection != null) {
+                    connection.disconnect();
+                }
+                try {
+                    if (br != null) {
+                        br.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            if (allowLogin){
+                Intent profactivity = new Intent(LoginActivity.this,ProfileActivity2.class);
+                startActivity(profactivity);
+            }else{
+                Toast.makeText(getApplication(), result, Toast.LENGTH_LONG).show();
+            }
+        }
+
+    }//end JSONTask class
 
 }//end LoginActivity class

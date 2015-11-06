@@ -36,7 +36,8 @@ public class RegisterActivity extends Activity {
     EditText email,password;
     Button login,register;
     String emailtxt,passwordtxt;
-    List<NameValuePair> params;
+    boolean isLogin = false;
+    boolean allowLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,9 +52,19 @@ public class RegisterActivity extends Activity {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent regactivity = new Intent(RegisterActivity.this,LoginActivity.class);
-                startActivity(regactivity);
-                finish();
+                allowLogin = false;
+                emailtxt = email.getText().toString();
+                passwordtxt = password.getText().toString();
+
+                if (emailtxt.equals("")) {
+                    Toast.makeText(getApplication(), "User name cannot be blank", Toast.LENGTH_LONG).show();
+                } else if (passwordtxt.equals("")) {
+                    Toast.makeText(getApplication(), "Password cannot be blank", Toast.LENGTH_LONG).show();
+                } else {
+                    String URL = "http://52.91.100.201:8080/user";
+                    isLogin = true;
+                    new JSONTask().execute(URL);
+                }
             }
         });
 
@@ -61,15 +72,16 @@ public class RegisterActivity extends Activity {
 
             @Override
             public void onClick(View view) {
+                isLogin = false;
+                allowLogin = false;
                 emailtxt = email.getText().toString();
                 passwordtxt = password.getText().toString();
 
-                if (emailtxt.equals("")){
+                if (emailtxt.equals("")) {
                     Toast.makeText(getApplication(), "User name cannot be blank", Toast.LENGTH_LONG).show();
-                }
-                else if (passwordtxt.equals("")){
+                } else if (passwordtxt.equals("")) {
                     Toast.makeText(getApplication(), "Password cannot be blank", Toast.LENGTH_LONG).show();
-                }else{
+                } else {
                     String URL = "http://52.91.100.201:8080/user";
                     new JSONTask().execute(URL);
                 }
@@ -102,6 +114,13 @@ public class RegisterActivity extends Activity {
                 registerInformation.put("name", emailtxt);
                 registerInformation.put("password", passwordtxt);
 
+                if (isLogin){
+                    registerInformation.put("type", "login");
+                }
+                else{
+                    registerInformation.put("type", "register");
+                }
+
                 OutputStream os = connection.getOutputStream();
                 os.write(registerInformation.toString().getBytes("UTF-8"));
                 os.flush();
@@ -109,6 +128,10 @@ public class RegisterActivity extends Activity {
                 StringBuilder sb = new StringBuilder();
                 int HttpResult = connection.getResponseCode();
                 if (HttpResult == HttpURLConnection.HTTP_OK) {
+                    if (isLogin){
+                        allowLogin = true;
+                    }
+
                     br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "utf-8"));
                     String line = null;
                     while ((line = br.readLine()) != null) {
@@ -118,10 +141,22 @@ public class RegisterActivity extends Activity {
                     br.close();
 
                     System.out.println("" + sb.toString());
-                    return "Successfully added";
+                    if (!isLogin){
+                        return "Successfully added";
+                    }
                 } else if (HttpResult ==HttpURLConnection.HTTP_FORBIDDEN){
-                    String msg = "User name already exists";
+                    String msg = "";
+                    if (isLogin){
+                       msg = "Incorrect password";
+                    }
+                    else
+                    {
+                        msg = "User name already exists";
+                    }
+
                     return msg;
+                } else if (HttpResult ==HttpURLConnection.HTTP_NOT_FOUND) {
+                    return "Incorrect user name";
                 }
             } catch (MalformedURLException ex) {
                 ex.printStackTrace();
@@ -145,13 +180,20 @@ public class RegisterActivity extends Activity {
             return null;
         }
 
+
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            Toast.makeText(getApplication(), result, Toast.LENGTH_LONG).show();
-            //todo if result is OK, then show profile page
+
+            if (isLogin && allowLogin) {
+                Intent profactivity = new Intent(RegisterActivity.this, ProfileActivity2.class);
+                startActivity(profactivity);
+            }
+            else{
+                Toast.makeText(getApplication(), result, Toast.LENGTH_LONG).show();
+            }
         }
 
-    }
+    }//end JSONTask class
 
 }//end RegisterActivity class
