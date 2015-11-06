@@ -227,6 +227,7 @@ public class LoginActivity extends Activity {
                 ex.printStackTrace();
             } catch (IOException ex) {
                 ex.printStackTrace();
+                return "No network connection";
             } catch (JSONException e) {
                 e.printStackTrace();
             } finally {

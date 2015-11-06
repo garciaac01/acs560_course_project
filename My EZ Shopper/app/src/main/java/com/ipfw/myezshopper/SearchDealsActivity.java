@@ -191,6 +191,7 @@ public class SearchDealsActivity extends Fragment {
                 ex.printStackTrace();
             }catch(IOException ex){
                 ex.printStackTrace();
+                return "No network connection";
             } catch (JSONException e) {
                 e.printStackTrace();
                 System.out.println(e.getMessage());

@@ -1,0 +1,27 @@
+--?Validate input in Post Deals. Currently adding "No information given"
+
+--Encrypt user name and password
+
+--Enable Change Password 
+
+--Limit number of login attempts before requiring password reset
+
+--Run server side script to remove expired deals
+
+--Enable "thumbing" up/down deals
+
+--Only allow users to "thumb" up/down a deal one time
+
+--Include shopping list for users
+
+--Check users shopping list for items against supported APIs (Best Buy, Amazon, etc.)
+
+--Cache users list on client side
+
+--Cache last search on client side
+
+--SearchDeals needs to use HTTP Response code
+
+--PostDeals needs to use HTTP Response code
+
+--Cache user name and password on client for offline use
