@@ -114,7 +114,9 @@ public class SearchDealsActivity extends Fragment {
                 //queryText = txtQuery.getText().toString();
 
                 if (inputText.equals("")){
-                    Toast.makeText(getActivity(), "Search field cannot be blank", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), "Query name cannot be blank", Toast.LENGTH_LONG).show();
+                }else if (queryText.equals("")){
+                    Toast.makeText(getActivity(), "Query value cannot be blank", Toast.LENGTH_LONG).show();
                 }
                 else{
                     StringTokenizer st = new StringTokenizer(inputText, " ");
