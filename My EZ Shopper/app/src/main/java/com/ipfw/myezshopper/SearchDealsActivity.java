@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 
 import android.support.v4.app.Fragment;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,10 +42,9 @@ import java.util.StringTokenizer;
 public class SearchDealsActivity extends Fragment {
 
     EditText txtName;
-    EditText productText;
     Spinner categorySpinner;
     Button searchButton, searchAllButton;
-    private TextView tvResponse;
+    private TextView tvResponse, productText;
     SharedPreferences pref;
     String token, TAG = "SearchDealsActivity", queryText;
 
@@ -60,7 +60,7 @@ public class SearchDealsActivity extends Fragment {
 
         txtName = (EditText) v.findViewById(R.id.txtName);
         categorySpinner = (Spinner) v.findViewById(R.id.category_spinner);
-        productText = (EditText) v.findViewById(R.id.product);
+        productText = (TextView) v.findViewById(R.id.product);
         searchButton = (Button) v.findViewById(R.id.search_button);
         searchAllButton = (Button) v.findViewById(R.id.search_all_button);
         tvResponse = (TextView) v.findViewById(R.id.database_response);
@@ -174,16 +174,26 @@ public class SearchDealsActivity extends Fragment {
                 JSONArray parentArray = new JSONArray(finalJSON);
                 String builtString = "";
 
+                //count the products that are returned
+                int hitsCounter = 0;
+
                 if (parentArray.length() == 0){
                     builtString = "No matches";
                 }
                 else{
                     for (int i = 0; i < parentArray.length(); i++)
                     {
+                        if(hitsCounter == 0)
+                        {
+                            builtString += "<h4><b><u>User Submitted Deals</u>:</b></h4>";
+                        }
+
+                        hitsCounter++;
+
                         JSONObject obj = parentArray.getJSONObject(i);
-                        builtString += obj.getString("name") + " " + obj.getDouble("price") + " " +
-                                obj.getString("storeName") + " " + obj.getString("location") + " " +
-                                obj.get("description") + " " + obj.get("category") + "\n";
+                        builtString += "<b>" + hitsCounter + ". " + obj.getString("name") + "<br>Price:</b> $" + obj.getDouble("price")
+                                + "<br><b>Store:</b> " + obj.getString("storeName") + "<br><b>Location:</b> " + obj.getString("location")
+                                + "<br><b>Details:</b> " + obj.get("description") + "<br><b>Category:</b> " + obj.get("category") + "<br><br>";
                     }
                 }
                 return builtString;
@@ -213,7 +223,7 @@ public class SearchDealsActivity extends Fragment {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            productText.setText(result.toString());
+            productText.setText(Html.fromHtml(result.toString()));
         }
     }
 
