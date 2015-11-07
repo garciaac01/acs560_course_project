@@ -3,81 +3,92 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:padding="15dp">
+              android:padding="15dp"
+              android:background="#303030">
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/prod_name"/>
+        android:text="@string/prod_name"
+        android:textColor="#fafafa"/>
     <EditText
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginLeft="2dp"
         android:layout_marginRight="2dp"
-        android:id="@+id/productName"/>
+        android:id="@+id/productName"
+        android:textColor="#fafafa" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/price"/>
+        android:text="@string/price"
+        android:textColor="#fafafa"/>
     <EditText
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginLeft="2dp"
         android:layout_marginRight="2dp"
-        android:id="@+id/productPrice"/>
+        android:id="@+id/productPrice"
+        android:textColor="#fafafa"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/store_name"/>
+        android:text="@string/store_name"
+        android:textColor="#fafafa"/>
     <EditText
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginLeft="2dp"
         android:layout_marginRight="2dp"
-        android:id="@+id/storeName"/>
+        android:id="@+id/storeName"
+        android:textColor="#fafafa"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/location"/>
+        android:text="@string/location"
+        android:textColor="#fafafa"/>
     <EditText
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginLeft="2dp"
         android:layout_marginRight="2dp"
-        android:id="@+id/locationName"/>
+        android:id="@+id/locationName"
+        android:textColor="#fafafa"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/description"/>
+        android:text="@string/description"
+        android:textColor="#fafafa"/>
     <EditText
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginLeft="2dp"
         android:layout_marginRight="2dp"
-        android:id="@+id/productDescription"/>
+        android:id="@+id/productDescription"
+        android:textColor="#fafafa"/>
+
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/category"/>
+        android:text="@string/category"
+        android:textColor="#fafafa"/>
     <EditText
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginLeft="2dp"
         android:layout_marginRight="2dp"
-        android:id="@+id/productCategory"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/expiration"/>
+        android:id="@+id/productCategory"
+        android:textColor="#fafafa"/>
+
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -85,14 +96,23 @@
         android:layout_marginLeft="2dp"
         android:layout_marginRight="2dp"
         android:id="@+id/expirationDate"
-        android:hint="@string/expiration_hint"/>
+        android:hint="@string/expiration_hint"
+        android:background="@drawable/btn_back"
+        android:textColor="#ffffff"
+        android:textColorHint="#ffffff"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:id="@+id/submit_deal_button"
-        android:text="@string/submit_deal_button_text"/>
+        android:text="@string/submit_deal_button_text"
+        android:background="@drawable/btn_blue_back"
+        android:textColor="#ffffff"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"/>
 
 
 </LinearLayout>

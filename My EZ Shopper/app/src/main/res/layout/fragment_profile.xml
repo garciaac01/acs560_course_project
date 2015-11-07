@@ -4,18 +4,26 @@
              android:layout_height="match_parent"
              tools:context="com.ipfw.myezshopper.ProfileFragment"
               android:gravity="center"
-             android:orientation="vertical">
+             android:orientation="vertical"
+            android:background="#303030">
 
     <!-- TODO: Update blank fragment layout -->
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/go_to_new_deal_fragment"
-        android:id="@+id/go_to_new_deal_fragment"/>
+        android:id="@+id/go_to_new_deal_fragment"
+        android:background="@drawable/btn_back"
+        android:textColor="#ffffff"
+        android:layout_marginBottom="12dp"/>
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/go_to_search_fragment"
-        android:id="@+id/go_to_search_fragment"/>
+        android:id="@+id/go_to_search_fragment"
+        android:background="@drawable/btn_blue_back"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
+        android:textColor="#ffffff"/>
 
 </LinearLayout>
