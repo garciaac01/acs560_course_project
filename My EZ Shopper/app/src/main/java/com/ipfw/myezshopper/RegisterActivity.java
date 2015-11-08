@@ -187,8 +187,10 @@ public class RegisterActivity extends Activity {
             super.onPostExecute(result);
 
             if (isLogin && allowLogin) {
-                Intent profactivity = new Intent(RegisterActivity.this, ProfileActivity2.class);
-                startActivity(profactivity);
+                //Intent profactivity = new Intent(RegisterActivity.this, ProfileActivity2.class);
+                //startActivity(profactivity);
+                Intent i = ProfileActivity2.newIntent(RegisterActivity.this, emailtxt);
+                startActivity(i);
             }
             else{
                 Toast.makeText(getApplication(), result, Toast.LENGTH_LONG).show();

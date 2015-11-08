@@ -251,8 +251,10 @@ public class LoginActivity extends Activity {
             super.onPostExecute(result);
 
             if (allowLogin){
-                Intent profactivity = new Intent(LoginActivity.this,ProfileActivity2.class);
-                startActivity(profactivity);
+                //Intent profactivity = new Intent(LoginActivity.this,ProfileActivity2.class);
+                //startActivity(profactivity);
+                Intent i = ProfileActivity2.newIntent(LoginActivity.this, emailtxt);
+                startActivity(i);
             }else{
                 Toast.makeText(getApplication(), result, Toast.LENGTH_LONG).show();
             }

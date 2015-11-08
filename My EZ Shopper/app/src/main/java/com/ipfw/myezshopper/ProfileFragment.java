@@ -5,10 +5,12 @@ import android.app.FragmentTransaction;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 
 /**
@@ -23,6 +25,8 @@ public class ProfileFragment extends Fragment {
 
     private Button goToSearchFragment;
     private Button goToAddDealFragment;
+    private TextView userEmailTextView;
+    String user_email;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -35,6 +39,13 @@ public class ProfileFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_profile, container, false);
         // Inflate the layout for this fragment
 
+        userEmailTextView = (TextView) v.findViewById(R.id.welcome_text);
+        user_email = getActivity().getIntent().getStringExtra(ProfileActivity2.EXTRA_USER_EMAIL);
+
+        if(user_email != null)
+        {
+            userEmailTextView.setText(Html.fromHtml("<H1>Welcome, " + user_email.toString() + "!</H1>"));
+        }
         goToAddDealFragment = (Button) v.findViewById(R.id.go_to_new_deal_fragment);
         goToAddDealFragment.setOnClickListener(new View.OnClickListener(){
             @Override
