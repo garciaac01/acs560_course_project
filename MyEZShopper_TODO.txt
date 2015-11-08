@@ -16,7 +16,7 @@
 
 --Check users shopping list for items against supported APIs (Best Buy, Amazon, etc.)
 
---Cache users list on client side
+--users list only on client side
 
 --Cache last search on client side
 
@@ -26,6 +26,7 @@
 
 --Cache user name and password on client for offline use
 
+--SORT deals properly on serve side
 --SearchDeals by Category...should include drop down list
 
---Post Deal Location as GeoLocation
+--Post Deal Location as Online, All Stores, Specific store (use geolocation)
