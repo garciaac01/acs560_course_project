@@ -25,3 +25,7 @@
 --PostDeals needs to use HTTP Response code
 
 --Cache user name and password on client for offline use
+
+--SearchDeals by Category...should include drop down list
+
+--Post Deal Location as GeoLocation

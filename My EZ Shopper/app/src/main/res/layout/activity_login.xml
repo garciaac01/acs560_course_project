@@ -70,16 +70,6 @@
             android:textColor="#ffffff"
             android:textAlignment="center"
             android:text="Register"/>
-        <Button
-            android:layout_width="fill_parent"
-            android:layout_weight="1"
-            android:layout_height="80dp"
-            android:id="@+id/forgotpass"
-            android:layout_marginLeft="10dp"
-            android:background="@drawable/btn_red_back"
-            android:textColor="#ffffff"
-            android:textAlignment="center"
-            android:text="Forgot Password"/>
 
 
     </LinearLayout>
