@@ -191,9 +191,11 @@ public class SearchDealsActivity extends Fragment {
                         hitsCounter++;
 
                         JSONObject obj = parentArray.getJSONObject(i);
+
                         builtString += "<b>" + hitsCounter + ". " + obj.getString("name") + "<br>Price:</b> $" + obj.getDouble("price")
                                 + "<br><b>Store:</b> " + obj.getString("storeName") + "<br><b>Location:</b> " + obj.getString("location")
-                                + "<br><b>Details:</b> " + obj.get("description") + "<br><b>Category:</b> " + obj.get("category") + "<br><br>";
+                                + "<br><b>Details:</b> " + obj.get("description") + "<br><b>Category:</b> " + obj.get("category")
+                                + "<br><b>Expiration Date:</b> " + obj.get("expirationDate") + "<br><br>";
                     }
                 }
                 return builtString;
