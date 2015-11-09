@@ -225,7 +225,12 @@ public class SearchDealsActivity extends Fragment {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            productText.setText(Html.fromHtml(result.toString()));
+
+            if (result.equals("No network connection")){
+                Toast.makeText(getActivity(), result, Toast.LENGTH_LONG).show();
+            }else{
+                productText.setText(Html.fromHtml(result.toString()));
+            }
         }
     }
 

@@ -20,13 +20,9 @@
 
 --Cache last search on client side
 
---SearchDeals needs to use HTTP Response code
-
---PostDeals needs to use HTTP Response code
-
 --Cache user name and password on client for offline use
 
---SORT deals properly on serve side
+--SORT deals on server side
 --SearchDeals by Category...should include drop down list
 
 --Post Deal Location as Online, All Stores, Specific store (use geolocation)
