@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -189,9 +190,10 @@ public class DealFragment extends Fragment implements View.OnClickListener{
                     br.close();
 
                     System.out.println("" + sb.toString());
-
+                    return "Deal successfully added";
                 } else {
                     System.out.println(connection.getResponseMessage());
+                    return ("Error adding deal");
                 }
             }
             catch(MalformedURLException ex){
@@ -217,6 +219,12 @@ public class DealFragment extends Fragment implements View.OnClickListener{
             }
 
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            Toast.makeText(getActivity(), result, Toast.LENGTH_LONG).show();
         }
 
     }
