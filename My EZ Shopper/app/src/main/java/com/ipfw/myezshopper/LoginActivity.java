@@ -101,7 +101,6 @@ public class LoginActivity extends Activity {
                 connection.setRequestProperty("Accept", "application/json");
                 connection.setRequestMethod("POST");
 
-
                 JSONObject loginInformation = new JSONObject();
 
                 loginInformation.put("name", emailtxt);
@@ -112,19 +111,19 @@ public class LoginActivity extends Activity {
                 os.write(loginInformation.toString().getBytes("UTF-8"));
                 os.flush();
 
-                StringBuilder sb = new StringBuilder();
+                //todo pass memberID to ProfileAcitivty2
+                StringBuilder memberID = new StringBuilder();
                 int HttpResult = connection.getResponseCode();
                 if (HttpResult == HttpURLConnection.HTTP_OK) {
                     allowLogin = true;
                     br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "utf-8"));
                     String line = null;
                     while ((line = br.readLine()) != null) {
-                        sb.append(line + "\n");
+                        memberID.append(line + "\n");
                     }
 
                     br.close();
 
-                    System.out.println("" + sb.toString());
                     return "Successfully logged in!";
                 } else if (HttpResult ==HttpURLConnection.HTTP_FORBIDDEN){
                    return "Incorrect password";

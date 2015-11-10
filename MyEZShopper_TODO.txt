@@ -26,3 +26,5 @@
 --SearchDeals by Category...should include drop down list
 
 --Post Deal Location as Online, All Stores, Specific store (use geolocation)
+
+--Allow user to delete themselves from database
