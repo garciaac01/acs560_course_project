@@ -30,6 +30,7 @@ public class ProfileFragment extends Fragment {
 
     private Button goToSearchFragment;
     private Button goToAddDealFragment;
+    private Button goToListFragment;
     private TextView userEmailTextView;
     private String user_email, member_id;
     private List<String> shoppingList;
@@ -57,10 +58,9 @@ public class ProfileFragment extends Fragment {
             userEmailTextView.setText(Html.fromHtml("<H1>Welcome, " + user_email.toString() + "!</H1>"));
         }
         goToAddDealFragment = (Button) v.findViewById(R.id.go_to_new_deal_fragment);
-        goToAddDealFragment.setOnClickListener(new View.OnClickListener(){
+        goToAddDealFragment.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 DealFragment newDeal = new DealFragment();
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, newDeal).addToBackStack(null).commit();
             }
@@ -75,6 +75,17 @@ public class ProfileFragment extends Fragment {
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, newSearch).addToBackStack(null).commit();
             }
         });
+
+        goToListFragment = (Button) v.findViewById(R.id.go_to_new_list_fragment);
+        goToListFragment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ListFragment newList = new ListFragment();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, newList).addToBackStack(null).commit();
+            }
+        });
+
+
         return v;
     }
 

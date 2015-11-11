@@ -18,9 +18,11 @@
     <string name="category">Category</string>
     <string name="title_activity_profile2">ProfileActivity2</string>
     <string name="submit_deal_button_text">Submit Deal</string>
+    <string name="submit_list_button_text">Submit List Item</string>
     <string name="date_picker_title">Select Expiration Date</string>
     <string name="expiration_hint">Set Expiration Date</string>
     <string name="go_to_new_deal_fragment">+ Deal</string>
+    <string name="go_to_new_list_fragment">+ List</string>
     <string name="go_to_search_fragment">Search Products</string>
     <string name="invalid_price">Please Enter a Valid Price</string>
     <string name="spinner_category_title">Search By...</string>

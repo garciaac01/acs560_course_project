@@ -46,7 +46,6 @@ public class ProfileActivity2 extends FragmentActivity {
 
 
         //get user's list from database
-        //todo modify id to use memberID from login page
         String URL = "http://52.91.100.201:8080/user/" + member_id;
 
         new JSONTask().execute(URL);

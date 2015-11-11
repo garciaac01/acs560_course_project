@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:padding="15dp"
+              android:background="#303030">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/prod_name"
+        android:textColor="#fafafa"/>
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
+        android:id="@+id/productName"
+        android:textColor="#fafafa" />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:id="@+id/submit_list_button"
+        android:text="@string/submit_list_button_text"
+        android:background="@drawable/btn_blue_back"
+        android:textColor="#ffffff"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"/>
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="80dp"
+        android:scrollbars="vertical"
+        android:layout_gravity="center"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp"
+        android:layout_weight="0.65"
+        android:fillViewport="true">
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/list"
+            android:layout_weight="0.65"
+            android:scrollbars="vertical"
+            android:textColor="#fafafa"/>
+    </ScrollView>
+
+</LinearLayout>
