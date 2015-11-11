@@ -36,6 +36,7 @@ public class LoginActivity extends Activity {
     Dialog reset;
     ServerRequest sr;
     boolean allowLogin;
+    StringBuilder memberID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,7 +113,7 @@ public class LoginActivity extends Activity {
                 os.flush();
 
                 //todo pass memberID to ProfileAcitivty2
-                StringBuilder memberID = new StringBuilder();
+                memberID = new StringBuilder();
                 int HttpResult = connection.getResponseCode();
                 if (HttpResult == HttpURLConnection.HTTP_OK) {
                     allowLogin = true;
@@ -161,7 +162,7 @@ public class LoginActivity extends Activity {
             if (allowLogin){
                 //Intent profactivity = new Intent(LoginActivity.this,ProfileActivity2.class);
                 //startActivity(profactivity);
-                Intent i = ProfileActivity2.newIntent(LoginActivity.this, emailtxt);
+                Intent i = ProfileActivity2.newIntent(LoginActivity.this, emailtxt, memberID.toString());
                 startActivity(i);
             }else{
                 Toast.makeText(getApplication(), result, Toast.LENGTH_LONG).show();

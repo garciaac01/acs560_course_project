@@ -30,7 +30,8 @@ import java.net.URL;
 
 public class ProfileActivity2 extends FragmentActivity {
     public static final String EXTRA_USER_EMAIL = "com.ipfw.myezshopper.user_email";
-    private String user_email;
+    public static final String EXTRA_MEMBER_ID = "com.ipfw.myezshopper.member_id";
+    private String user_email, member_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +39,9 @@ public class ProfileActivity2 extends FragmentActivity {
         setContentView(R.layout.activity_profile2);
 
         user_email = getIntent().getStringExtra(EXTRA_USER_EMAIL);
+        member_id = getIntent().getStringExtra(EXTRA_MEMBER_ID);
         Log.i("Profile Activity", user_email);
+        Log.i("Profile Activity", "Member ID is: " + member_id);
 
         FragmentManager fm = getSupportFragmentManager();
         Fragment fragment = fm.findFragmentById(R.id.fragment_container);
@@ -50,16 +53,17 @@ public class ProfileActivity2 extends FragmentActivity {
 
         //get user's list from database
         //todo modify id to use memberID from login page
-        String URL = "http://52.91.100.201:8080/user/56416f330e1e94f3c79bf225";
+        String URL = "http://52.91.100.201:8080/user/" + member_id;
 
         new JSONTask().execute(URL);
 
     }
 
-    public static Intent newIntent(Context packageContext, String email)
+    public static Intent newIntent(Context packageContext, String email, String memberID)
     {
         Intent i = new Intent(packageContext, ProfileActivity2.class);
         i.putExtra(EXTRA_USER_EMAIL, email);
+        i.putExtra(EXTRA_MEMBER_ID, memberID);
         return i;
     }
 

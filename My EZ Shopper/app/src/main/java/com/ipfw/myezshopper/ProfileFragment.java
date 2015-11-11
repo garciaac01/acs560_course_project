@@ -26,7 +26,7 @@ public class ProfileFragment extends Fragment {
     private Button goToSearchFragment;
     private Button goToAddDealFragment;
     private TextView userEmailTextView;
-    String user_email;
+    String user_email, member_id;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -41,6 +41,7 @@ public class ProfileFragment extends Fragment {
 
         userEmailTextView = (TextView) v.findViewById(R.id.welcome_text);
         user_email = getActivity().getIntent().getStringExtra(ProfileActivity2.EXTRA_USER_EMAIL);
+        member_id = getActivity().getIntent().getStringExtra(ProfileActivity2.EXTRA_MEMBER_ID);
 
         if(user_email != null)
         {
