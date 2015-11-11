@@ -161,6 +161,14 @@ public class ListFragment extends Fragment implements View.OnClickListener{
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
             Toast.makeText(getActivity(), result, Toast.LENGTH_LONG).show();
+
+            //loop through local list and display
+            String builtString = "";
+            for (String str : shoppingList){
+                builtString += str + ",";
+            }
+
+            txtList.setText(builtString);
         }
 
     }//end JSONTaskPost class

@@ -12,11 +12,9 @@
 
 --Only allow users to "thumb" up/down a deal one time
 
---Include shopping list for users
-
 --Check users shopping list for items against supported APIs (Best Buy, Amazon, etc.)
 
---users list only on client side
+--cache users list on client
 
 --Cache last search on client side
 
@@ -28,3 +26,7 @@
 --Post Deal Location as Online, All Stores, Specific store (use geolocation)
 
 --Allow user to delete themselves from database
+
+--need method for displaying list items in ListFragment
+
+LOTS OF REFACTORING/CLEANING UP CODE!!!

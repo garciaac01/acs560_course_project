@@ -32,6 +32,7 @@ public class ProfileActivity2 extends FragmentActivity {
     public static final String EXTRA_USER_EMAIL = "com.ipfw.myezshopper.user_email";
     public static final String EXTRA_MEMBER_ID = "com.ipfw.myezshopper.member_id";
     private String user_email, member_id;
+    //todo remove shoppingListLength
     public static int shoppingListLength;  //may want to move this to a newIntent method in ProfileFragment
 
     @Override
@@ -44,11 +45,11 @@ public class ProfileActivity2 extends FragmentActivity {
         Log.i("Profile Activity", user_email);
         Log.i("Profile Activity", "Member ID is: " + member_id);
 
-
-        //get user's list from database
-        String URL = "http://52.91.100.201:8080/user/" + member_id;
-
-        new JSONTask().execute(URL);
+//todo remove the database access
+//        //get user's list from database
+//        String URL = "http://52.91.100.201:8080/user/" + member_id;
+//
+//        new JSONTask().execute(URL);
 
         FragmentManager fm = getSupportFragmentManager();
         Fragment fragment = fm.findFragmentById(R.id.fragment_container);
@@ -69,78 +70,78 @@ public class ProfileActivity2 extends FragmentActivity {
         return i;
     }
 
-    public class JSONTask extends AsyncTask<String,String, String> {
-        @Override
-        protected String doInBackground(String... params) {
-
-            HttpURLConnection connection = null;
-            BufferedReader reader = null;
-            try{
-                URL url = new URL(params[0]);
-                connection = (HttpURLConnection)url.openConnection();
-
-                InputStream stream = connection.getInputStream();
-
-                reader = new BufferedReader(new InputStreamReader(stream));
-                StringBuffer buffer = new StringBuffer();
-
-                String line;
-
-                while ((line = reader.readLine()) != null) {
-                    buffer.append(line);
-                }
-
-                String finalJSON = buffer.toString();
-                JSONObject jsonResponse = new JSONObject(new String(finalJSON));
-                JSONArray items = jsonResponse.getJSONArray("list");
-                String builtString = "";
-
-                shoppingListLength = items.length();
-
-                if (items.length() == 0){
-                    builtString = "No list items";
-                }
-                else{
-                    for (int i = 0; i < items.length(); i++){
-                        builtString += items.getString(i) + ",";
-                    }
-                }
-                return builtString;
-            }catch(MalformedURLException ex){
-                ex.printStackTrace();
-            }catch(IOException ex){
-                ex.printStackTrace();
-                return "No network connection";
-            } catch (JSONException e) {
-                e.printStackTrace();
-                System.out.println(e.getMessage());
-            }finally{
-                if (connection != null) {
-                    connection.disconnect();
-                }
-                try {
-                    if (reader != null){
-                        reader.close();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-
-            if (result.equals("No network connection")){
-                Toast.makeText(getApplication(), result, Toast.LENGTH_LONG).show();
-            }else{
-                Toast.makeText(getApplication(), result, Toast.LENGTH_LONG).show();
-            }
-        }
-
-    }
+//    public class JSONTask extends AsyncTask<String,String, String> {
+//        @Override
+//        protected String doInBackground(String... params) {
+//
+//            HttpURLConnection connection = null;
+//            BufferedReader reader = null;
+//            try{
+//                URL url = new URL(params[0]);
+//                connection = (HttpURLConnection)url.openConnection();
+//
+//                InputStream stream = connection.getInputStream();
+//
+//                reader = new BufferedReader(new InputStreamReader(stream));
+//                StringBuffer buffer = new StringBuffer();
+//
+//                String line;
+//
+//                while ((line = reader.readLine()) != null) {
+//                    buffer.append(line);
+//                }
+//
+//                String finalJSON = buffer.toString();
+//                JSONObject jsonResponse = new JSONObject(new String(finalJSON));
+//                JSONArray items = jsonResponse.getJSONArray("list");
+//                String builtString = "";
+//
+//                shoppingListLength = items.length();
+//
+//                if (items.length() == 0){
+//                    builtString = "No list items";
+//                }
+//                else{
+//                    for (int i = 0; i < items.length(); i++){
+//                        builtString += items.getString(i) + ",";
+//                    }
+//                }
+//                return builtString;
+//            }catch(MalformedURLException ex){
+//                ex.printStackTrace();
+//            }catch(IOException ex){
+//                ex.printStackTrace();
+//                return "No network connection";
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//                System.out.println(e.getMessage());
+//            }finally{
+//                if (connection != null) {
+//                    connection.disconnect();
+//                }
+//                try {
+//                    if (reader != null){
+//                        reader.close();
+//                    }
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//            return null;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(String result) {
+//            super.onPostExecute(result);
+//
+//            if (result.equals("No network connection")){
+//                Toast.makeText(getApplication(), result, Toast.LENGTH_LONG).show();
+//            }else{
+//                Toast.makeText(getApplication(), result, Toast.LENGTH_LONG).show();
+//            }
+//        }
+//
+//    }
 
 
     public static int getShoppingListLength()
