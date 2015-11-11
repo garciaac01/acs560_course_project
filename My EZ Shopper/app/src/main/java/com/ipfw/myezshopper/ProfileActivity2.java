@@ -32,6 +32,7 @@ public class ProfileActivity2 extends FragmentActivity {
     public static final String EXTRA_USER_EMAIL = "com.ipfw.myezshopper.user_email";
     public static final String EXTRA_MEMBER_ID = "com.ipfw.myezshopper.member_id";
     private String user_email, member_id;
+    public static int shoppingListLength;  //may want to move this to a newIntent method in ProfileFragment
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +44,13 @@ public class ProfileActivity2 extends FragmentActivity {
         Log.i("Profile Activity", user_email);
         Log.i("Profile Activity", "Member ID is: " + member_id);
 
+
+        //get user's list from database
+        //todo modify id to use memberID from login page
+        String URL = "http://52.91.100.201:8080/user/" + member_id;
+
+        new JSONTask().execute(URL);
+
         FragmentManager fm = getSupportFragmentManager();
         Fragment fragment = fm.findFragmentById(R.id.fragment_container);
 
@@ -51,11 +59,6 @@ public class ProfileActivity2 extends FragmentActivity {
             fm.beginTransaction().add(R.id.fragment_container, fragment).commit();
         }
 
-        //get user's list from database
-        //todo modify id to use memberID from login page
-        String URL = "http://52.91.100.201:8080/user/" + member_id;
-
-        new JSONTask().execute(URL);
 
     }
 
@@ -92,6 +95,8 @@ public class ProfileActivity2 extends FragmentActivity {
                 JSONObject jsonResponse = new JSONObject(new String(finalJSON));
                 JSONArray items = jsonResponse.getJSONArray("list");
                 String builtString = "";
+
+                shoppingListLength = items.length();
 
                 if (items.length() == 0){
                     builtString = "No list items";
@@ -135,6 +140,13 @@ public class ProfileActivity2 extends FragmentActivity {
                 Toast.makeText(getApplication(), result, Toast.LENGTH_LONG).show();
             }
         }
+
+    }
+
+
+    public static int getShoppingListLength()
+    {
+        return shoppingListLength;
     }
 
 }

@@ -6,11 +6,16 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -26,7 +31,8 @@ public class ProfileFragment extends Fragment {
     private Button goToSearchFragment;
     private Button goToAddDealFragment;
     private TextView userEmailTextView;
-    String user_email, member_id;
+    private String user_email, member_id;
+    private List<String> shoppingList;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,6 +48,9 @@ public class ProfileFragment extends Fragment {
         userEmailTextView = (TextView) v.findViewById(R.id.welcome_text);
         user_email = getActivity().getIntent().getStringExtra(ProfileActivity2.EXTRA_USER_EMAIL);
         member_id = getActivity().getIntent().getStringExtra(ProfileActivity2.EXTRA_MEMBER_ID);
+        shoppingList = new ArrayList<>();
+
+        Log.i("Profile Fragment", String.valueOf(ProfileActivity2.getShoppingListLength()));
 
         if(user_email != null)
         {
