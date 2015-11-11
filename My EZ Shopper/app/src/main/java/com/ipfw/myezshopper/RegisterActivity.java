@@ -38,6 +38,7 @@ public class RegisterActivity extends Activity {
     String emailtxt,passwordtxt;
     boolean isLogin = false;
     boolean allowLogin;
+    StringBuilder memberID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,7 +126,7 @@ public class RegisterActivity extends Activity {
                 os.write(registerInformation.toString().getBytes("UTF-8"));
                 os.flush();
 
-                StringBuilder sb = new StringBuilder();
+                memberID = new StringBuilder();
                 int HttpResult = connection.getResponseCode();
                 if (HttpResult == HttpURLConnection.HTTP_OK) {
                     if (isLogin){
@@ -135,12 +136,12 @@ public class RegisterActivity extends Activity {
                     br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "utf-8"));
                     String line = null;
                     while ((line = br.readLine()) != null) {
-                        sb.append(line + "\n");
+                        memberID.append(line + "\n");
                     }
 
                     br.close();
 
-                    System.out.println("" + sb.toString());
+                    System.out.println("" + memberID.toString());
                     if (!isLogin){
                         return "Successfully added";
                     }
