@@ -33,7 +33,6 @@ public class ProfileActivity extends FragmentActivity {
     public static final String EXTRA_MEMBER_ID = "com.ipfw.myezshopper.member_id";
     private String user_email, member_id;
     //todo remove shoppingListLength
-    public static int shoppingListLength;  //may want to move this to a newIntent method in ProfileFragment
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,10 +141,6 @@ public class ProfileActivity extends FragmentActivity {
 //    }
 
 
-    public static int getShoppingListLength()
-    {
-        return shoppingListLength;
-    }
 
 }
 

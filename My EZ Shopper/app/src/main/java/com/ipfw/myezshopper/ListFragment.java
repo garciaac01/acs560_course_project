@@ -6,6 +6,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +19,7 @@ import android.widget.Toast;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,14 +30,13 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by garci_000 on 10/31/2015.
  */
-public class ListFragment extends Fragment implements View.OnClickListener{
-    private EditText productName;
-    private Button btnSubmitListItem;
-    private TextView txtList;
+public class ListFragment extends Fragment{ // implements View.OnClickListener{
+    private RecyclerView mShoppingRecyclerView;
     String product;
     public static int itemListLength;  //may want to move this to a newIntent method in ProfileFragment
     private ArrayList<String> shoppingList = new ArrayList<String>();
@@ -50,14 +52,14 @@ public class ListFragment extends Fragment implements View.OnClickListener{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle onSavedInstanceState){
 
-
-        View v = inflater.inflate(R.layout.fragment_new_list, container, false);
         member_id = getActivity().getIntent().getStringExtra(ProfileActivity.EXTRA_MEMBER_ID);
-        productName = (EditText) v.findViewById(R.id.productName);
-        btnSubmitListItem = (Button) v.findViewById(R.id.submit_list_button);
-        txtList = (TextView) v.findViewById(R.id.list);
 
-        btnSubmitListItem.setOnClickListener(this);
+        View v = inflater.inflate(R.layout.fragment_shopping_list, container, false);
+
+        mShoppingRecyclerView = (RecyclerView) v.findViewById(R.id.shopping_recycler_view);
+        mShoppingRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        //btnSubmitListItem.setOnClickListener(this);   Should bring this back later as a floating button
 
         //Access users shopping list on database.
         //Store items locally
@@ -70,7 +72,47 @@ public class ListFragment extends Fragment implements View.OnClickListener{
         return v;
     }
 
-    @Override
+    private class ShoppingListHolder extends RecyclerView.ViewHolder{
+        public TextView mShoppingListProduct;
+
+        public ShoppingListHolder(View itemView)
+        {
+            super(itemView);
+
+            mShoppingListProduct = (TextView) itemView;
+        }
+    }
+
+    private class ShoppingAdapter extends RecyclerView.Adapter<ShoppingListHolder>{
+        private List<String> mShoppingItems;
+
+        public ShoppingAdapter(List<String> shoppingItems)
+        {
+            mShoppingItems = shoppingItems;
+        }
+
+        @Override
+        public ShoppingListHolder onCreateViewHolder(ViewGroup parent, int viewType)
+        {
+            LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
+            View view = layoutInflater.inflate(android.R.layout.simple_list_item_1, parent, false);
+            return new ShoppingListHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(ShoppingListHolder holder, int position)
+        {
+
+        }
+
+        @Override
+        public int getItemCount()
+        {
+            return mShoppingItems.size();
+        }
+    }
+
+   /* @Override
     public void onClick(View v){
         product = productName.getText().toString();
 
@@ -167,7 +209,7 @@ public class ListFragment extends Fragment implements View.OnClickListener{
             txtList.setText(builtString);
         }
 
-    }//end JSONTaskPost class
+    }//end JSONTaskPost class*/
 
     public class JSONTaskGet extends AsyncTask<String,String, String> {
         @Override
@@ -235,12 +277,12 @@ public class ListFragment extends Fragment implements View.OnClickListener{
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
-            if (result.equals("No network connection")){
+          /*  if (result.equals("No network connection")){
                 Toast.makeText(getActivity(), result, Toast.LENGTH_LONG).show();
             }else{
                 //display to textview
                 txtList.setText(result);
-            }
+            }*/
         }
 
     }//end JSONTaskGet class

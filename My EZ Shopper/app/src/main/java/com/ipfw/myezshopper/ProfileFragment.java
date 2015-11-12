@@ -3,6 +3,7 @@ package com.ipfw.myezshopper;
 import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Html;
@@ -34,7 +35,6 @@ public class ProfileFragment extends Fragment {
     private Button goToDeleteFragment;
     private TextView userEmailTextView;
     private String user_email, member_id;
-    private List<String> shoppingList;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,9 +50,6 @@ public class ProfileFragment extends Fragment {
         userEmailTextView = (TextView) v.findViewById(R.id.welcome_text);
         user_email = getActivity().getIntent().getStringExtra(ProfileActivity.EXTRA_USER_EMAIL);
         member_id = getActivity().getIntent().getStringExtra(ProfileActivity.EXTRA_MEMBER_ID);
-        shoppingList = new ArrayList<>();
-
-        Log.i("Profile Fragment", String.valueOf(ProfileActivity.getShoppingListLength()));
 
         if(user_email != null)
         {
@@ -68,10 +65,9 @@ public class ProfileFragment extends Fragment {
         });
 
         goToSearchFragment = (Button) v.findViewById(R.id.go_to_search_fragment);
-        goToSearchFragment.setOnClickListener(new View.OnClickListener(){
+        goToSearchFragment.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 SearchDealsActivity newSearch = new SearchDealsActivity();
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, newSearch).addToBackStack(null).commit();
             }
