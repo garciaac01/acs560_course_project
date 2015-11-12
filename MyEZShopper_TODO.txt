@@ -21,6 +21,7 @@
 --Cache user name and password on client for offline use
 
 --SORT deals on server side
+
 --SearchDeals by Category...should include drop down list
 
 --Post Deal Location as Online, All Stores, Specific store (use geolocation)
@@ -29,4 +30,4 @@
 
 --need method for displaying list items in ListFragment
 
-LOTS OF REFACTORING/CLEANING UP CODE!!!
+--Enable email activiation????

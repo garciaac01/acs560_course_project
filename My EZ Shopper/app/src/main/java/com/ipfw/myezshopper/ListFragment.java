@@ -38,6 +38,7 @@ public class ListFragment extends Fragment implements View.OnClickListener{
     String product;
     public static int itemListLength;  //may want to move this to a newIntent method in ProfileFragment
     private ArrayList<String> shoppingList = new ArrayList<String>();
+    private String member_id;
 
 
     @Override
@@ -51,20 +52,18 @@ public class ListFragment extends Fragment implements View.OnClickListener{
 
 
         View v = inflater.inflate(R.layout.fragment_new_list, container, false);
-
+        member_id = getActivity().getIntent().getStringExtra(ProfileActivity.EXTRA_MEMBER_ID);
         productName = (EditText) v.findViewById(R.id.productName);
         btnSubmitListItem = (Button) v.findViewById(R.id.submit_list_button);
         txtList = (TextView) v.findViewById(R.id.list);
 
         btnSubmitListItem.setOnClickListener(this);
 
-
         //Access users shopping list on database.
         //Store items locally
         //Display items in list textView
         //get user's list from database
-        //todo change to member id
-        String URL = "http://52.91.100.201:8080/user/5642c18331ea22d9cd83cc7a";
+        String URL = "http://52.91.100.201:8080/user/" + member_id;
 
         new JSONTaskGet().execute(URL);
 
@@ -82,8 +81,8 @@ public class ListFragment extends Fragment implements View.OnClickListener{
             //todo save new product locally
             //add item to local list
             shoppingList.add(product);
-            //todo need memberid for API call
-            new JSONTaskPost().execute("http://52.91.100.201:8080/user/5642c18331ea22d9cd83cc7a");
+
+            new JSONTaskPost().execute("http://52.91.100.201:8080/user/" + member_id);
         }
     }
 
@@ -105,9 +104,6 @@ public class ListFragment extends Fragment implements View.OnClickListener{
 
                 JSONObject userInformation = new JSONObject();
 
-                userInformation.put("name", "andy");
-                userInformation.put("password", "garcia");
-                userInformation.put("loginAttempts", 0);
                 userInformation.put("list", new JSONArray(shoppingList));
 
                 OutputStream os = connection.getOutputStream();

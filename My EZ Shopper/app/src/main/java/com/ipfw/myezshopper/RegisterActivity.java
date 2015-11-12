@@ -192,8 +192,9 @@ public class RegisterActivity extends Activity {
                 //startActivity(profactivity);
 
                 //Need to get the memberID to pass as the third parameter
-                Intent i = ProfileActivity.newIntent(RegisterActivity.this, emailtxt, null);
+                Intent i = ProfileActivity.newIntent(RegisterActivity.this, emailtxt, memberID.toString());
                 startActivity(i);
+
             }
             else{
                 Toast.makeText(getApplication(), result, Toast.LENGTH_LONG).show();

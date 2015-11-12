@@ -54,12 +54,10 @@ public class ProfileActivity extends FragmentActivity {
         FragmentManager fm = getSupportFragmentManager();
         Fragment fragment = fm.findFragmentById(R.id.fragment_container);
 
-        if(fragment == null){
+        if(fragment == null) {
             fragment = new ProfileFragment();
             fm.beginTransaction().add(R.id.fragment_container, fragment).commit();
         }
-
-
     }
 
     public static Intent newIntent(Context packageContext, String email, String memberID)
