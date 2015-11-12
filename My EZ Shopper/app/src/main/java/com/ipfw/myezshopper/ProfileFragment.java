@@ -31,6 +31,7 @@ public class ProfileFragment extends Fragment {
     private Button goToSearchFragment;
     private Button goToAddDealFragment;
     private Button goToListFragment;
+    private Button goToDeleteFragment;
     private TextView userEmailTextView;
     private String user_email, member_id;
     private List<String> shoppingList;
@@ -78,6 +79,15 @@ public class ProfileFragment extends Fragment {
 
         goToListFragment = (Button) v.findViewById(R.id.go_to_new_list_fragment);
         goToListFragment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ListFragment newList = new ListFragment();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, newList).addToBackStack(null).commit();
+            }
+        });
+
+        goToDeleteFragment = (Button) v.findViewById(R.id.go_to_delete_fragment);
+        goToDeleteFragment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ListFragment newList = new ListFragment();

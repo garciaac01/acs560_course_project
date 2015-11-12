@@ -188,10 +188,6 @@ public class RegisterActivity extends Activity {
             super.onPostExecute(result);
 
             if (isLogin && allowLogin) {
-                //Intent profactivity = new Intent(RegisterActivity.this, ProfileActivity2.class);
-                //startActivity(profactivity);
-
-                //Need to get the memberID to pass as the third parameter
                 Intent i = ProfileActivity.newIntent(RegisterActivity.this, emailtxt, memberID.toString());
                 startActivity(i);
 
