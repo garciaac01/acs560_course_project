@@ -23,16 +23,12 @@
             android:label="Registration" >
         </activity>
         <activity
-            android:name=".ProfileActivity"
-            android:label="User Profile" >
-        </activity>
-        <activity
             android:name=".SearchActivity"
             android:label="Product Search" >
         </activity>
         <activity
-            android:name=".ProfileActivity2"
-            android:label="@string/title_activity_profile2"
+            android:name=".ProfileActivity"
+            android:label="@string/title_activity_profile"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
     </application>

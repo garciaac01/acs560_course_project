@@ -1,131 +1,154 @@
 package com.ipfw.myezshopper;
 
-import android.app.Activity;
-import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.text.Html;
+import android.util.Log;
 import android.view.View;
-import android.webkit.WebView;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 
-
-public class ProfileActivity extends Activity {
-
-
-
-    SharedPreferences pref;
-    String token,grav,oldpasstxt,newpasstxt;
-    WebView web;
-    Button chgpass,chgpassfr,cancel,logout, startProductActivity;
-    Dialog dlg;
-    EditText oldpass,newpass;
-    List<NameValuePair> params;
-
+public class ProfileActivity extends FragmentActivity {
+    public static final String EXTRA_USER_EMAIL = "com.ipfw.myezshopper.user_email";
+    public static final String EXTRA_MEMBER_ID = "com.ipfw.myezshopper.member_id";
+    private String user_email, member_id;
+    //todo remove shoppingListLength
+    public static int shoppingListLength;  //may want to move this to a newIntent method in ProfileFragment
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
-        web = (WebView)findViewById(R.id.webView);
-        chgpass = (Button)findViewById(R.id.chgbtn);
-        logout = (Button)findViewById(R.id.logout);
-        logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SharedPreferences.Editor edit = pref.edit();
-                //Storing Data using SharedPreferences
-                edit.putString("token", "");
-                edit.commit();
-                Intent loginactivity = new Intent(ProfileActivity.this,LoginActivity.class);
+        setContentView(R.layout.activity_profile2);
 
-                startActivity(loginactivity);
-                finish();
-            }
-        });
+        user_email = getIntent().getStringExtra(EXTRA_USER_EMAIL);
+        member_id = getIntent().getStringExtra(EXTRA_MEMBER_ID);
+        Log.i("Profile Activity", user_email);
+        Log.i("Profile Activity", "Member ID is: " + member_id);
 
-        pref = getSharedPreferences("AppPref", MODE_PRIVATE);
-        token = pref.getString("token", "");
-        grav = pref.getString("grav", "");
+//todo remove the database access
+//        //get user's list from database
+//        String URL = "http://52.91.100.201:8080/user/" + member_id;
+//
+//        new JSONTask().execute(URL);
 
-        web.getSettings().setUseWideViewPort(true);
-        web.getSettings().setLoadWithOverviewMode(true);
-        web.loadUrl(grav);
+        FragmentManager fm = getSupportFragmentManager();
+        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
 
-        chgpass.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dlg = new Dialog(ProfileActivity.this);
-                dlg.setContentView(R.layout.chgpassword_frag);
-                dlg.setTitle("Change Password");
-                chgpassfr = (Button) dlg.findViewById(R.id.chgbtn);
-
-                chgpassfr.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        oldpass = (EditText) dlg.findViewById(R.id.oldpass);
-                        newpass = (EditText) dlg.findViewById(R.id.newpass);
-                        oldpasstxt = oldpass.getText().toString();
-                        newpasstxt = newpass.getText().toString();
-                        params = new ArrayList<NameValuePair>();
-                        params.add(new BasicNameValuePair("oldpass", oldpasstxt));
-                        params.add(new BasicNameValuePair("newpass", newpasstxt));
-                        params.add(new BasicNameValuePair("id", token));
-                        ServerRequest sr = new ServerRequest();
-                        JSONObject json = sr.getJSON("http://52.23.206.253:8080/api/chgpass", params);
-                        // JSONObject json = sr.getJSON("http://10.0.2.2:8080/api/chgpass",params);
-                        if (json != null) {
-                            try {
-                                String jsonstr = json.getString("response");
-                                if (json.getBoolean("res")) {
-
-                                    dlg.dismiss();
-                                    Toast.makeText(getApplication(), jsonstr, Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(getApplication(), jsonstr, Toast.LENGTH_SHORT).show();
-
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-                    }
-                });
-                cancel = (Button) dlg.findViewById(R.id.cancelbtn);
-                cancel.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        dlg.dismiss();
-                    }
-                });
-                dlg.show();
-            }
-        });
-
-        startProductActivity = (Button) findViewById(R.id.btn_profile_search);
-        startProductActivity.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(ProfileActivity.this, SearchDealsActivity.class);
-                startActivity(i);
-            }
-        });
+        if(fragment == null){
+            fragment = new ProfileFragment();
+            fm.beginTransaction().add(R.id.fragment_container, fragment).commit();
+        }
 
 
     }
 
+    public static Intent newIntent(Context packageContext, String email, String memberID)
+    {
+        Intent i = new Intent(packageContext, ProfileActivity.class);
+        i.putExtra(EXTRA_USER_EMAIL, email);
+        i.putExtra(EXTRA_MEMBER_ID, memberID);
+        return i;
+    }
+
+//    public class JSONTask extends AsyncTask<String,String, String> {
+//        @Override
+//        protected String doInBackground(String... params) {
+//
+//            HttpURLConnection connection = null;
+//            BufferedReader reader = null;
+//            try{
+//                URL url = new URL(params[0]);
+//                connection = (HttpURLConnection)url.openConnection();
+//
+//                InputStream stream = connection.getInputStream();
+//
+//                reader = new BufferedReader(new InputStreamReader(stream));
+//                StringBuffer buffer = new StringBuffer();
+//
+//                String line;
+//
+//                while ((line = reader.readLine()) != null) {
+//                    buffer.append(line);
+//                }
+//
+//                String finalJSON = buffer.toString();
+//                JSONObject jsonResponse = new JSONObject(new String(finalJSON));
+//                JSONArray items = jsonResponse.getJSONArray("list");
+//                String builtString = "";
+//
+//                shoppingListLength = items.length();
+//
+//                if (items.length() == 0){
+//                    builtString = "No list items";
+//                }
+//                else{
+//                    for (int i = 0; i < items.length(); i++){
+//                        builtString += items.getString(i) + ",";
+//                    }
+//                }
+//                return builtString;
+//            }catch(MalformedURLException ex){
+//                ex.printStackTrace();
+//            }catch(IOException ex){
+//                ex.printStackTrace();
+//                return "No network connection";
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//                System.out.println(e.getMessage());
+//            }finally{
+//                if (connection != null) {
+//                    connection.disconnect();
+//                }
+//                try {
+//                    if (reader != null){
+//                        reader.close();
+//                    }
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//            return null;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(String result) {
+//            super.onPostExecute(result);
+//
+//            if (result.equals("No network connection")){
+//                Toast.makeText(getApplication(), result, Toast.LENGTH_LONG).show();
+//            }else{
+//                Toast.makeText(getApplication(), result, Toast.LENGTH_LONG).show();
+//            }
+//        }
+//
+//    }
 
 
+    public static int getShoppingListLength()
+    {
+        return shoppingListLength;
+    }
 
 }
+
+

@@ -47,11 +47,11 @@ public class ProfileFragment extends Fragment {
         // Inflate the layout for this fragment
 
         userEmailTextView = (TextView) v.findViewById(R.id.welcome_text);
-        user_email = getActivity().getIntent().getStringExtra(ProfileActivity2.EXTRA_USER_EMAIL);
-        member_id = getActivity().getIntent().getStringExtra(ProfileActivity2.EXTRA_MEMBER_ID);
+        user_email = getActivity().getIntent().getStringExtra(ProfileActivity.EXTRA_USER_EMAIL);
+        member_id = getActivity().getIntent().getStringExtra(ProfileActivity.EXTRA_MEMBER_ID);
         shoppingList = new ArrayList<>();
 
-        Log.i("Profile Fragment", String.valueOf(ProfileActivity2.getShoppingListLength()));
+        Log.i("Profile Fragment", String.valueOf(ProfileActivity.getShoppingListLength()));
 
         if(user_email != null)
         {

@@ -34,7 +34,6 @@ public class LoginActivity extends Activity {
     List<NameValuePair> params;
     SharedPreferences pref;
     Dialog reset;
-    ServerRequest sr;
     boolean allowLogin;
     StringBuilder memberID;
 
@@ -42,7 +41,6 @@ public class LoginActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        sr = new ServerRequest();
 
         email = (EditText)findViewById(R.id.email);
         password = (EditText)findViewById(R.id.password);
@@ -162,7 +160,7 @@ public class LoginActivity extends Activity {
             if (allowLogin){
                 //Intent profactivity = new Intent(LoginActivity.this,ProfileActivity2.class);
                 //startActivity(profactivity);
-                Intent i = ProfileActivity2.newIntent(LoginActivity.this, emailtxt, memberID.toString());
+                Intent i = ProfileActivity.newIntent(LoginActivity.this, emailtxt, memberID.toString());
                 startActivity(i);
             }else{
                 Toast.makeText(getApplication(), result, Toast.LENGTH_LONG).show();
