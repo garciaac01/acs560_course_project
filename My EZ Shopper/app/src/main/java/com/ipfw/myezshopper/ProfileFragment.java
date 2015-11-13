@@ -86,7 +86,7 @@ public class ProfileFragment extends Fragment {
         goToDeleteFragment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ListFragment newList = new ListFragment();
+                DeleteFragment newList = new DeleteFragment();
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, newList).addToBackStack(null).commit();
             }
         });
