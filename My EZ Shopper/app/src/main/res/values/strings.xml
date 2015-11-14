@@ -25,6 +25,7 @@
     <string name="go_to_new_list_fragment">+ List</string>
     <string name="go_to_search_fragment">Search Products</string>
     <string name="go_to_delete_fragment">Delete User</string>
+    <string name="go_to_chgpassword_fragment">Change Password</string>
     <string name="invalid_price">Please Enter a Valid Price</string>
     <string name="spinner_category_title">Search By...</string>
 </resources>

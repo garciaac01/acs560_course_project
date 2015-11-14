@@ -46,6 +46,14 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="@string/go_to_chgpassword_fragment"
+        android:id="@+id/go_to_chgpassword_fragment"
+        android:background="@drawable/btn_back"
+        android:textColor="#ffffff"
+        android:layout_marginBottom="12dp" />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="@string/go_to_search_fragment"
         android:id="@+id/go_to_search_fragment"
         android:background="@drawable/btn_blue_back"

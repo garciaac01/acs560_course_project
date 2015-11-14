@@ -33,6 +33,7 @@ public class ProfileFragment extends Fragment {
     private Button goToAddDealFragment;
     private Button goToListFragment;
     private Button goToDeleteFragment;
+    private Button goToChangePasswordFragment;
     private TextView userEmailTextView;
     private String user_email, member_id;
 
@@ -86,11 +87,20 @@ public class ProfileFragment extends Fragment {
         goToDeleteFragment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DeleteFragment newList = new DeleteFragment();
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, newList).addToBackStack(null).commit();
+                //todo ask user if they really want to delete
+                DeleteFragment newDelete = new DeleteFragment();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, newDelete).addToBackStack(null).commit();
             }
         });
 
+        goToChangePasswordFragment = (Button) v.findViewById(R.id.go_to_chgpassword_fragment);
+        goToChangePasswordFragment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ChangePasswordFragment newPassword = new ChangePasswordFragment();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, newPassword).addToBackStack(null).commit();
+            }
+        });
 
         return v;
     }

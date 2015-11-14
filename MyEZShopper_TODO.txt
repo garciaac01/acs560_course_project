@@ -2,8 +2,6 @@
 
 --Encrypt user name and password
 
---Enable Change Password 
-
 --Limit number of login attempts before requiring password reset
 
 --Run server side script to remove expired deals
@@ -26,8 +24,12 @@
 
 --Post Deal Location as Online, All Stores, Specific store (use geolocation)
 
---Allow user to delete themselves from database
+--Refactor user interaction to delete self from database; it is fully functional.
 
 --need method for displaying list items in ListFragment
 
 --Enable email activiation????
+
+--For change password, consider removing entering old password.
+
+--Change Password needs to return to Profile Activity when user clicks cancel. Perhaps change button to "Return to Profile"

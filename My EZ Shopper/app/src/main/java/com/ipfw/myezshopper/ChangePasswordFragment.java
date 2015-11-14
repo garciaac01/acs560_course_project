@@ -13,14 +13,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -30,15 +27,14 @@ import java.util.ArrayList;
 /**
  * Created by garci_000 on 10/31/2015.
  */
-public class DeleteFragment extends Fragment implements View.OnClickListener{
-    private EditText productName;
-    private Button btnSubmitListItem;
-    private TextView txtList;
-    String product;
-    public static int itemListLength;  //may want to move this to a newIntent method in ProfileFragment
-    private ArrayList<String> shoppingList = new ArrayList<String>();
-    private String member_id;
+public class ChangePasswordFragment extends Fragment implements View.OnClickListener{
+    private EditText txtOldPassword;
+    private EditText txtNewPassword;
+    private EditText txtConfirmPassword;
+    private Button btnChangePassword;
+    private Button btnCancel;
 
+    private String member_id;
 
     @Override
 
@@ -49,43 +45,38 @@ public class DeleteFragment extends Fragment implements View.OnClickListener{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle onSavedInstanceState){
 
-        //todo View needs to be updated!
-        View v = inflater.inflate(R.layout.fragment_new_list, container, false);
+
+        View v = inflater.inflate(R.layout.chgpassword_frag, container, false);
         member_id = getActivity().getIntent().getStringExtra(ProfileActivity.EXTRA_MEMBER_ID);
-        productName = (EditText) v.findViewById(R.id.productName);
-        btnSubmitListItem = (Button) v.findViewById(R.id.submit_list_button);
-        txtList = (TextView) v.findViewById(R.id.list);
+        txtOldPassword = (EditText) v.findViewById(R.id.oldpass);
+        txtNewPassword = (EditText) v.findViewById(R.id.newpass);
+        txtConfirmPassword = (EditText) v.findViewById(R.id.confirmpass);
+        btnChangePassword = (Button) v.findViewById(R.id.chgbtn);
+        btnCancel= (Button) v.findViewById(R.id.cancelbtn);
 
-        btnSubmitListItem.setOnClickListener(this);
-
-        //Access users shopping list on database.
-        //Store items locally
-        //Display items in list textView
-        //get user's list from database
-        String URL = "http://52.91.100.201:8080/user/" + member_id;
-
-        new JSONTaskDelete().execute(URL);
+        btnChangePassword.setOnClickListener(this);
 
         return v;
     }
 
     @Override
     public void onClick(View v){
-        product = productName.getText().toString();
+        String oldPassword = txtOldPassword.getText().toString();
+        String newPassword = txtNewPassword.getText().toString();
+        String confirmPassword = txtConfirmPassword.getText().toString();
 
-        if (product.equals("")){
-            Toast.makeText(getActivity(), "Product name cannot be blank", Toast.LENGTH_SHORT).show();
+        if (!newPassword.equals(confirmPassword)){
+            Toast.makeText(getActivity(), "Passwords do not match", Toast.LENGTH_SHORT).show();
         }
         else{
-            //todo save new product locally
-            //add item to local list
-            shoppingList.add(product);
+            //todo Update user's password locally as well
+            String URL = "http://52.91.100.201:8080/user/" + member_id;
 
-            new JSONTaskDelete().execute("http://52.91.100.201:8080/user/" + member_id);
+            new JSONTaskUpdate().execute(URL, newPassword);
         }
     }
 
-    public class JSONTaskDelete extends AsyncTask<String,String, String> {
+    public class JSONTaskUpdate extends AsyncTask<String,String, String> {
         @Override
         protected String doInBackground(String... params) {
 
@@ -93,20 +84,29 @@ public class DeleteFragment extends Fragment implements View.OnClickListener{
             BufferedReader reader = null;
             try{
                 URL url = new URL(params[0]);
+                String newPassword = params[1];
                 connection = (HttpURLConnection)url.openConnection();
                 connection.setDoInput(true);
                 connection.setDoOutput(true);
                 connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
                 connection.setRequestProperty("Accept", "application/json");
-                connection.setRequestMethod("DELETE");
+                connection.setRequestMethod("PUT");
+
+                JSONObject userInformation = new JSONObject();
+
+                userInformation.put("password", newPassword);
+
+                OutputStream os = connection.getOutputStream();
+                os.write(userInformation.toString().getBytes("UTF-8"));
+                os.flush();
 
                 int HttpResult = connection.getResponseCode();
                 if (HttpResult == HttpURLConnection.HTTP_OK){
-                    return "User deleted";
+                    return "Password updated";
                 }
                 else
                 {
-                    return "Error deleting user";
+                    return "Error updating password";
                 }
 
             }catch(MalformedURLException ex){
@@ -114,7 +114,9 @@ public class DeleteFragment extends Fragment implements View.OnClickListener{
             }catch(IOException ex){
                 ex.printStackTrace();
                 return "No network connection";
-            }finally{
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } finally{
                 if (connection != null) {
                     connection.disconnect();
                 }
@@ -137,7 +139,7 @@ public class DeleteFragment extends Fragment implements View.OnClickListener{
                 Toast.makeText(getActivity(), result, Toast.LENGTH_LONG).show();
             }else{
                 //display to textview
-                txtList.setText(result);
+                Toast.makeText(getActivity(), result, Toast.LENGTH_LONG).show();
             }
         }
 
