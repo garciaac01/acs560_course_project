@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 /**
  * Created by garci_000 on 11/1/2015.
@@ -56,7 +57,9 @@ public class DatePickerFragment extends DialogFragment {
                 String date = month + "-" + day + "-" + year;
 
                 String selectedDate = year + "-" + month + "-" + day;
+                TimeZone tz = TimeZone.getTimeZone("UTC");
                 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                formatter.setTimeZone(tz);
                 String time = "";
                 try {
                     Date selDate = formatter.parse(selectedDate);
