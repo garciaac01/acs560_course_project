@@ -67,15 +67,19 @@ public class LoginActivity extends Activity {
                 emailtxt = email.getText().toString();
                 passwordtxt = password.getText().toString();
 
-                if (emailtxt.equals("")){
-                    Toast.makeText(getApplication(), "User name cannot be blank", Toast.LENGTH_LONG).show();
-                }
-                else if (passwordtxt.equals("")){
-                    Toast.makeText(getApplication(), "Password cannot be blank", Toast.LENGTH_LONG).show();
-                }else{
-                    String URL = "http://52.91.100.201:8080/user";
-                    new JSONTask().execute(URL);
-                }
+//                the following is commented out for ease of testing
+//                if (emailtxt.equals("")){
+//                    Toast.makeText(getApplication(), "User name cannot be blank", Toast.LENGTH_LONG).show();
+//                }
+//                else if (passwordtxt.equals("")){
+//                    Toast.makeText(getApplication(), "Password cannot be blank", Toast.LENGTH_LONG).show();
+//                }else{
+//                    String URL = "http://52.91.100.201:8080/user";
+//                    new JSONTask().execute(URL);
+//                }
+
+                String URL = "http://52.91.100.201:8080/user";
+                new JSONTask().execute(URL);
 
             }//end event handler
         });//end login setOnClickListener
@@ -110,7 +114,6 @@ public class LoginActivity extends Activity {
                 os.write(loginInformation.toString().getBytes("UTF-8"));
                 os.flush();
 
-                //todo pass memberID to ProfileAcitivty2
                 memberID = new StringBuilder();
                 int HttpResult = connection.getResponseCode();
                 if (HttpResult == HttpURLConnection.HTTP_OK) {

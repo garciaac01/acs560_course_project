@@ -33,7 +33,11 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -192,10 +196,20 @@ public class SearchDealsActivity extends Fragment {
 
                         JSONObject obj = parentArray.getJSONObject(i);
 
+                        String format = "yyyy-MM-dd";
+                        SimpleDateFormat sdf = new SimpleDateFormat(format);
+                        Date d = sdf.parse(obj.getString("expirationDate"));
+                        Calendar cal = Calendar.getInstance();
+                        cal.setTime(d);
+                        String expDate = "";
+                        expDate += cal.get(Calendar.MONTH) + 1 + "/";
+                        expDate += cal.get(Calendar.DATE) + "/";
+                        expDate += cal.get(Calendar.YEAR);
+
                         builtString += "<b>" + hitsCounter + ". " + obj.getString("name") + "<br>Price:</b> $" + obj.getDouble("price")
                                 + "<br><b>Store:</b> " + obj.getString("storeName") + "<br><b>Location:</b> " + obj.getString("location")
                                 + "<br><b>Details:</b> " + obj.get("description") + "<br><b>Category:</b> " + obj.get("category")
-                                + "<br><b>Expiration Date:</b> " + obj.get("expirationDate") + "<br><br>";
+                                + "<br><b>Expiration Date:</b> " +expDate + "<br><br>";
                     }
                 }
                 return builtString;
@@ -204,10 +218,13 @@ public class SearchDealsActivity extends Fragment {
             }catch(IOException ex){
                 ex.printStackTrace();
                 return "No network connection";
-            } catch (JSONException e) {
+            }catch (JSONException e) {
                 e.printStackTrace();
                 System.out.println(e.getMessage());
-            }finally{
+            }catch (ParseException ex){
+                return "DATE EXCEPTION";
+            }
+            finally{
                 if (connection != null) {
                     connection.disconnect();
                 }

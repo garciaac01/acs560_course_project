@@ -18,8 +18,6 @@
 
 --Cache user name and password on client for offline use
 
---SORT deals on server side
-
 --SearchDeals by Category...should include drop down list
 
 --Post Deal Location as Online, All Stores, Specific store (use geolocation)

@@ -11,6 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.DatePicker;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -23,6 +25,7 @@ public class DatePickerFragment extends DialogFragment {
     private static final String ARG_DATE = "date";
     private DatePicker mDatePicker;
     public static final String EXTRA_DATE = "com.ipfw.myezshopper.date";
+    public static final String EXTRA_LONG_DATE = "com.ipfw.myezshopper.longdate";
 
 /*    public static DatePickerFragment newInstance(Date date){
         Bundle args = new Bundle();
@@ -45,25 +48,37 @@ public class DatePickerFragment extends DialogFragment {
         mDatePicker.init(year, month, day, null);
         return new AlertDialog.Builder(getActivity()).setView(v).setTitle(R.string.date_picker_title).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which){
+            public void onClick(DialogInterface dialog, int which) {
+
                 int year = mDatePicker.getYear();
-                int month = mDatePicker.getMonth() + 1;
+                int month = mDatePicker.getMonth()+1;
                 int day = mDatePicker.getDayOfMonth();
-                //Date date = new GregorianCalendar(year, month, day).getTime();
-                String date = month + "/" + day + "/" + year;
-                sendResult(Activity.RESULT_OK, date);
+                String date = month + "-" + day + "-" + year;
+
+                String selectedDate = year + "-" + month + "-" + day;
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                String time = "";
+                try {
+                    Date selDate = formatter.parse(selectedDate);
+                    time = selDate.getTime() + "";
+                } catch (ParseException e) {
+
+                }
+
+                sendResult(Activity.RESULT_OK, date, time);
             }
         }).create();
 
     }
 
-    public void sendResult(int resultCode, String date){
+    public void sendResult(int resultCode, String strDate, String longDate){
         if(getTargetFragment() == null){
             return;
         }
 
         Intent intent = new Intent();
-        intent.putExtra(EXTRA_DATE, date);
+        intent.putExtra(EXTRA_DATE, strDate);
+        intent.putExtra(EXTRA_LONG_DATE, longDate);
 
         getTargetFragment().onActivityResult(getTargetRequestCode(), resultCode, intent);
     }

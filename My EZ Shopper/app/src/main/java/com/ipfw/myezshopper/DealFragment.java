@@ -43,6 +43,7 @@ public class DealFragment extends Fragment implements View.OnClickListener{
     private EditText category;
     private Button submitDeal;
     String product, price, store, location, expiration, description, cat;
+    String expDate;
     private static final String DIALOG_DATE = "DialogDate";
     private static final int REQUEST_DATE = 0;
 
@@ -85,7 +86,7 @@ public class DealFragment extends Fragment implements View.OnClickListener{
         price = productPrice.getText().toString();
         store = storeName.getText().toString();
         location = locationName.getText().toString();
-        expiration = expirationDate.getText().toString();
+        expiration = expDate;
         description = productDescription.getText().toString();
         cat = category.getText().toString();
 
@@ -236,9 +237,10 @@ public class DealFragment extends Fragment implements View.OnClickListener{
         }
 
         if(requestCode == REQUEST_DATE){
-            //Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
             String date = data.getStringExtra(DatePickerFragment.EXTRA_DATE);
             expirationDate.setText(date.toString());
+            expDate = data.getStringExtra(DatePickerFragment.EXTRA_LONG_DATE);
+
         }
     }
 }

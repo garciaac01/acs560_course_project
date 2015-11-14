@@ -65,7 +65,10 @@ public class ChangePasswordFragment extends Fragment implements View.OnClickList
         String newPassword = txtNewPassword.getText().toString();
         String confirmPassword = txtConfirmPassword.getText().toString();
 
-        if (!newPassword.equals(confirmPassword)){
+        if (newPassword.equals("")){
+            Toast.makeText(getActivity(), "Password cannot be blank", Toast.LENGTH_SHORT).show();
+        }
+        else if (!newPassword.equals(confirmPassword)){
             Toast.makeText(getActivity(), "Passwords do not match", Toast.LENGTH_SHORT).show();
         }
         else{
