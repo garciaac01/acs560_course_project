@@ -31,3 +31,5 @@
 --For change password, consider removing entering old password.
 
 --Change Password needs to return to Profile Activity when user clicks cancel. Perhaps change button to "Return to Profile"
+
+--Submit deals: Prevent user from using a date prior to current date.
