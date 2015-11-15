@@ -31,3 +31,5 @@
 --Change Password needs to return to Profile Activity when user clicks cancel. Perhaps change button to "Return to Profile"
 
 --Submit deals: Include date added by using system time.
+
+--Deals need to use Date and TimeZone stamp.
