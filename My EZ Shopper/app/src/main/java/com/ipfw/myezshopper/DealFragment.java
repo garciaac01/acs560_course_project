@@ -27,8 +27,11 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * Created by garci_000 on 10/31/2015.
@@ -90,12 +93,33 @@ public class DealFragment extends Fragment implements View.OnClickListener{
         description = productDescription.getText().toString();
         cat = category.getText().toString();
 
+        //check if expiration date is valid
+        Calendar calToday = Calendar.getInstance();
+        int year = calToday.get(Calendar.YEAR);
+        int month = calToday.get(Calendar.MONTH)+1;
+        int day = calToday.get(Calendar.DATE);
+        String strToday = year + "-" + month + "-" + day;
+        TimeZone tz = TimeZone.getTimeZone("UTC");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        formatter.setTimeZone(tz);
+
+        Calendar enteredExpirationDate = Calendar.getInstance();
+        enteredExpirationDate.setTimeInMillis(Long.parseLong(expDate));
+
         try {
-            Double.parseDouble(price);
-            new JSONTask().execute("http://52.91.100.201:8080/deal");
-        }catch(NumberFormatException e)
-        {
+
+            Date today = formatter.parse(strToday);
+
+            if (enteredExpirationDate.getTimeInMillis() < today.getTime()){
+                Toast.makeText(getActivity(), "Expiration date is invalid", Toast.LENGTH_SHORT).show();
+            }else{
+                Double.parseDouble(price);
+                new JSONTask().execute("http://52.91.100.201:8080/deal");
+            }
+        }catch(NumberFormatException e){
             Toast.makeText(getActivity(), R.string.invalid_price, Toast.LENGTH_SHORT).show();
+        }catch(ParseException e){
+
         }
     }
 
