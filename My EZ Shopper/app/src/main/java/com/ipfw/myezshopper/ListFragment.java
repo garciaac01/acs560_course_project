@@ -61,6 +61,7 @@ public class ListFragment extends Fragment{ // implements View.OnClickListener{
 
         mShoppingRecyclerView = (RecyclerView) v.findViewById(R.id.shopping_recycler_view);
         mShoppingRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        updateUI();
 
         //btnSubmitListItem.setOnClickListener(this);   Should bring this back later as a floating button
 
