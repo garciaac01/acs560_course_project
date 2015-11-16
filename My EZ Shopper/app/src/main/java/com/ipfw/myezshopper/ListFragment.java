@@ -37,8 +37,9 @@ import java.util.List;
  */
 public class ListFragment extends Fragment{ // implements View.OnClickListener{
     private RecyclerView mShoppingRecyclerView;
+    private ShoppingAdapter mAdapter;
     String product;
-    public static int itemListLength;  //may want to move this to a newIntent method in ProfileFragment
+    private int itemListLength;  //may want to move this to a newIntent method in ProfileFragment
     private ArrayList<String> shoppingList = new ArrayList<String>();
     private String member_id;
 
@@ -69,17 +70,18 @@ public class ListFragment extends Fragment{ // implements View.OnClickListener{
 
         new JSONTaskGet().execute(URL);
 
+        //updateUI();
         return v;
     }
 
     private class ShoppingListHolder extends RecyclerView.ViewHolder{
-        public TextView mShoppingListProduct;
+        private TextView mMyProductName;
 
         public ShoppingListHolder(View itemView)
         {
             super(itemView);
 
-            mShoppingListProduct = (TextView) itemView;
+            mMyProductName = (TextView) itemView.findViewById(R.id.my_product);
         }
     }
 
@@ -95,14 +97,15 @@ public class ListFragment extends Fragment{ // implements View.OnClickListener{
         public ShoppingListHolder onCreateViewHolder(ViewGroup parent, int viewType)
         {
             LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
-            View view = layoutInflater.inflate(android.R.layout.simple_list_item_1, parent, false);
+            View view = layoutInflater.inflate(R.layout.fragment_single_shopping_item, parent, false);
             return new ShoppingListHolder(view);
         }
 
         @Override
         public void onBindViewHolder(ShoppingListHolder holder, int position)
         {
-
+            String shoppingListItem = mShoppingItems.get(position);
+            holder.mMyProductName.setText(shoppingListItem);
         }
 
         @Override
@@ -110,6 +113,11 @@ public class ListFragment extends Fragment{ // implements View.OnClickListener{
         {
             return mShoppingItems.size();
         }
+    }
+
+    private void updateUI(){
+        mAdapter = new ShoppingAdapter(shoppingList);
+        mShoppingRecyclerView.setAdapter(mAdapter);
     }
 
    /* @Override
@@ -276,6 +284,8 @@ public class ListFragment extends Fragment{ // implements View.OnClickListener{
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
+            Toast.makeText(getActivity(), result, Toast.LENGTH_LONG).show();
+            updateUI();
 
           /*  if (result.equals("No network connection")){
                 Toast.makeText(getActivity(), result, Toast.LENGTH_LONG).show();
@@ -292,10 +302,5 @@ public class ListFragment extends Fragment{ // implements View.OnClickListener{
         if(resultCode != Activity.RESULT_OK){
             return;
         }
-    }
-
-    public static int geItemListLength()
-    {
-        return itemListLength;
     }
 }

@@ -4,18 +4,20 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="10dp"
-    android:paddingBottom="10dp"
+    android:background="#303030"
     >
 
     <TextView
-        android:id="@+id/contact_name"
+        android:id="@+id/my_product"
+        android:background="@drawable/recycler_background"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:layout_weight="1"/>
+        android:text="Here's some text"
+        android:textSize="26sp"
+        android:textColor="#fafafa"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:paddingLeft="12dp"
+        android:layout_gravity="center_vertical"/>
 
-    <CheckBox
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_weight="5"/>
 </LinearLayout>
