@@ -54,7 +54,10 @@ public class SearchDealsActivity extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);}
+        super.onCreate(savedInstanceState);
+
+
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -129,8 +132,8 @@ public class SearchDealsActivity extends Fragment {
 
                     //remove last + symbol
                     concatenatedText = concatenatedText.substring(0, concatenatedText.length() - 1);
-
                     String URL = "http://52.91.100.201:8080/deal?" + queryText + "=" + concatenatedText;
+
 
                     new JSONTask().execute(URL);
                 }
@@ -147,6 +150,35 @@ public class SearchDealsActivity extends Fragment {
                 new JSONTask().execute(URL);
             }
         });//end setOnclickListener
+
+        if(getArguments() != null)
+        {
+            String myListProduct = getArguments().getString(ListFragment.EXTRA_PRODUCT_SEARCH, null);
+            //Toast.makeText(getActivity(), myListProduct, Toast.LENGTH_LONG).show();
+            txtName.setText(myListProduct);
+
+            String concatenatedText = "";
+            String inputText = myListProduct;
+            //queryText = txtQuery.getText().toString();
+
+            if (inputText.equals("")){
+                Toast.makeText(getActivity(), "Search field cannot be blank", Toast.LENGTH_LONG).show();
+            }
+            else{
+                StringTokenizer st = new StringTokenizer(inputText, " ");
+
+                while (st.hasMoreTokens()){
+                    concatenatedText += st.nextToken() + "+";
+                }
+
+                //remove last + symbol
+                concatenatedText = concatenatedText.substring(0, concatenatedText.length() - 1);
+
+                String URL = "http://52.91.100.201:8080/deal?name=" + concatenatedText;
+
+                new JSONTask().execute(URL);
+            }
+        }
 
         return v;
     }//end onCreate

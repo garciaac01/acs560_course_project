@@ -40,8 +40,9 @@ public class ListFragment extends Fragment{ // implements View.OnClickListener{
     private ShoppingAdapter mAdapter;
     String product;
     private int itemListLength;  //may want to move this to a newIntent method in ProfileFragment
-    private ArrayList<String> shoppingList = new ArrayList<String>();
+    private ArrayList<String> shoppingList;
     private String member_id;
+    public static String EXTRA_PRODUCT_SEARCH = "com.ipfw.myezshopper.myProductName";
 
 
     @Override
@@ -54,6 +55,7 @@ public class ListFragment extends Fragment{ // implements View.OnClickListener{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle onSavedInstanceState){
 
         member_id = getActivity().getIntent().getStringExtra(ProfileActivity.EXTRA_MEMBER_ID);
+        shoppingList = new ArrayList<String>();
 
         View v = inflater.inflate(R.layout.fragment_shopping_list, container, false);
 
@@ -74,14 +76,23 @@ public class ListFragment extends Fragment{ // implements View.OnClickListener{
         return v;
     }
 
-    private class ShoppingListHolder extends RecyclerView.ViewHolder{
+    private class ShoppingListHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         private TextView mMyProductName;
 
         public ShoppingListHolder(View itemView)
         {
             super(itemView);
-
+            itemView.setOnClickListener(this);
             mMyProductName = (TextView) itemView.findViewById(R.id.my_product);
+        }
+
+        @Override
+        public void onClick(View v){
+            Bundle args = new Bundle();
+            args.putString(EXTRA_PRODUCT_SEARCH, mMyProductName.getText().toString());
+            SearchDealsActivity newSearch = new SearchDealsActivity();
+            newSearch.setArguments(args);
+            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, newSearch).addToBackStack(null).commit();
         }
     }
 
@@ -284,7 +295,7 @@ public class ListFragment extends Fragment{ // implements View.OnClickListener{
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            Toast.makeText(getActivity(), result, Toast.LENGTH_LONG).show();
+           // Toast.makeText(getActivity(), result, Toast.LENGTH_LONG).show();
             updateUI();
 
           /*  if (result.equals("No network connection")){
