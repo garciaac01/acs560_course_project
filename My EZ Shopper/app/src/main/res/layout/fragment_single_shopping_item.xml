@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
@@ -18,6 +18,16 @@
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
         android:paddingLeft="12dp"
-        android:layout_gravity="center_vertical"/>
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"/>
 
-</LinearLayout>
+    <Button
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/trash_can"
+        android:layout_margin="6dp"
+        android:layout_marginRight="12dp"
+        android:id="@+id/delete_button"/>
+
+</RelativeLayout>

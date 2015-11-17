@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -43,6 +44,7 @@ public class ListFragment extends Fragment{ // implements View.OnClickListener{
     private ArrayList<String> shoppingList;
     private String member_id;
     public static String EXTRA_PRODUCT_SEARCH = "com.ipfw.myezshopper.myProductName";
+    private FloatingActionButton floatingActionButton;
 
 
     @Override
@@ -63,6 +65,15 @@ public class ListFragment extends Fragment{ // implements View.OnClickListener{
         mShoppingRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         updateUI();
 
+
+        floatingActionButton = (FloatingActionButton) v.findViewById(R.id.fab);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getActivity(), "This is the Floating Action Button", Toast.LENGTH_LONG).show();
+            }
+        });
+
         //btnSubmitListItem.setOnClickListener(this);   Should bring this back later as a floating button
 
         //Access users shopping list on database.
@@ -79,12 +90,20 @@ public class ListFragment extends Fragment{ // implements View.OnClickListener{
 
     private class ShoppingListHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         private TextView mMyProductName;
+        private Button mDeleteButton;
 
         public ShoppingListHolder(View itemView)
         {
             super(itemView);
             itemView.setOnClickListener(this);
             mMyProductName = (TextView) itemView.findViewById(R.id.my_product);
+            mDeleteButton = (Button) itemView.findViewById(R.id.delete_button);
+            mDeleteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(getActivity(), mMyProductName.getText().toString() + " was selected for deletion", Toast.LENGTH_LONG).show();
+                }
+            });
         }
 
         @Override
