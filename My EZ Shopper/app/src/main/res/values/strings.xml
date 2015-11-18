@@ -28,4 +28,5 @@
     <string name="go_to_chgpassword_fragment">Change Password</string>
     <string name="invalid_price">Please Enter a Valid Price</string>
     <string name="spinner_category_title">Search By...</string>
+    <string name="add_new_item">Add Item to Shopping List:</string>
 </resources>

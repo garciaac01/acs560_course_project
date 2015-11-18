@@ -1,6 +1,8 @@
 package com.ipfw.myezshopper;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -43,7 +45,8 @@ public class ListFragment extends Fragment{ // implements View.OnClickListener{
     private int itemListLength;  //may want to move this to a newIntent method in ProfileFragment
     private ArrayList<String> shoppingList;
     private String member_id;
-    public static String EXTRA_PRODUCT_SEARCH = "com.ipfw.myezshopper.myProductName";
+    public static String EXTRA_PRODUCT_SEARCH = "com.ipfw.myezshopper.myProductName", ADD_ITEM = "add item";
+    public static final int ADD_ITEM_REQUEST_CODE = 0;
     private FloatingActionButton floatingActionButton;
 
 
@@ -70,7 +73,10 @@ public class ListFragment extends Fragment{ // implements View.OnClickListener{
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(), "This is the Floating Action Button", Toast.LENGTH_LONG).show();
+                FragmentManager manager = getFragmentManager();
+                AddItemFragment addFragment = new AddItemFragment();
+                addFragment.setTargetFragment(ListFragment.this, ADD_ITEM_REQUEST_CODE);
+                addFragment.show(manager, ADD_ITEM);
             }
         });
 
@@ -101,7 +107,7 @@ public class ListFragment extends Fragment{ // implements View.OnClickListener{
             mDeleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(getActivity(), mMyProductName.getText().toString() + " was selected for deletion", Toast.LENGTH_LONG).show();
+                    showDeleteDialog(mMyProductName.getText().toString());
                 }
             });
         }
@@ -150,6 +156,26 @@ public class ListFragment extends Fragment{ // implements View.OnClickListener{
         mAdapter = new ShoppingAdapter(shoppingList);
         mShoppingRecyclerView.setAdapter(mAdapter);
     }
+
+    private void showDeleteDialog(String itemToDelete)
+    {
+        AlertDialog.Builder ab = new AlertDialog.Builder(getActivity());
+        ab.setMessage("Delete " + itemToDelete + " from shopping list?").setPositiveButton("Yes", dialogClickListener).setNegativeButton("No", dialogClickListener).show();
+
+    }
+
+    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener(){
+        @Override
+        public void onClick(DialogInterface dialog, int which)
+        {
+            switch(which){
+                case DialogInterface.BUTTON_POSITIVE:
+                    break;
+                case DialogInterface.BUTTON_NEGATIVE:
+                    break;
+            }
+        }
+    };
 
    /* @Override
     public void onClick(View v){
