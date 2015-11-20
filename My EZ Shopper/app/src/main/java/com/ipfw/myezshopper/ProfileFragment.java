@@ -29,10 +29,10 @@ import java.util.List;
  */
 public class ProfileFragment extends Fragment {
 
+
     private Button goToSearchFragment;
     private Button goToAddDealFragment;
     private Button goToListFragment;
-    private Button goToDeleteFragment;
     private Button goToChangePasswordFragment;
     private TextView userEmailTextView;
     private String user_email, member_id;
@@ -80,16 +80,6 @@ public class ProfileFragment extends Fragment {
             public void onClick(View v) {
                 ListFragment newList = new ListFragment();
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, newList).addToBackStack(null).commit();
-            }
-        });
-
-        goToDeleteFragment = (Button) v.findViewById(R.id.go_to_delete_fragment);
-        goToDeleteFragment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //todo ask user if they really want to delete
-                DeleteFragment newDelete = new DeleteFragment();
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, newDelete).addToBackStack(null).commit();
             }
         });
 

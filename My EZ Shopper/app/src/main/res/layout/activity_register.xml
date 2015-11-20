@@ -23,6 +23,17 @@
         android:layout_marginLeft="24dp"
         android:layout_marginRight="24dp"
         android:textColor="#fafafa"
+        android:id="@+id/name"
+        android:hint="Name"
+        android:textColorHint="#fafafa"/>
+
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="80dp"
+        android:layout_gravity="center"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp"
+        android:textColor="#fafafa"
         android:id="@+id/email"
         android:hint="Email"
         android:textColorHint="#fafafa"/>

@@ -2,6 +2,7 @@ package com.ipfw.myezshopper;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -28,10 +29,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LoginActivity extends Activity {
+    SharedPreferences sharedPref;
+    DBHelper helper = new DBHelper(this);
+
     EditText email,password,res_email,code,newpass;
     Button login,cont,cont_code,cancel,cancel1,register;
     String emailtxt,passwordtxt,email_res_txt,code_txt,npass_txt;
-    List<NameValuePair> params;
     SharedPreferences pref;
     Dialog reset;
     boolean allowLogin;
@@ -41,6 +44,19 @@ public class LoginActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+
+        sharedPref = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+
+        boolean loggedin = sharedPref.getBoolean("loggedin", false);
+
+        if (loggedin){
+            String name = sharedPref.getString("name", "");
+            String id = sharedPref.getString("memberid", "");
+
+            Intent i = ProfileActivity.newIntent(LoginActivity.this, name, id);
+            startActivity(i);
+        }
 
         email = (EditText)findViewById(R.id.email);
         password = (EditText)findViewById(R.id.password);
@@ -67,19 +83,17 @@ public class LoginActivity extends Activity {
                 emailtxt = email.getText().toString();
                 passwordtxt = password.getText().toString();
 
-//                the following is commented out for ease of testing
-//                if (emailtxt.equals("")){
-//                    Toast.makeText(getApplication(), "User name cannot be blank", Toast.LENGTH_LONG).show();
-//                }
-//                else if (passwordtxt.equals("")){
-//                    Toast.makeText(getApplication(), "Password cannot be blank", Toast.LENGTH_LONG).show();
-//                }else{
-//                    String URL = "http://52.91.100.201:8080/user";
-//                    new JSONTask().execute(URL);
-//                }
+                if (emailtxt.equals("")){
+                    Toast.makeText(getApplication(), "Email cannot be blank", Toast.LENGTH_SHORT).show();
+                }else if (passwordtxt.equals("")){
+                    Toast.makeText(getApplication(), "Password cannot be blank", Toast.LENGTH_SHORT).show();
+                }else{
+                    String URL = "http://52.91.100.201:8080/user";
+                    new JSONTask().execute(URL);
+                }
 
-                String URL = "http://52.91.100.201:8080/user";
-                new JSONTask().execute(URL);
+//                String URL = "http://52.91.100.201:8080/user";
+//                new JSONTask().execute(URL);
 
             }//end event handler
         });//end login setOnClickListener
@@ -106,7 +120,7 @@ public class LoginActivity extends Activity {
 
                 JSONObject loginInformation = new JSONObject();
 
-                loginInformation.put("name", emailtxt);
+                loginInformation.put("email", emailtxt);
                 loginInformation.put("password", passwordtxt);
                 loginInformation.put("type", "login");
 
@@ -130,7 +144,7 @@ public class LoginActivity extends Activity {
                 } else if (HttpResult ==HttpURLConnection.HTTP_FORBIDDEN){
                    return "Incorrect password";
                 } else if (HttpResult == HttpURLConnection.HTTP_NOT_FOUND){
-                    return "Incorrect user name";
+                    return "Incorrect email";
                 }
 
             } catch (MalformedURLException ex) {
@@ -163,10 +177,16 @@ public class LoginActivity extends Activity {
             if (allowLogin){
                 //Intent profactivity = new Intent(LoginActivity.this,ProfileActivity2.class);
                 //startActivity(profactivity);
+                sharedPref = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putBoolean("loggedin", true);
+                editor.apply();
+
+                //todo change emailtxt to Name
                 Intent i = ProfileActivity.newIntent(LoginActivity.this, emailtxt, memberID.toString());
                 startActivity(i);
             }else{
-                Toast.makeText(getApplication(), result, Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplication(), result, Toast.LENGTH_SHORT).show();
             }
         }
 

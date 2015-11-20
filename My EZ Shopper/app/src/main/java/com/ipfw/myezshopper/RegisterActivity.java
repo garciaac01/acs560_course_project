@@ -1,7 +1,9 @@
 package com.ipfw.myezshopper;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -11,31 +13,24 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.AbstractHttpEntity;
-import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicHeader;
-import org.apache.http.protocol.HTTP;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.List;
 
 
 public class RegisterActivity extends Activity {
-    EditText email,password;
+
+    DBHelper helper = new DBHelper(this);
+    User newUser;
+    SharedPreferences sharedPref;
+
+    EditText email,password, name;
     Button login,register;
-    String emailtxt,passwordtxt;
+    String emailtxt,passwordtxt, nametxt;
     boolean isLogin = false;
     boolean allowLogin;
     StringBuilder memberID;
@@ -45,6 +40,7 @@ public class RegisterActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
+        name = (EditText)findViewById(R.id.name);
         email = (EditText)findViewById(R.id.email);
         password = (EditText)findViewById(R.id.password);
         register = (Button)findViewById(R.id.registerbtn);
@@ -58,10 +54,10 @@ public class RegisterActivity extends Activity {
                 passwordtxt = password.getText().toString();
 
                 if (emailtxt.equals("")) {
-                    Toast.makeText(getApplication(), "User name cannot be blank", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplication(), "Email cannot be blank", Toast.LENGTH_SHORT).show();
                 } else if (passwordtxt.equals("")) {
-                    Toast.makeText(getApplication(), "Password cannot be blank", Toast.LENGTH_LONG).show();
-                } else {
+                    Toast.makeText(getApplication(), "Password cannot be blank", Toast.LENGTH_SHORT).show();
+                }else {
                     String URL = "http://52.91.100.201:8080/user";
                     isLogin = true;
                     new JSONTask().execute(URL);
@@ -77,12 +73,15 @@ public class RegisterActivity extends Activity {
                 allowLogin = false;
                 emailtxt = email.getText().toString();
                 passwordtxt = password.getText().toString();
+                nametxt = name.getText().toString();
 
                 if (emailtxt.equals("")) {
-                    Toast.makeText(getApplication(), "User name cannot be blank", Toast.LENGTH_LONG).show();
-                } else if (passwordtxt.equals("")) {
-                    Toast.makeText(getApplication(), "Password cannot be blank", Toast.LENGTH_LONG).show();
-                } else {
+                    Toast.makeText(getApplication(), "User name cannot be blank", Toast.LENGTH_SHORT).show();
+                }else if (passwordtxt.equals("")) {
+                    Toast.makeText(getApplication(), "Password cannot be blank", Toast.LENGTH_SHORT).show();
+                }else if (nametxt.equals("")) {
+                    Toast.makeText(getApplication(), "Name cannot be blank", Toast.LENGTH_SHORT).show();
+                }else {
                     String URL = "http://52.91.100.201:8080/user";
                     new JSONTask().execute(URL);
                 }
@@ -112,8 +111,9 @@ public class RegisterActivity extends Activity {
 
                 JSONObject registerInformation = new JSONObject();
 
-                registerInformation.put("name", emailtxt);
+                registerInformation.put("email", emailtxt);
                 registerInformation.put("password", passwordtxt);
+                registerInformation.put("name", nametxt);
 
                 if (isLogin){
                     registerInformation.put("type", "login");
@@ -143,6 +143,7 @@ public class RegisterActivity extends Activity {
 
                     System.out.println("" + memberID.toString());
                     if (!isLogin){
+
                         return "Successfully added";
                     }
                 } else if (HttpResult ==HttpURLConnection.HTTP_FORBIDDEN){
@@ -152,12 +153,12 @@ public class RegisterActivity extends Activity {
                     }
                     else
                     {
-                        msg = "User name already exists";
+                        msg = "Email already exists";
                     }
 
                     return msg;
                 } else if (HttpResult ==HttpURLConnection.HTTP_NOT_FOUND) {
-                    return "Incorrect user name";
+                    return "Incorrect Email";
                 }
             } catch (MalformedURLException ex) {
                 ex.printStackTrace();
@@ -188,12 +189,26 @@ public class RegisterActivity extends Activity {
             super.onPostExecute(result);
 
             if (isLogin && allowLogin) {
-                Intent i = ProfileActivity.newIntent(RegisterActivity.this, emailtxt, memberID.toString());
+
+                sharedPref = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putBoolean("loggedin", true);
+                editor.apply();
+
+                Intent i = ProfileActivity.newIntent(RegisterActivity.this, nametxt, memberID.toString());
                 startActivity(i);
 
             }
             else{
-                Toast.makeText(getApplication(), result, Toast.LENGTH_LONG).show();
+                newUser = new User();
+                newUser.setEmail(emailtxt);
+                newUser.setName(nametxt);
+                newUser.setPassword(passwordtxt);
+                newUser.setId(memberID.toString());
+
+                helper.insertUser(newUser);
+
+                Toast.makeText(getApplication(), result, Toast.LENGTH_SHORT).show();
             }
         }
 

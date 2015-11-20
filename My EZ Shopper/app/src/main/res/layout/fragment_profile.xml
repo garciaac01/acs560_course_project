@@ -42,7 +42,17 @@
         android:id="@+id/go_to_delete_fragment"
         android:background="@drawable/btn_back"
         android:textColor="#ffffff"
-        android:layout_marginBottom="12dp" />
+        android:layout_marginBottom="12dp"
+        android:onClick="onButtonClick" />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/go_to_logout_fragment"
+        android:id="@+id/go_to_logout_fragment"
+        android:background="@drawable/btn_back"
+        android:textColor="#ffffff"
+        android:layout_marginBottom="12dp"
+        android:onClick="onButtonClick" />
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
