@@ -3,6 +3,7 @@ package com.ipfw.myezshopper;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
@@ -21,6 +22,7 @@ import java.util.TimeZone;
  */
 public class AddItemFragment extends DialogFragment {
     EditText itemToAdd;
+    public static final String EXTRA_NEW_ITEM = "com.ipfw.myezshopper.new_item";
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
@@ -40,12 +42,21 @@ public class AddItemFragment extends DialogFragment {
         {
             switch(which){
                 case DialogInterface.BUTTON_POSITIVE:
-                    Toast.makeText(getActivity(), "Okay, we need to add " + itemToAdd.getText().toString(), Toast.LENGTH_LONG).show();
+                    sendResult(Activity.RESULT_OK, itemToAdd.getText().toString());
                     break;
                 case DialogInterface.BUTTON_NEGATIVE:
-                    Toast.makeText(getActivity(), "Okay, we won't add anything", Toast.LENGTH_LONG).show();
                     break;
             }
         }
     };
+
+    public void sendResult(int resultCode, String itemToAdd)
+    {
+        if(getTargetFragment() == null)
+            return;
+
+        Intent intent = new Intent();
+        intent.putExtra(EXTRA_NEW_ITEM, itemToAdd);
+        getTargetFragment().onActivityResult(getTargetRequestCode(), resultCode, intent);
+    }
 }

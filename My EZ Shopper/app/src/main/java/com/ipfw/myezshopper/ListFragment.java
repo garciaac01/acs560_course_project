@@ -44,7 +44,7 @@ public class ListFragment extends Fragment{ // implements View.OnClickListener{
     String product;
     private int itemListLength;  //may want to move this to a newIntent method in ProfileFragment
     private ArrayList<String> shoppingList;
-    private String member_id;
+    private String member_id, itemToDelete;
     public static String EXTRA_PRODUCT_SEARCH = "com.ipfw.myezshopper.myProductName", ADD_ITEM = "add item";
     public static final int ADD_ITEM_REQUEST_CODE = 0;
     private FloatingActionButton floatingActionButton;
@@ -159,9 +159,9 @@ public class ListFragment extends Fragment{ // implements View.OnClickListener{
 
     private void showDeleteDialog(String itemToDelete)
     {
+        this.itemToDelete = itemToDelete;
         AlertDialog.Builder ab = new AlertDialog.Builder(getActivity());
         ab.setMessage("Delete " + itemToDelete + " from shopping list?").setPositiveButton("Yes", dialogClickListener).setNegativeButton("No", dialogClickListener).show();
-
     }
 
     DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener(){
@@ -170,12 +170,36 @@ public class ListFragment extends Fragment{ // implements View.OnClickListener{
         {
             switch(which){
                 case DialogInterface.BUTTON_POSITIVE:
+                    shoppingList.remove(itemToDelete);
+                    new JSONTaskPost().execute("http://52.91.100.201:8080/user/" + member_id);
                     break;
                 case DialogInterface.BUTTON_NEGATIVE:
                     break;
             }
         }
     };
+
+    /*
+     *Get the value returned from the AddItemFragment
+     */
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+        if(resultCode != Activity.RESULT_OK){
+            return;
+        }
+
+        if(requestCode == ADD_ITEM_REQUEST_CODE){
+            if(data.getStringExtra(AddItemFragment.EXTRA_NEW_ITEM) != null && !data.getStringExtra(AddItemFragment.EXTRA_NEW_ITEM).equals("")) {
+                shoppingList.add(data.getStringExtra(AddItemFragment.EXTRA_NEW_ITEM));
+
+                new JSONTaskPost().execute("http://52.91.100.201:8080/user/" + member_id);
+            }
+            else
+            {
+                Toast.makeText(getActivity(), "Product name cannot be blank", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
 
    /* @Override
     public void onClick(View v){
@@ -191,7 +215,7 @@ public class ListFragment extends Fragment{ // implements View.OnClickListener{
 
             new JSONTaskPost().execute("http://52.91.100.201:8080/user/" + member_id);
         }
-    }
+    }*/
 
     public class JSONTaskPost extends AsyncTask<String,String, String> {
         @Override
@@ -229,7 +253,7 @@ public class ListFragment extends Fragment{ // implements View.OnClickListener{
                     br.close();
 
                     System.out.println("" + sb.toString());
-                    return "List successfully added";
+                    return "Shopping List Updated";
                 } else {
                     System.out.println(connection.getResponseMessage());
                     return ("Error adding list item");
@@ -271,10 +295,11 @@ public class ListFragment extends Fragment{ // implements View.OnClickListener{
                 builtString += str + ",";
             }
 
-            txtList.setText(builtString);
+            updateUI();
+            //txtList.setText(builtString);
         }
 
-    }//end JSONTaskPost class*/
+    }//end JSONTaskPost class
 
     public class JSONTaskGet extends AsyncTask<String,String, String> {
         @Override
@@ -354,10 +379,5 @@ public class ListFragment extends Fragment{ // implements View.OnClickListener{
 
     }//end JSONTaskGet class
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data){
-        if(resultCode != Activity.RESULT_OK){
-            return;
-        }
-    }
+
 }
