@@ -33,10 +33,8 @@ public class LoginActivity extends Activity {
     DBHelper helper = new DBHelper(this);
 
     EditText email,password,res_email,code,newpass;
-    Button login,cont,cont_code,cancel,cancel1,register;
-    String emailtxt,passwordtxt,email_res_txt,code_txt,npass_txt;
-    SharedPreferences pref;
-    Dialog reset;
+    Button login,register;
+    String emailtxt,passwordtxt;
     boolean allowLogin;
     StringBuilder memberID;
 
@@ -58,8 +56,6 @@ public class LoginActivity extends Activity {
         password = (EditText)findViewById(R.id.password);
         login = (Button)findViewById(R.id.loginbtn);
         register = (Button)findViewById(R.id.register);
-
-        pref = getSharedPreferences("AppPref", MODE_PRIVATE);
 
         register.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,9 +83,6 @@ public class LoginActivity extends Activity {
                     String URL = "http://52.91.100.201:8080/user";
                     new JSONTask().execute(URL);
                 }
-
-//                String URL = "http://52.91.100.201:8080/user";
-//                new JSONTask().execute(URL);
 
             }//end event handler
         });//end login setOnClickListener
@@ -129,7 +122,7 @@ public class LoginActivity extends Activity {
                 if (HttpResult == HttpURLConnection.HTTP_OK) {
                     allowLogin = true;
                     br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "utf-8"));
-                    String line = null;
+                    String line;
                     while ((line = br.readLine()) != null) {
                         memberID.append(line + "\n");
                     }

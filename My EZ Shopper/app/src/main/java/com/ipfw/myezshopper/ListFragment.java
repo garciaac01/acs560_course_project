@@ -15,14 +15,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -35,19 +33,17 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by garci_000 on 10/31/2015.
- */
 public class ListFragment extends Fragment{ // implements View.OnClickListener{
     private RecyclerView mShoppingRecyclerView;
     private ShoppingAdapter mAdapter;
-    String product;
     private int itemListLength;  //may want to move this to a newIntent method in ProfileFragment
     private ArrayList<String> shoppingList;
     private String member_id, itemToDelete;
     public static String EXTRA_PRODUCT_SEARCH = "com.ipfw.myezshopper.myProductName", ADD_ITEM = "add item";
     public static final int ADD_ITEM_REQUEST_CODE = 0;
     private FloatingActionButton floatingActionButton;
+
+    private PreferencesManager prefManager;
 
 
     @Override
@@ -59,7 +55,9 @@ public class ListFragment extends Fragment{ // implements View.OnClickListener{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle onSavedInstanceState){
 
-        member_id = getActivity().getIntent().getStringExtra(ProfileActivity.EXTRA_MEMBER_ID);
+        prefManager = new PreferencesManager(this.getContext());
+
+        member_id = prefManager.getId();
         shoppingList = new ArrayList<String>();
 
         View v = inflater.inflate(R.layout.fragment_shopping_list, container, false);

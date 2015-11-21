@@ -10,16 +10,8 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
 
-/**
- * Created by garci on 11/17/2015.
- */
 public class AddItemFragment extends DialogFragment {
     EditText itemToAdd;
     public static final String EXTRA_NEW_ITEM = "com.ipfw.myezshopper.new_item";

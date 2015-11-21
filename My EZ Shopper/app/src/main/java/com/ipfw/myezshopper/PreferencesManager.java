@@ -8,7 +8,6 @@ import android.content.SharedPreferences;
 public class PreferencesManager{
 
     private SharedPreferences sharedPref;
-    private final Context context;
     SharedPreferences.Editor editor;
 
     private final String PREFERENCE_NAME = "name";
@@ -20,7 +19,6 @@ public class PreferencesManager{
 
 
     public PreferencesManager(Context context){
-        this.context = context;
         sharedPref = context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE);
         editor = sharedPref.edit();
     }

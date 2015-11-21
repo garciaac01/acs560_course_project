@@ -83,11 +83,6 @@ public class RegisterActivity extends Activity {
             }else {
                 String URL = "http://52.91.100.201:8080/user";
                 new JSONTask().execute(URL);
-                login.setEnabled(true);
-                login.setBackgroundColor(Color.BLUE);
-                name.setEnabled(false);
-                password.setEnabled(false);
-                email.setEnabled(false);
             }
         }
 
@@ -196,8 +191,7 @@ public class RegisterActivity extends Activity {
                 Intent i = ProfileActivity.newIntent(RegisterActivity.this);
                 startActivity(i);
 
-            }
-            else{
+            }else if (result == "Successfully added"){
                 newUser = new User();
                 newUser.setEmail(emailtxt);
                 newUser.setName(nametxt);
@@ -208,7 +202,14 @@ public class RegisterActivity extends Activity {
                 prefManager.setAllPreferences(newUser);
                 register.setEnabled(false);
                 register.setBackgroundColor(Color.GRAY);
+                login.setEnabled(true);
+                login.setBackgroundColor(Color.BLUE);
+                name.setEnabled(false);
+                password.setEnabled(false);
+                email.setEnabled(false);
 
+                Toast.makeText(getApplication(), result, Toast.LENGTH_SHORT).show();
+            }else{
                 Toast.makeText(getApplication(), result, Toast.LENGTH_SHORT).show();
             }
         }

@@ -1,7 +1,3 @@
-//Currently this gets all user information from the db.
-//using to test parsing JSON from server.
-
-
 package com.ipfw.myezshopper;
 
 import android.content.SharedPreferences;
@@ -41,7 +37,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
 
-//import android.support.v7.app.AppCompatActivity;
 
 public class SearchDealsActivity extends Fragment {
 
@@ -62,8 +57,8 @@ public class SearchDealsActivity extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.activity_search2, container, false);
-       // setContentView(R.layout.activity_search2);
+        View v = inflater.inflate(R.layout.activity_search_deals, container, false);
+       // setContentView(R.layout.activity_search_deals);
 
         txtName = (EditText) v.findViewById(R.id.txtName);
         categorySpinner = (Spinner) v.findViewById(R.id.category_spinner);
@@ -305,5 +300,5 @@ public class SearchDealsActivity extends Fragment {
 //        return super.onOptionsItemSelected(item);
 //    }//end onOptionsItemSelected
 
-}//end SearchActivity class.
+}
 

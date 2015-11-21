@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -22,11 +21,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 
-/**
- * Created by garci_000 on 10/31/2015.
- */
 public class ChangePasswordFragment extends Fragment implements View.OnClickListener{
     private EditText txtOldPassword;
     private EditText txtNewPassword;
@@ -137,13 +132,7 @@ public class ChangePasswordFragment extends Fragment implements View.OnClickList
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-
-            if (result.equals("No network connection")){
-                Toast.makeText(getActivity(), result, Toast.LENGTH_LONG).show();
-            }else{
-                //display to textview
-                Toast.makeText(getActivity(), result, Toast.LENGTH_LONG).show();
-            }
+            Toast.makeText(getActivity(), result, Toast.LENGTH_SHORT).show();
         }
 
     }//end JSONTaskGet class

@@ -15,27 +15,13 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
-/**
- * Created by garci_000 on 11/1/2015.
- */
 public class DatePickerFragment extends DialogFragment {
 
-    private static final String ARG_DATE = "date";
     private DatePicker mDatePicker;
     public static final String EXTRA_DATE = "com.ipfw.myezshopper.date";
     public static final String EXTRA_LONG_DATE = "com.ipfw.myezshopper.longdate";
-
-/*    public static DatePickerFragment newInstance(Date date){
-        Bundle args = new Bundle();
-        args.putSerializable(ARG_DATE, date);
-
-        DatePickerFragment fragment = new DatePickerFragment();
-        fragment.setArguments(args);
-        return fragment;
-    }*/
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
