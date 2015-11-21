@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import android.support.v4.app.Fragment;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +47,8 @@ public class SearchDealsActivity extends Fragment {
     private TextView tvResponse, productText;
     SharedPreferences pref;
     String token, TAG = "SearchDealsActivity", queryText;
+    private final String walmartAPIkey = "e9rgk7ujvh43jaqxsytfcucm";
+    private String builtString = "";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -127,9 +130,13 @@ public class SearchDealsActivity extends Fragment {
 
                     //remove last + symbol
                     concatenatedText = concatenatedText.substring(0, concatenatedText.length() - 1);
+
+                    //get walmart deals
+                    String walmartURL = "http://api.walmartlabs.com/v1/search?query=" + concatenatedText + "&format=json&apiKey=" + walmartAPIkey;
+                    new JSONTask().execute(walmartURL, "walmart");
+
+                      //get user created deals
                     String URL = "http://52.91.100.201:8080/deal?" + queryText + "=" + concatenatedText;
-
-
                     new JSONTask().execute(URL);
                 }
             }
@@ -169,6 +176,7 @@ public class SearchDealsActivity extends Fragment {
                 //remove last + symbol
                 concatenatedText = concatenatedText.substring(0, concatenatedText.length() - 1);
 
+                //what's going on here--this seems to be a duplicate of code above.  is this doing anything?
                 String URL = "http://52.91.100.201:8080/deal?name=" + concatenatedText;
 
                 new JSONTask().execute(URL);
@@ -195,48 +203,71 @@ public class SearchDealsActivity extends Fragment {
                 reader = new BufferedReader(new InputStreamReader(stream));
                 StringBuffer buffer = new StringBuffer();
 
-                String line;
+                builtString += "";
 
-                while ((line = reader.readLine()) != null) {
-                    buffer.append(line);
-                }
+                //there will be more than one parameter when we are searching the shopping APIs
+                if(params.length > 1)
+                {
+                    String line;
 
-                String finalJSON = buffer.toString();
-                JSONArray parentArray = new JSONArray(finalJSON);
-                String builtString = "";
-
-                //count the products that are returned
-                int hitsCounter = 0;
-
-                if (parentArray.length() == 0){
-                    builtString = "No matches";
-                }
-                else{
-                    for (int i = 0; i < parentArray.length(); i++)
+                    //if the extra parameter is walmart, we will parse the walmart response and add it to builtString
+                    if(params[1].equals("walmart"))
                     {
-                        if(hitsCounter == 0)
-                        {
-                            builtString += "<h4><b><u>User Submitted Deals</u>:</b></h4>";
+                        while((line = reader.readLine()) != null){
+                            buffer.append(line);
                         }
 
-                        hitsCounter++;
+                        //for now, we will display the entire string on the TextView
+                        builtString += buffer.toString();
 
-                        JSONObject obj = parentArray.getJSONObject(i);
+                        Log.i("Search Walmart", builtString);
 
-                        String format = "yyyy-MM-dd";
-                        SimpleDateFormat sdf = new SimpleDateFormat(format);
-                        Date d = sdf.parse(obj.getString("expirationDate"));
-                        Calendar cal = Calendar.getInstance();
-                        cal.setTime(d);
-                        String expDate = "";
-                        expDate += cal.get(Calendar.MONTH) + 1 + "/";
-                        expDate += cal.get(Calendar.DATE) + "/";
-                        expDate += cal.get(Calendar.YEAR);
+                    }
+                }
+                else{
+                    String line;
 
-                        builtString += "<b>" + hitsCounter + ". " + obj.getString("name") + "<br>Price:</b> $" + obj.getDouble("price")
-                                + "<br><b>Store:</b> " + obj.getString("storeName") + "<br><b>Location:</b> " + obj.getString("location")
-                                + "<br><b>Details:</b> " + obj.get("description") + "<br><b>Category:</b> " + obj.get("category")
-                                + "<br><b>Expiration Date:</b> " +expDate + "<br><br>";
+                    while ((line = reader.readLine()) != null) {
+                        buffer.append(line);
+                    }
+
+                    String finalJSON = buffer.toString();
+                    JSONArray parentArray = new JSONArray(finalJSON);
+                    //builtString = "";
+
+                    //count the products that are returned
+                    int hitsCounter = 0;
+
+                    if (parentArray.length() == 0){
+                        builtString += "No matches";
+                    }
+                    else{
+                        for (int i = 0; i < parentArray.length(); i++)
+                        {
+                            if(hitsCounter == 0)
+                            {
+                                builtString += "<h4><b><u>User Submitted Deals</u>:</b></h4>";
+                            }
+
+                            hitsCounter++;
+
+                            JSONObject obj = parentArray.getJSONObject(i);
+
+                            String format = "yyyy-MM-dd";
+                            SimpleDateFormat sdf = new SimpleDateFormat(format);
+                            Date d = sdf.parse(obj.getString("expirationDate"));
+                            Calendar cal = Calendar.getInstance();
+                            cal.setTime(d);
+                            String expDate = "";
+                            expDate += cal.get(Calendar.MONTH) + 1 + "/";
+                            expDate += cal.get(Calendar.DATE) + "/";
+                            expDate += cal.get(Calendar.YEAR);
+
+                            builtString += "<b>" + hitsCounter + ". " + obj.getString("name") + "<br>Price:</b> $" + obj.getDouble("price")
+                                    + "<br><b>Store:</b> " + obj.getString("storeName") + "<br><b>Location:</b> " + obj.getString("location")
+                                    + "<br><b>Details:</b> " + obj.get("description") + "<br><b>Category:</b> " + obj.get("category")
+                                    + "<br><b>Expiration Date:</b> " +expDate + "<br><br>";
+                        }
                     }
                 }
                 return builtString;
@@ -277,6 +308,8 @@ public class SearchDealsActivity extends Fragment {
             }
         }
     }
+
+
 
 //    @Override
 //    public boolean onCreateOptionsMenu(Menu menu) {
