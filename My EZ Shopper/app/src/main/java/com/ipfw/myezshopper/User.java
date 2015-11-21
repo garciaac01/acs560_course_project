@@ -6,6 +6,15 @@ public class User {
     private String email;
     private String password;
     private String id;
+    private boolean loggedin;
+
+    public boolean isLoggedin() {
+        return loggedin;
+    }
+
+    public void setLoggedin(boolean loggedin) {
+        this.loggedin = loggedin;
+    }
 
     public String getId() {
         return id;

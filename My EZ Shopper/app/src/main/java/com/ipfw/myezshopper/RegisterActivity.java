@@ -1,13 +1,10 @@
 package com.ipfw.myezshopper;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.StrictMode;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,7 +23,7 @@ public class RegisterActivity extends Activity {
 
     DBHelper helper = new DBHelper(this);
     User newUser;
-    SharedPreferences sharedPref;
+    PreferencesManager prefManager;
 
     EditText email,password, name;
     Button login,register;
@@ -40,57 +37,61 @@ public class RegisterActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
+        prefManager = new PreferencesManager(this);
+
         name = (EditText)findViewById(R.id.name);
         email = (EditText)findViewById(R.id.email);
         password = (EditText)findViewById(R.id.password);
         register = (Button)findViewById(R.id.registerbtn);
         login = (Button)findViewById(R.id.login);
-
-        login.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                allowLogin = false;
-                emailtxt = email.getText().toString();
-                passwordtxt = password.getText().toString();
-
-                if (emailtxt.equals("")) {
-                    Toast.makeText(getApplication(), "Email cannot be blank", Toast.LENGTH_SHORT).show();
-                } else if (passwordtxt.equals("")) {
-                    Toast.makeText(getApplication(), "Password cannot be blank", Toast.LENGTH_SHORT).show();
-                }else {
-                    String URL = "http://52.91.100.201:8080/user";
-                    isLogin = true;
-                    new JSONTask().execute(URL);
-                }
-            }
-        });
-
-        register.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                isLogin = false;
-                allowLogin = false;
-                emailtxt = email.getText().toString();
-                passwordtxt = password.getText().toString();
-                nametxt = name.getText().toString();
-
-                if (emailtxt.equals("")) {
-                    Toast.makeText(getApplication(), "User name cannot be blank", Toast.LENGTH_SHORT).show();
-                }else if (passwordtxt.equals("")) {
-                    Toast.makeText(getApplication(), "Password cannot be blank", Toast.LENGTH_SHORT).show();
-                }else if (nametxt.equals("")) {
-                    Toast.makeText(getApplication(), "Name cannot be blank", Toast.LENGTH_SHORT).show();
-                }else {
-                    String URL = "http://52.91.100.201:8080/user";
-                    new JSONTask().execute(URL);
-                }
-
-            }//end onClick
-
-        });//end setOnClickListener
+        login.setEnabled(false);
+        login.setBackgroundColor(Color.GRAY);
 
     }//end onCreate
+
+    public void onButtonClick(View v){
+
+        if (v.getId() == R.id.login){
+            allowLogin = false;
+            emailtxt = email.getText().toString();
+            passwordtxt = password.getText().toString();
+
+            if (emailtxt.equals("")) {
+                Toast.makeText(getApplication(), "Email cannot be blank", Toast.LENGTH_SHORT).show();
+            } else if (passwordtxt.equals("")) {
+                Toast.makeText(getApplication(), "Password cannot be blank", Toast.LENGTH_SHORT).show();
+            }else {
+                String URL = "http://52.91.100.201:8080/user";
+                isLogin = true;
+                new JSONTask().execute(URL);
+            }
+        }
+
+        if (v.getId() == R.id.registerbtn){
+            isLogin = false;
+            allowLogin = false;
+            emailtxt = email.getText().toString();
+            passwordtxt = password.getText().toString();
+            nametxt = name.getText().toString();
+
+            if (emailtxt.equals("")) {
+                Toast.makeText(getApplication(), "User name cannot be blank", Toast.LENGTH_SHORT).show();
+            }else if (passwordtxt.equals("")) {
+                Toast.makeText(getApplication(), "Password cannot be blank", Toast.LENGTH_SHORT).show();
+            }else if (nametxt.equals("")) {
+                Toast.makeText(getApplication(), "Name cannot be blank", Toast.LENGTH_SHORT).show();
+            }else {
+                String URL = "http://52.91.100.201:8080/user";
+                new JSONTask().execute(URL);
+                login.setEnabled(true);
+                login.setBackgroundColor(Color.BLUE);
+                name.setEnabled(false);
+                password.setEnabled(false);
+                email.setEnabled(false);
+            }
+        }
+
+    }
 
     public class JSONTask extends AsyncTask<String,String, String> {
         @Override
@@ -190,12 +191,9 @@ public class RegisterActivity extends Activity {
 
             if (isLogin && allowLogin) {
 
-                sharedPref = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putBoolean("loggedin", true);
-                editor.apply();
-
-                Intent i = ProfileActivity.newIntent(RegisterActivity.this, nametxt, memberID.toString());
+                prefManager.setLoggedin(true);
+                //todo return user to Login screen
+                Intent i = ProfileActivity.newIntent(RegisterActivity.this);
                 startActivity(i);
 
             }
@@ -207,6 +205,9 @@ public class RegisterActivity extends Activity {
                 newUser.setId(memberID.toString());
 
                 helper.insertUser(newUser);
+                prefManager.setAllPreferences(newUser);
+                register.setEnabled(false);
+                register.setBackgroundColor(Color.GRAY);
 
                 Toast.makeText(getApplication(), result, Toast.LENGTH_SHORT).show();
             }

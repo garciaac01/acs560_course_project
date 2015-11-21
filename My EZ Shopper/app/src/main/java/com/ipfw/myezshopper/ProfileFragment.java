@@ -29,14 +29,14 @@ import java.util.List;
  */
 public class ProfileFragment extends Fragment {
 
+    private PreferencesManager prefManager;
 
     private Button goToSearchFragment;
     private Button goToAddDealFragment;
     private Button goToListFragment;
     private Button goToChangePasswordFragment;
     private TextView userEmailTextView;
-    private String user_email, member_id;
-
+    private String email, member_id;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,13 +48,15 @@ public class ProfileFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_profile, container, false);
         // Inflate the layout for this fragment
 
-        userEmailTextView = (TextView) v.findViewById(R.id.welcome_text);
-        user_email = getActivity().getIntent().getStringExtra(ProfileActivity.EXTRA_USER_EMAIL);
-        member_id = getActivity().getIntent().getStringExtra(ProfileActivity.EXTRA_MEMBER_ID);
+        prefManager = new PreferencesManager(this.getContext());
 
-        if(user_email != null)
+        userEmailTextView = (TextView) v.findViewById(R.id.welcome_text);
+        email = prefManager.getEmail();
+        member_id = prefManager.getId();
+
+        if(email != null)
         {
-            userEmailTextView.setText(Html.fromHtml("<H1>Welcome, " + user_email.toString() + "!</H1>"));
+            userEmailTextView.setText(Html.fromHtml("<H1>Welcome, " + email + "!</H1>"));
         }
         goToAddDealFragment = (Button) v.findViewById(R.id.go_to_new_deal_fragment);
         goToAddDealFragment.setOnClickListener(new View.OnClickListener() {

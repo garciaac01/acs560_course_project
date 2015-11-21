@@ -61,7 +61,8 @@
         android:background="@drawable/btn_back"
         android:textColor="#ffffff"
         android:textAlignment="center"
-        android:text="Register"/>
+        android:text="Register"
+        android:onClick="onButtonClick" />
     <Button
         android:layout_width="match_parent"
         android:layout_height="80dp"
@@ -73,8 +74,6 @@
         android:background="@drawable/btn_blue_back"
         android:textColor="#ffffff"
         android:textAlignment="center"
-        android:text="Login Now"/>
-
-
-
+        android:text="Login Now"
+        android:onClick="onButtonClick" />
 </LinearLayout>

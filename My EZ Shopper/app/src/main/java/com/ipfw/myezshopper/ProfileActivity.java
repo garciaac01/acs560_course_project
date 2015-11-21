@@ -33,10 +33,10 @@ import java.net.URL;
 
 public class ProfileActivity extends FragmentActivity {
 
-    SharedPreferences sharedPref;
     public static final String EXTRA_USER_EMAIL = "com.ipfw.myezshopper.user_email";
     public static final String EXTRA_MEMBER_ID = "com.ipfw.myezshopper.member_id";
-    private String user_email, member_id;
+    private String email, member_id;
+    private PreferencesManager prefManager;
 
     Button btnLogout;
     //todo remove shoppingListLength
@@ -46,12 +46,12 @@ public class ProfileActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile2);
 
+        prefManager = new PreferencesManager(this);
+
         btnLogout = (Button) findViewById(R.id.go_to_logout_fragment);
 
-        user_email = getIntent().getStringExtra(EXTRA_USER_EMAIL);
-        member_id = getIntent().getStringExtra(EXTRA_MEMBER_ID);
-        Log.i("Profile Activity", user_email);
-        Log.i("Profile Activity", "Member ID is: " + member_id);
+        email = prefManager.getEmail();
+        member_id = prefManager.getId();
 
 //todo remove the database access
 //        //get user's list from database
@@ -71,11 +71,8 @@ public class ProfileActivity extends FragmentActivity {
     public void onButtonClick(View v){
 
         if (v.getId() == R.id.go_to_logout_fragment){
-            sharedPref = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
-            SharedPreferences.Editor  editor = sharedPref.edit();
-            editor.putBoolean("loggedin", false);
-            editor.apply();
 
+            prefManager.setLoggedin(false);
             Toast msg = Toast.makeText(this, "You have logged out", Toast.LENGTH_SHORT);
             msg.show();
         }
@@ -85,16 +82,14 @@ public class ProfileActivity extends FragmentActivity {
             String URL = "http://52.91.100.201:8080/user/" + member_id;
 
             new JSONTaskDelete().execute(URL);
-
+            prefManager.removeAllPreferences();
         }
     }
 
 
-    public static Intent newIntent(Context packageContext, String email, String memberID)
+    public static Intent newIntent(Context packageContext)
     {
         Intent i = new Intent(packageContext, ProfileActivity.class);
-        i.putExtra(EXTRA_USER_EMAIL, email);
-        i.putExtra(EXTRA_MEMBER_ID, memberID);
         return i;
     }
 
@@ -220,14 +215,8 @@ public class ProfileActivity extends FragmentActivity {
             super.onPostExecute(result);
 
             if (result == "User deleted"){
-                sharedPref = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
-                SharedPreferences.Editor  editor = sharedPref.edit();
-                editor.putBoolean("loggedin", false);
-                editor.apply();
-            }
-
                 Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT).show();
-
+            }
         }
 
     }//end JSONTaskGet class

@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LoginActivity extends Activity {
-    SharedPreferences sharedPref;
+    PreferencesManager prefManager;
     DBHelper helper = new DBHelper(this);
 
     EditText email,password,res_email,code,newpass;
@@ -45,16 +45,12 @@ public class LoginActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        prefManager = new PreferencesManager(this);
 
-        sharedPref = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
 
-        boolean loggedin = sharedPref.getBoolean("loggedin", false);
+        if (prefManager.getLoggedIn()){
 
-        if (loggedin){
-            String name = sharedPref.getString("name", "");
-            String id = sharedPref.getString("memberid", "");
-
-            Intent i = ProfileActivity.newIntent(LoginActivity.this, name, id);
+            Intent i = ProfileActivity.newIntent(LoginActivity.this);
             startActivity(i);
         }
 
@@ -175,15 +171,12 @@ public class LoginActivity extends Activity {
             super.onPostExecute(result);
 
             if (allowLogin){
-                //Intent profactivity = new Intent(LoginActivity.this,ProfileActivity2.class);
-                //startActivity(profactivity);
-                sharedPref = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putBoolean("loggedin", true);
-                editor.apply();
 
-                //todo change emailtxt to Name
-                Intent i = ProfileActivity.newIntent(LoginActivity.this, emailtxt, memberID.toString());
+                prefManager.setLoggedin(true);
+                prefManager.setId(memberID.toString());
+                prefManager.setEmail(emailtxt);
+
+                Intent i = ProfileActivity.newIntent(LoginActivity.this);
                 startActivity(i);
             }else{
                 Toast.makeText(getApplication(), result, Toast.LENGTH_SHORT).show();
