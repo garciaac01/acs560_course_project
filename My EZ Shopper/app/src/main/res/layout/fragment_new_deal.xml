@@ -46,19 +46,6 @@
         android:id="@+id/storeName"
         android:textColor="#fafafa"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/location"
-        android:textColor="#fafafa"/>
-    <EditText
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginLeft="2dp"
-        android:layout_marginRight="2dp"
-        android:id="@+id/locationName"
-        android:textColor="#fafafa"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -74,20 +61,49 @@
         android:id="@+id/productDescription"
         android:textColor="#fafafa"/>
 
-
-    <TextView
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/category"
-        android:textColor="#fafafa"/>
-    <EditText
-        android:layout_width="fill_parent"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/location"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:textColor="#fafafa"
+            android:textColorHint="#fafafa"/>
+        <Spinner
+            android:id="@+id/location_dropdown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:padding="8dp"
+            android:background="#fafafa">
+        </Spinner>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginLeft="2dp"
-        android:layout_marginRight="2dp"
-        android:id="@+id/productCategory"
-        android:textColor="#fafafa"/>
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/category"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:textColor="#fafafa"
+            android:textColorHint="#fafafa"/>
+        <Spinner
+            android:id="@+id/product_category_dropdown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:padding="8dp"
+            android:background="#fafafa">
+        </Spinner>
+    </LinearLayout>
 
     <Button
         android:layout_width="fill_parent"

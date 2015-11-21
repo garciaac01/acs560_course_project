@@ -10,8 +10,11 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -29,8 +32,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
 
 /**
@@ -40,15 +45,17 @@ public class DealFragment extends Fragment implements View.OnClickListener{
     private EditText productName;
     private EditText productPrice;
     private EditText storeName;
-    private EditText locationName;
     private Button expirationDate;
     private EditText productDescription;
-    private EditText category;
     private Button submitDeal;
-    String product, price, store, location, expiration, description, cat;
+    private Spinner productCategorySpinner, locationSpinner;
+    private String product, price, store, location, expiration, description, cat,
+            categoryText,  //holds the dropdown category choice
+            locationText; //holds the dropdown location choice
     String expDate;
     private static final String DIALOG_DATE = "DialogDate";
     private static final int REQUEST_DATE = 0;
+
 
 
     @Override
@@ -64,7 +71,6 @@ public class DealFragment extends Fragment implements View.OnClickListener{
         productName = (EditText) v.findViewById(R.id.productName);
         productPrice = (EditText) v.findViewById(R.id.productPrice);
         storeName = (EditText) v.findViewById(R.id.storeName);
-        locationName = (EditText) v.findViewById(R.id.locationName);
         expirationDate = (Button) v.findViewById(R.id.expirationDate);
         expirationDate.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -76,7 +82,67 @@ public class DealFragment extends Fragment implements View.OnClickListener{
             }
         });
         productDescription = (EditText) v.findViewById(R.id.productDescription);
-        category = (EditText) v.findViewById(R.id.productCategory);
+
+        //Set up the drop down list for location categories
+        locationSpinner = (Spinner) v.findViewById(R.id.location_dropdown);
+
+        //create a list of product categories
+        List<String> locations = new ArrayList<String>();
+        locations.add("Online and In Stores");
+        locations.add("In-Store Only");
+        locations.add("Online Only");
+        locations.add("Specific Store Location");
+
+        //attach the ArrayList to the Spinner
+        ArrayAdapter<String> locationDataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, locations);
+        locationDataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        locationSpinner.setAdapter(locationDataAdapter);
+
+
+        locationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                locationText = parent.getItemAtPosition(position).toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+
+        //Set up the drop down list for product categories
+        productCategorySpinner = (Spinner) v.findViewById(R.id.product_category_dropdown);
+
+        //create a list of product categories
+        List<String> categories = new ArrayList<String>();
+        categories.add("Electronics");
+        categories.add("Movies, Music, Books");
+        categories.add("Home Goods");
+        categories.add("Clothes, Shoes, Jewelry");
+        categories.add("Toys, Kid and Baby Products");
+        categories.add("Food and Drink");
+        categories.add("Health, Beauty, and Pharmacy");
+        categories.add("Sports, Fitness, and Outdoors");
+        categories.add("Other");
+
+        //attach the ArrayList to the Spinner
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, categories);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        productCategorySpinner.setAdapter(dataAdapter);
+
+
+        productCategorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                categoryText = parent.getItemAtPosition(position).toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
         submitDeal = (Button) v.findViewById(R.id.submit_deal_button);
 
         submitDeal.setOnClickListener(this);
@@ -88,10 +154,10 @@ public class DealFragment extends Fragment implements View.OnClickListener{
         product = productName.getText().toString();
         price = productPrice.getText().toString();
         store = storeName.getText().toString();
-        location = locationName.getText().toString();
+        location = locationText;
         expiration = expDate;
         description = productDescription.getText().toString();
-        cat = category.getText().toString();
+        cat = categoryText;
 
         //check if expiration date is valid
         Calendar calToday = Calendar.getInstance();
