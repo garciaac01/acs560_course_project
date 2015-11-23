@@ -204,7 +204,7 @@ public class RegisterActivity extends Activity {
                 register.setEnabled(false);
                 register.setBackgroundColor(Color.GRAY);
                 login.setEnabled(true);
-                login.setBackgroundColor(Color.BLUE);
+                login.setBackgroundColor(Color.parseColor("#99D9EA"));
                 name.setEnabled(false);
                 password.setEnabled(false);
                 email.setEnabled(false);

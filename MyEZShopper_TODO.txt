@@ -1,3 +1,7 @@
+1. Edit list items
+2. Thumb Up/Down
+3. Best Buy API
+
 --?Validate input in Post Deals. Currently adding "No information given"
 
 --Encrypt user name and password
