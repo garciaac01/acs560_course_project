@@ -3,6 +3,7 @@ package com.ipfw.myezshopper;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Html;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,11 +28,12 @@ public class ProfileFragment extends Fragment {
     private Button goToListFragment;
     private Button goToChangePasswordFragment;
     private TextView userEmailTextView;
-    private String email, member_id;
+    private String name, member_id;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -42,12 +44,12 @@ public class ProfileFragment extends Fragment {
         prefManager = new PreferencesManager(this.getContext());
 
         userEmailTextView = (TextView) v.findViewById(R.id.welcome_text);
-        email = prefManager.getEmail();
+        name = prefManager.getName();
         member_id = prefManager.getId();
 
-        if(email != null)
+        if(name != null)
         {
-            userEmailTextView.setText(Html.fromHtml("<H1>Welcome, " + email + "!</H1>"));
+            userEmailTextView.setText(Html.fromHtml("<H1>Welcome, " + name + "!</H1>"));
         }
         goToAddDealFragment = (Button) v.findViewById(R.id.go_to_new_deal_fragment);
         goToAddDealFragment.setOnClickListener(new View.OnClickListener() {

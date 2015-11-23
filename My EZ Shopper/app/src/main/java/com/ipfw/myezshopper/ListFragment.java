@@ -318,7 +318,6 @@ public class ListFragment extends Fragment{ // implements View.OnClickListener{
 
                 while ((line = reader.readLine()) != null) {
                     buffer.append(line);
-
                 }
 
                 String finalJSON = buffer.toString();

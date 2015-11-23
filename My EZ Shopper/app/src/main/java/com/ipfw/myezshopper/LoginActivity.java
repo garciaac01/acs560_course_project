@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -36,7 +37,7 @@ public class LoginActivity extends Activity {
     Button login,register;
     String emailtxt,passwordtxt;
     boolean allowLogin;
-    StringBuilder memberID;
+    String memberID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +97,7 @@ public class LoginActivity extends Activity {
         protected String doInBackground(String... params) {
             HttpURLConnection connection = null;
             BufferedReader br = null;
+            StringBuffer buffer = new StringBuffer();
 
             try {
                 URL object = new URL(params[0]);
@@ -117,17 +119,31 @@ public class LoginActivity extends Activity {
                 os.write(loginInformation.toString().getBytes("UTF-8"));
                 os.flush();
 
-                memberID = new StringBuilder();
                 int HttpResult = connection.getResponseCode();
                 if (HttpResult == HttpURLConnection.HTTP_OK) {
                     allowLogin = true;
+
                     br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "utf-8"));
+//                    String line;
+//                    while ((line = br.readLine()) != null) {
+//                        memberID.append(line + "\n");
+//                    }
+//                    br.close();
+
                     String line;
+
                     while ((line = br.readLine()) != null) {
-                        memberID.append(line + "\n");
+                        buffer.append(line);
                     }
 
-                    br.close();
+                    String finalJSON = buffer.toString();
+                    JSONObject obj = new JSONObject(finalJSON);
+                    prefManager.setName(obj.getString("name"));
+                    prefManager.setPassword(obj.getString("password"));
+                    prefManager.setEmail(obj.getString("email"));
+                    prefManager.setId(obj.getString("_id"));
+                    memberID = obj.getString("_id");
+                    //todo store list items
 
                     return "Successfully logged in!";
                 } else if (HttpResult ==HttpURLConnection.HTTP_FORBIDDEN){

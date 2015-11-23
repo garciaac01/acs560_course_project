@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.Preference;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +24,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public class ChangePasswordFragment extends Fragment implements View.OnClickListener{
+
+    private PreferencesManager prefManager;
     private EditText txtOldPassword;
     private EditText txtNewPassword;
     private EditText txtConfirmPassword;
@@ -40,9 +43,10 @@ public class ChangePasswordFragment extends Fragment implements View.OnClickList
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle onSavedInstanceState){
 
+        prefManager = new PreferencesManager((this.getContext()));
 
         View v = inflater.inflate(R.layout.chgpassword_frag, container, false);
-        member_id = getActivity().getIntent().getStringExtra(ProfileActivity.EXTRA_MEMBER_ID);
+        member_id = prefManager.getId();
         txtOldPassword = (EditText) v.findViewById(R.id.oldpass);
         txtNewPassword = (EditText) v.findViewById(R.id.newpass);
         txtConfirmPassword = (EditText) v.findViewById(R.id.confirmpass);
@@ -50,27 +54,35 @@ public class ChangePasswordFragment extends Fragment implements View.OnClickList
         btnCancel= (Button) v.findViewById(R.id.cancelbtn);
 
         btnChangePassword.setOnClickListener(this);
+        btnCancel.setOnClickListener(this);
 
         return v;
     }
 
     @Override
     public void onClick(View v){
-        String oldPassword = txtOldPassword.getText().toString();
-        String newPassword = txtNewPassword.getText().toString();
-        String confirmPassword = txtConfirmPassword.getText().toString();
 
-        if (newPassword.equals("")){
-            Toast.makeText(getActivity(), "Password cannot be blank", Toast.LENGTH_SHORT).show();
-        }
-        else if (!newPassword.equals(confirmPassword)){
-            Toast.makeText(getActivity(), "Passwords do not match", Toast.LENGTH_SHORT).show();
-        }
-        else{
-            //todo Update user's password locally as well
-            String URL = "http://52.91.100.201:8080/user/" + member_id;
+        if (v.getId() == R.id.chgbtn){
+            String currentPassword = txtOldPassword.getText().toString();
+            String newPassword = txtNewPassword.getText().toString();
+            String confirmPassword = txtConfirmPassword.getText().toString();
 
-            new JSONTaskUpdate().execute(URL, newPassword);
+            if (currentPassword.equals("")){
+                Toast.makeText(getActivity(), "Current password cannot be blank", Toast.LENGTH_SHORT).show();
+            }else if (!currentPassword.equals(prefManager.getPassword())){
+                Toast.makeText(getActivity(), "Current password is not correct", Toast.LENGTH_SHORT).show();
+            }else if (newPassword.equals("")){
+                Toast.makeText(getActivity(), "Password cannot be blank", Toast.LENGTH_SHORT).show();
+            }else if (!newPassword.equals(confirmPassword)){
+                Toast.makeText(getActivity(), "Passwords do not match", Toast.LENGTH_SHORT).show();
+            }else{
+                prefManager.setPassword(newPassword);
+                String URL = "http://52.91.100.201:8080/user/" + member_id;
+                new JSONTaskUpdate().execute(URL, newPassword);
+            }
+        }
+        if (v.getId() == R.id.cancelbtn) {
+            //todo wire this up!
         }
     }
 
