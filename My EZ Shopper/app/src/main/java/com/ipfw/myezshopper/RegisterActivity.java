@@ -191,6 +191,7 @@ public class RegisterActivity extends Activity {
                 Intent i = ProfileActivity.newIntent(RegisterActivity.this);
                 startActivity(i);
 
+                finish();
             }else if (result == "Successfully added"){
                 newUser = new User();
                 newUser.setEmail(emailtxt);

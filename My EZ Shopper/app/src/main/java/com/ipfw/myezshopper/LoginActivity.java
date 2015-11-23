@@ -171,6 +171,7 @@ public class LoginActivity extends Activity {
 
                 Intent i = ProfileActivity.newIntent(LoginActivity.this);
                 startActivity(i);
+                finish();
             }else{
                 Toast.makeText(getApplication(), result, Toast.LENGTH_SHORT).show();
             }

@@ -58,6 +58,9 @@ public class ProfileActivity extends FragmentActivity {
             prefManager.setLoggedin(false);
             Toast msg = Toast.makeText(this, "You have logged out", Toast.LENGTH_SHORT);
             msg.show();
+            Intent i = new Intent(ProfileActivity.this, LoginActivity.class);
+            startActivity(i);
+            finish();
         }
         
         if (v.getId() == R.id.go_to_delete_fragment){
@@ -66,6 +69,9 @@ public class ProfileActivity extends FragmentActivity {
 
             new JSONTaskDelete().execute(URL);
             prefManager.removeAllPreferences();
+            Intent i = new Intent(ProfileActivity.this, LoginActivity.class);
+            startActivity(i);
+            finish();
         }
     }
 
