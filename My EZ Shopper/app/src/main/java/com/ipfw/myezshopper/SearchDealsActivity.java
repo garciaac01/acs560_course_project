@@ -153,6 +153,7 @@ public class SearchDealsActivity extends Fragment {
 
                 String URL = "http://52.91.100.201:8080/deal";
 
+                builtString = "";
                 new JSONTask().execute(URL);
             }
         });//end setOnclickListener
@@ -179,6 +180,11 @@ public class SearchDealsActivity extends Fragment {
 
                 //remove last + symbol
                 concatenatedText = concatenatedText.substring(0, concatenatedText.length() - 1);
+
+                //get walmart deals
+                String walmartURL = "http://api.walmartlabs.com/v1/search?query=" + concatenatedText + "&format=json&apiKey=" + walmartAPIkey;
+                new JSONTask().execute(walmartURL, "walmart");
+
 
                 //what's going on here--this seems to be a duplicate of code above.  is this doing anything?
                 String URL = "http://52.91.100.201:8080/deal?name=" + concatenatedText;
@@ -215,50 +221,56 @@ public class SearchDealsActivity extends Fragment {
                     String line;
 
                     //if the extra parameter is walmart, we will parse the walmart response and add it to builtString
-                    if(params[1].equals("walmart"))
-                    {
-                        while((line = reader.readLine()) != null){
+                    if(params[1].equals("walmart")) {
+                        while ((line = reader.readLine()) != null) {
                             buffer.append(line);
                         }
 
                         String walmartString = buffer.toString();
                         JSONObject walmartDeals = new JSONObject(new String(walmartString));
-                        JSONArray walmartJSON = walmartDeals.getJSONArray("items");
-
-                        //this JSON object will hold the JSON each time we loop through the products
-                        JSONObject nextWalmartProduct;
 
                         //begin building up the string with walmart results
                         builtString += "<h4><b><u>Top Results from Walmart</b></u></h4>";
 
-                        for(int i = 0; i < PRODUCTS_PER_API; i++)
-                        {
-                            //convert the next product in the array into JSON
-                            JSONObject thisWalmartProduct = walmartJSON.getJSONObject(i);
+                        Log.i("Total Results", walmartDeals.get("totalResults").toString());
 
-                            builtString += "<br><br><b>" + (i+1) + ". Product Name: </b>" + thisWalmartProduct.get("name");
-                            builtString += "<br><b>Price: </b> $" + thisWalmartProduct.get("salePrice");
-                            builtString += "<br><b>Location: </b>";
-
-                            if(thisWalmartProduct.get("availableOnline").toString().equals("true"))
-                            {
-                                builtString += "Online and In-Store";
-                            }
-                            else
-                            {
-                                builtString += "In-Store";
-                            }
-
-                            if(thisWalmartProduct.has("shortDescription"))
-                            {
-                                builtString += "<br><b>Description: </b>" + thisWalmartProduct.get("shortDescription");
-                            }
+                        if (Integer.parseInt(walmartDeals.get("totalResults").toString()) == 0) {
+                            builtString += "<br><br>No Results Found from Walmart";
                         }
-                        //for now, we will display the entire string on the TextView
-                        //builtString += buffer.toString();
+                        else {
+                            JSONArray walmartJSON = walmartDeals.getJSONArray("items");
 
-                        Log.i("Search Walmart", builtString);
+                            //this JSON object will hold the JSON each time we loop through the products
+                            JSONObject nextWalmartProduct;
 
+
+                            for (int i = 0; i < PRODUCTS_PER_API; i++) {
+                                //convert the next product in the array into JSON
+                                JSONObject thisWalmartProduct = walmartJSON.getJSONObject(i);
+
+                                if (i != 0) {
+                                    builtString += "<br>";
+                                }
+                                builtString += "<br><b>" + (i + 1) + ". Product Name: </b>" + thisWalmartProduct.get("name");
+                                builtString += "<br><b>Price: </b> $" + thisWalmartProduct.get("salePrice");
+                                builtString += "<br><b>Location: </b>";
+
+                                if (thisWalmartProduct.get("availableOnline").toString().equals("true")) {
+                                    builtString += "Online and In-Store";
+                                } else {
+                                    builtString += "In-Store";
+                                }
+
+                                if (thisWalmartProduct.has("shortDescription")) {
+                                    builtString += "<br><b>Description: </b>" + thisWalmartProduct.get("shortDescription");
+                                }
+                            }
+                            //for now, we will display the entire string on the TextView
+                            //builtString += buffer.toString();
+
+                            Log.i("Search Walmart", builtString);
+
+                        }
                     }
                 }
                 else{
