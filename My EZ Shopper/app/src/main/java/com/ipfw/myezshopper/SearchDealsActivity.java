@@ -49,6 +49,7 @@ public class SearchDealsActivity extends Fragment {
     String token, TAG = "SearchDealsActivity", queryText;
     private final String walmartAPIkey = "e9rgk7ujvh43jaqxsytfcucm";
     private String builtString = "";
+    private final int PRODUCTS_PER_API = 2;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -122,6 +123,9 @@ public class SearchDealsActivity extends Fragment {
                     Toast.makeText(getActivity(), "Search field cannot be blank", Toast.LENGTH_LONG).show();
                 }
                 else{
+                    //reset the string that we'll display to the user
+                    builtString = "";
+
                     StringTokenizer st = new StringTokenizer(inputText, " ");
 
                     while (st.hasMoreTokens()){
@@ -217,8 +221,41 @@ public class SearchDealsActivity extends Fragment {
                             buffer.append(line);
                         }
 
+                        String walmartString = buffer.toString();
+                        JSONObject walmartDeals = new JSONObject(new String(walmartString));
+                        JSONArray walmartJSON = walmartDeals.getJSONArray("items");
+
+                        //this JSON object will hold the JSON each time we loop through the products
+                        JSONObject nextWalmartProduct;
+
+                        //begin building up the string with walmart results
+                        builtString += "<h4><b><u>Top Results from Walmart</b></u></h4>";
+
+                        for(int i = 0; i < PRODUCTS_PER_API; i++)
+                        {
+                            //convert the next product in the array into JSON
+                            JSONObject thisWalmartProduct = walmartJSON.getJSONObject(i);
+
+                            builtString += "<br><br><b>" + (i+1) + ". Product Name: </b>" + thisWalmartProduct.get("name");
+                            builtString += "<br><b>Price: </b> $" + thisWalmartProduct.get("salePrice");
+                            builtString += "<br><b>Location: </b>";
+
+                            if(thisWalmartProduct.get("availableOnline").toString().equals("true"))
+                            {
+                                builtString += "Online and In-Store";
+                            }
+                            else
+                            {
+                                builtString += "In-Store";
+                            }
+
+                            if(thisWalmartProduct.has("shortDescription"))
+                            {
+                                builtString += "<br><b>Description: </b>" + thisWalmartProduct.get("shortDescription");
+                            }
+                        }
                         //for now, we will display the entire string on the TextView
-                        builtString += buffer.toString();
+                        //builtString += buffer.toString();
 
                         Log.i("Search Walmart", builtString);
 
@@ -233,22 +270,19 @@ public class SearchDealsActivity extends Fragment {
 
                     String finalJSON = buffer.toString();
                     JSONArray parentArray = new JSONArray(finalJSON);
-                    //builtString = "";
+
+                    //begin building up the results for user posted deals
+                    builtString += "<br><h4><b><u>User Submitted Deals</u>:</b></h4>";
 
                     //count the products that are returned
                     int hitsCounter = 0;
 
                     if (parentArray.length() == 0){
-                        builtString += "No matches";
+                        builtString += "<br>No user submitted deals found";
                     }
                     else{
                         for (int i = 0; i < parentArray.length(); i++)
                         {
-                            if(hitsCounter == 0)
-                            {
-                                builtString += "<h4><b><u>User Submitted Deals</u>:</b></h4>";
-                            }
-
                             hitsCounter++;
 
                             JSONObject obj = parentArray.getJSONObject(i);
