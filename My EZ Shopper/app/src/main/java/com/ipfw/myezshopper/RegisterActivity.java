@@ -61,7 +61,7 @@ public class RegisterActivity extends Activity {
             } else if (passwordtxt.equals("")) {
                 Toast.makeText(getApplication(), "Password cannot be blank", Toast.LENGTH_SHORT).show();
             }else {
-                String URL = "http://52.91.100.201:8080/user";
+                String URL = "http://52.91.100.201:8080/api/user/login";
                 isLogin = true;
                 new JSONTask().execute(URL);
             }
@@ -81,7 +81,7 @@ public class RegisterActivity extends Activity {
             }else if (nametxt.equals("")) {
                 Toast.makeText(getApplication(), "Name cannot be blank", Toast.LENGTH_SHORT).show();
             }else {
-                String URL = "http://52.91.100.201:8080/user";
+                String URL = "http://52.91.100.201:8080/api/user";
                 new JSONTask().execute(URL);
             }
         }
@@ -144,17 +144,8 @@ public class RegisterActivity extends Activity {
                     }
                 } else if (HttpResult ==HttpURLConnection.HTTP_FORBIDDEN){
                     String msg = "";
-                    if (isLogin){
-                       msg = "Incorrect password";
-                    }
-                    else
-                    {
-                        msg = "Email already exists";
-                    }
-
+                    msg = "Email already exists";
                     return msg;
-                } else if (HttpResult ==HttpURLConnection.HTTP_NOT_FOUND) {
-                    return "Incorrect Email";
                 }
             } catch (MalformedURLException ex) {
                 ex.printStackTrace();

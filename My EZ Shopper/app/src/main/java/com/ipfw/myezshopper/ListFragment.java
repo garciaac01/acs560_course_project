@@ -84,7 +84,7 @@ public class ListFragment extends Fragment{ // implements View.OnClickListener{
         //Store items locally
         //Display items in list textView
         //get user's list from database
-        String URL = "http://52.91.100.201:8080/user/" + member_id;
+        String URL = "http://52.91.100.201:8080/api/user/" + member_id;
 
         new JSONTaskGet().execute(URL);
 
@@ -169,7 +169,7 @@ public class ListFragment extends Fragment{ // implements View.OnClickListener{
             switch(which){
                 case DialogInterface.BUTTON_POSITIVE:
                     shoppingList.remove(itemToDelete);
-                    new JSONTaskPost().execute("http://52.91.100.201:8080/user/" + member_id);
+                    new JSONTaskPost().execute("http://52.91.100.201:8080/api/user/" + member_id);
                     break;
                 case DialogInterface.BUTTON_NEGATIVE:
                     break;
@@ -190,7 +190,7 @@ public class ListFragment extends Fragment{ // implements View.OnClickListener{
             if(data.getStringExtra(AddItemFragment.EXTRA_NEW_ITEM) != null && !data.getStringExtra(AddItemFragment.EXTRA_NEW_ITEM).equals("")) {
                 shoppingList.add(data.getStringExtra(AddItemFragment.EXTRA_NEW_ITEM));
 
-                new JSONTaskPost().execute("http://52.91.100.201:8080/user/" + member_id);
+                new JSONTaskPost().execute("http://52.91.100.201:8080/api/user/" + member_id);
             }
             else
             {

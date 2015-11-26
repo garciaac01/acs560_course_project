@@ -169,12 +169,17 @@ public class DealFragment extends Fragment implements View.OnClickListener{
 
             Date today = formatter.parse(strToday);
 
-            if (enteredExpirationDate.getTimeInMillis() < today.getTime()){
-                Toast.makeText(getActivity(), "Expiration date is invalid", Toast.LENGTH_SHORT).show();
-            }else{
+
                 Double.parseDouble(price);
-                new JSONTask().execute("http://52.91.100.201:8080/deal");
-            }
+                new JSONTask().execute("http://52.91.100.201:8080/api/deal");
+
+
+//            if (enteredExpirationDate.getTimeInMillis() < today.getTime()){
+//                Toast.makeText(getActivity(), "Expiration date is invalid", Toast.LENGTH_SHORT).show();
+//            }else{
+//                Double.parseDouble(price);
+//                new JSONTask().execute("http://52.91.100.201:8080/api/deal");
+//            }
         }catch(NumberFormatException e){
             Toast.makeText(getActivity(), R.string.invalid_price, Toast.LENGTH_SHORT).show();
         }catch(ParseException e){

@@ -27,6 +27,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -46,7 +47,7 @@ public class SearchDealsActivity extends Fragment {
     Button searchButton, searchAllButton;
     private TextView tvResponse, productText;
     SharedPreferences pref;
-    String token, TAG = "SearchDealsActivity", queryText;
+    String token, TAG = "SearchDealsActivity", queryText, concatenatedText;
     private final String walmartAPIkey = "e9rgk7ujvh43jaqxsytfcucm";
     private String builtString = "";
     private final int PRODUCTS_PER_API = 2;
@@ -115,7 +116,7 @@ public class SearchDealsActivity extends Fragment {
 
             @Override
             public void onClick(View v) {
-                String concatenatedText = "";
+
                 String inputText = txtName.getText().toString();
                 //queryText = txtQuery.getText().toString();
 
@@ -125,6 +126,7 @@ public class SearchDealsActivity extends Fragment {
                 else{
                     //reset the string that we'll display to the user
                     builtString = "";
+                    concatenatedText = "";
 
                     StringTokenizer st = new StringTokenizer(inputText, " ");
 
@@ -137,11 +139,11 @@ public class SearchDealsActivity extends Fragment {
 
                     //get walmart deals
                     String walmartURL = "http://api.walmartlabs.com/v1/search?query=" + concatenatedText + "&format=json&apiKey=" + walmartAPIkey;
-                    new JSONTask().execute(walmartURL, "walmart");
+                    new JSONTaskSearchWalMart().execute(walmartURL, "walmart");
 
                       //get user created deals
-                    String URL = "http://52.91.100.201:8080/deal?" + queryText + "=" + concatenatedText;
-                    new JSONTask().execute(URL);
+                    String URL = "http://52.91.100.201:8080/api/deal/search/name/" + concatenatedText;
+                    new JSONTaskSearchParker().execute(URL);
                 }
             }
         });//end setOnclickListener
@@ -151,15 +153,17 @@ public class SearchDealsActivity extends Fragment {
             @Override
             public void onClick(View v) {
 
-                String URL = "http://52.91.100.201:8080/deal";
+                String URL = "http://52.91.100.201:8080/api/deal";
 
                 builtString = "";
-                new JSONTask().execute(URL);
+                new JSONTaskSearchAll().execute(URL);
             }
         });//end setOnclickListener
 
         if(getArguments() != null)
         {
+            //User is searching for an item that has been clicked in their list.
+
             String myListProduct = getArguments().getString(ListFragment.EXTRA_PRODUCT_SEARCH, null);
             //Toast.makeText(getActivity(), myListProduct, Toast.LENGTH_LONG).show();
             txtName.setText(myListProduct);
@@ -168,6 +172,7 @@ public class SearchDealsActivity extends Fragment {
             String inputText = myListProduct;
             //queryText = txtQuery.getText().toString();
 
+            //todo andy: can this if statement be removed????
             if (inputText.equals("")){
                 Toast.makeText(getActivity(), "Search field cannot be blank", Toast.LENGTH_LONG).show();
             }
@@ -183,13 +188,12 @@ public class SearchDealsActivity extends Fragment {
 
                 //get walmart deals
                 String walmartURL = "http://api.walmartlabs.com/v1/search?query=" + concatenatedText + "&format=json&apiKey=" + walmartAPIkey;
-                new JSONTask().execute(walmartURL, "walmart");
+                new JSONTaskSearchWalMart().execute(walmartURL, "walmart");
 
 
                 //what's going on here--this seems to be a duplicate of code above.  is this doing anything?
-                String URL = "http://52.91.100.201:8080/deal?name=" + concatenatedText;
-
-                new JSONTask().execute(URL);
+                String URL = "http://52.91.100.201:8080/api/deal/search/name/" + concatenatedText;
+                new JSONTaskSearchParker().execute(URL);
             }
         }
 
@@ -198,7 +202,7 @@ public class SearchDealsActivity extends Fragment {
 
 
 
-    public class JSONTask extends AsyncTask<String,String, String> {
+    public class JSONTaskSearchWalMart extends AsyncTask<String,String, String> {
         @Override
         protected String doInBackground(String... params) {
 
@@ -316,6 +320,365 @@ public class SearchDealsActivity extends Fragment {
                         }
                     }
                 }
+                return builtString;
+            }catch(MalformedURLException ex){
+                ex.printStackTrace();
+            }catch(IOException ex){
+                ex.printStackTrace();
+                return "No network connection";
+            }catch (JSONException e) {
+                e.printStackTrace();
+                System.out.println(e.getMessage());
+            }catch (ParseException ex){
+                return "DATE EXCEPTION";
+            }
+            finally{
+                if (connection != null) {
+                    connection.disconnect();
+                }
+                try {
+                    if (reader != null){
+                        reader.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            if (result.equals("No network connection")){
+                Toast.makeText(getActivity(), result, Toast.LENGTH_LONG).show();
+            }else{
+                productText.setText(Html.fromHtml(result.toString()));
+            }
+        }
+    }
+
+    public class JSONTaskSearchParker extends AsyncTask<String,String, String> {
+        @Override
+        protected String doInBackground(String... params) {
+
+            HttpURLConnection connection = null;
+            BufferedReader reader = null;
+            try{
+                URL url = new URL(params[0]);
+                connection = (HttpURLConnection)url.openConnection();
+
+                int HttpResult = connection.getResponseCode();
+                if (HttpResult == HttpURLConnection.HTTP_OK) {
+                    InputStream stream = connection.getInputStream();
+                    reader = new BufferedReader(new InputStreamReader(stream));
+                    StringBuffer buffer = new StringBuffer();
+
+                    builtString += "";
+
+                    String line;
+
+                    while ((line = reader.readLine()) != null) {
+                        buffer.append(line);
+                    }
+
+                    String finalJSON = buffer.toString();
+                    JSONArray parentArray = new JSONArray(finalJSON);
+
+                    //begin building up the results for user posted deals
+                    builtString += "<br><h4><b><u>User Submitted Deals</u>:</b></h4>";
+
+                    //count the products that are returned
+                    int hitsCounter = 0;
+
+                    if (parentArray.length() == 0){
+                        builtString += "<br>No user submitted deals found";
+                    }
+                    else{
+                        for (int i = 0; i < parentArray.length(); i++)
+                        {
+                            hitsCounter++;
+
+                            JSONObject obj = parentArray.getJSONObject(i);
+
+                            String format = "yyyy-MM-dd";
+                            SimpleDateFormat sdf = new SimpleDateFormat(format);
+                            Date d = sdf.parse(obj.getString("expirationDate"));
+                            Calendar cal = Calendar.getInstance();
+                            cal.setTime(d);
+                            String expDate = "";
+                            expDate += cal.get(Calendar.MONTH) + 1 + "/";
+                            expDate += cal.get(Calendar.DATE) + "/";
+                            expDate += cal.get(Calendar.YEAR);
+
+                            builtString += "<b>" + hitsCounter + ". " + obj.getString("name") + "<br>Price:</b> $" + obj.getDouble("price")
+                                    + "<br><b>Store:</b> " + obj.getString("storeName") + "<br><b>Location:</b> " + obj.getString("location")
+                                    + "<br><b>Details:</b> " + obj.get("description") + "<br><b>Category:</b> " + obj.get("category")
+                                    + "<br><b>Expiration Date:</b> " +expDate + "<br><br>";
+                        }
+                    }
+
+                }else if (HttpResult == 404){
+                    builtString += "<br>No user submitted deals found";
+                }else{
+                    builtString += "Error";
+                }
+                return builtString;
+            }catch(MalformedURLException ex){
+                ex.printStackTrace();
+            }catch(IOException ex){
+                ex.printStackTrace();
+                return "No network connection";
+            }catch (JSONException e) {
+                e.printStackTrace();
+                System.out.println(e.getMessage());
+            }catch (ParseException ex){
+                return "DATE EXCEPTION";
+            }
+            finally{
+                if (connection != null) {
+                    connection.disconnect();
+                }
+                try {
+                    if (reader != null){
+                        reader.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            if (result.equals("No network connection")){
+                Toast.makeText(getActivity(), result, Toast.LENGTH_LONG).show();
+            }else{
+                productText.setText(Html.fromHtml(result.toString()));
+            }
+        }
+    }
+
+    public class JSONTaskSearch extends AsyncTask<String,String, String> {
+        @Override
+        protected String doInBackground(String... params) {
+
+            HttpURLConnection connection = null;
+            BufferedReader reader = null;
+            try{
+                URL url = new URL(params[0]);
+                connection = (HttpURLConnection)url.openConnection();
+
+                InputStream stream = connection.getInputStream();
+
+                reader = new BufferedReader(new InputStreamReader(stream));
+                StringBuffer buffer = new StringBuffer();
+
+                builtString += "";
+
+                //there will be more than one parameter when we are searching the shopping APIs
+                if(params.length > 1)
+                {
+                    String line;
+
+                    //if the extra parameter is walmart, we will parse the walmart response and add it to builtString
+                    if(params[1].equals("walmart")) {
+                        while ((line = reader.readLine()) != null) {
+                            buffer.append(line);
+                        }
+
+                        String walmartString = buffer.toString();
+                        JSONObject walmartDeals = new JSONObject(new String(walmartString));
+
+                        //begin building up the string with walmart results
+                        builtString += "<h4><b><u>Top Results from Walmart</b></u></h4>";
+
+                        Log.i("Total Results", walmartDeals.get("totalResults").toString());
+
+                        if (Integer.parseInt(walmartDeals.get("totalResults").toString()) == 0) {
+                            builtString += "<br><br>No Results Found from Walmart";
+                        }
+                        else {
+                            JSONArray walmartJSON = walmartDeals.getJSONArray("items");
+
+                            //this JSON object will hold the JSON each time we loop through the products
+                            JSONObject nextWalmartProduct;
+
+
+                            for (int i = 0; i < PRODUCTS_PER_API; i++) {
+                                //convert the next product in the array into JSON
+                                JSONObject thisWalmartProduct = walmartJSON.getJSONObject(i);
+
+                                if (i != 0) {
+                                    builtString += "<br>";
+                                }
+                                builtString += "<br><b>" + (i + 1) + ". Product Name: </b>" + thisWalmartProduct.get("name");
+                                builtString += "<br><b>Price: </b> $" + thisWalmartProduct.get("salePrice");
+                                builtString += "<br><b>Location: </b>";
+
+                                if (thisWalmartProduct.get("availableOnline").toString().equals("true")) {
+                                    builtString += "Online and In-Store";
+                                } else {
+                                    builtString += "In-Store";
+                                }
+
+                                if (thisWalmartProduct.has("shortDescription")) {
+                                    builtString += "<br><b>Description: </b>" + thisWalmartProduct.get("shortDescription");
+                                }
+                            }
+                            //for now, we will display the entire string on the TextView
+                            //builtString += buffer.toString();
+
+                            Log.i("Search Walmart", builtString);
+
+                        }
+                    }
+                }
+                else{
+                    String line;
+
+                    while ((line = reader.readLine()) != null) {
+                        buffer.append(line);
+                    }
+
+                    String finalJSON = buffer.toString();
+                    JSONArray parentArray = new JSONArray(finalJSON);
+
+                    //begin building up the results for user posted deals
+                    builtString += "<br><h4><b><u>User Submitted Deals</u>:</b></h4>";
+
+                    //count the products that are returned
+                    int hitsCounter = 0;
+
+                    if (parentArray.length() == 0){
+                        builtString += "<br>No user submitted deals found";
+                    }
+                    else{
+                        for (int i = 0; i < parentArray.length(); i++)
+                        {
+                            hitsCounter++;
+
+                            JSONObject obj = parentArray.getJSONObject(i);
+
+                            String format = "yyyy-MM-dd";
+                            SimpleDateFormat sdf = new SimpleDateFormat(format);
+                            Date d = sdf.parse(obj.getString("expirationDate"));
+                            Calendar cal = Calendar.getInstance();
+                            cal.setTime(d);
+                            String expDate = "";
+                            expDate += cal.get(Calendar.MONTH) + 1 + "/";
+                            expDate += cal.get(Calendar.DATE) + "/";
+                            expDate += cal.get(Calendar.YEAR);
+
+                            builtString += "<b>" + hitsCounter + ". " + obj.getString("name") + "<br>Price:</b> $" + obj.getDouble("price")
+                                    + "<br><b>Store:</b> " + obj.getString("storeName") + "<br><b>Location:</b> " + obj.getString("location")
+                                    + "<br><b>Details:</b> " + obj.get("description") + "<br><b>Category:</b> " + obj.get("category")
+                                    + "<br><b>Expiration Date:</b> " +expDate + "<br><br>";
+                        }
+                    }
+                }
+                return builtString;
+            }catch(MalformedURLException ex){
+                ex.printStackTrace();
+            }catch(IOException ex){
+                ex.printStackTrace();
+                return "No network connection";
+            }catch (JSONException e) {
+                e.printStackTrace();
+                System.out.println(e.getMessage());
+            }catch (ParseException ex){
+                return "DATE EXCEPTION";
+            }
+            finally{
+                if (connection != null) {
+                    connection.disconnect();
+                }
+                try {
+                    if (reader != null){
+                        reader.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            if (result.equals("No network connection")){
+                Toast.makeText(getActivity(), result, Toast.LENGTH_LONG).show();
+            }else{
+                productText.setText(Html.fromHtml(result.toString()));
+            }
+        }
+    }
+
+    public class JSONTaskSearchAll extends AsyncTask<String,String, String> {
+        @Override
+        protected String doInBackground(String... params) {
+
+            HttpURLConnection connection = null;
+            BufferedReader reader = null;
+            try{
+                URL url = new URL(params[0]);
+                connection = (HttpURLConnection)url.openConnection();
+
+                InputStream stream = connection.getInputStream();
+
+                reader = new BufferedReader(new InputStreamReader(stream));
+                StringBuffer buffer = new StringBuffer();
+
+                builtString += "";
+
+                    String line;
+
+                    while ((line = reader.readLine()) != null) {
+                        buffer.append(line);
+                    }
+
+                    String finalJSON = buffer.toString();
+                    JSONArray parentArray = new JSONArray(finalJSON);
+
+                    //begin building up the results for user posted deals
+                    builtString += "<br><h4><b><u>User Submitted Deals</u>:</b></h4>";
+
+                    //count the products that are returned
+                    int hitsCounter = 0;
+
+                    if (parentArray.length() == 0){
+                        builtString += "<br>No user submitted deals found";
+                    }
+                    else{
+                        for (int i = 0; i < parentArray.length(); i++)
+                        {
+                            hitsCounter++;
+
+                            JSONObject obj = parentArray.getJSONObject(i);
+
+                            String format = "yyyy-MM-dd";
+                            SimpleDateFormat sdf = new SimpleDateFormat(format);
+                            Date d = sdf.parse(obj.getString("expirationDate"));
+                            Calendar cal = Calendar.getInstance();
+                            cal.setTime(d);
+                            String expDate = "";
+                            expDate += cal.get(Calendar.MONTH) + 1 + "/";
+                            expDate += cal.get(Calendar.DATE) + "/";
+                            expDate += cal.get(Calendar.YEAR);
+
+                            builtString += "<b>" + hitsCounter + ". " + obj.getString("name") + "<br>Price:</b> $" + obj.getDouble("price")
+                                    + "<br><b>Store:</b> " + obj.getString("storeName") + "<br><b>Location:</b> " + obj.getString("location")
+                                    + "<br><b>Details:</b> " + obj.get("description") + "<br><b>Category:</b> " + obj.get("category")
+                                    + "<br><b>Expiration Date:</b> " +expDate + "<br><br>";
+                        }
+                    }
+
                 return builtString;
             }catch(MalformedURLException ex){
                 ex.printStackTrace();

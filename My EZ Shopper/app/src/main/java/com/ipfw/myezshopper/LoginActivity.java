@@ -81,7 +81,8 @@ public class LoginActivity extends Activity {
                 }else if (passwordtxt.equals("")){
                     Toast.makeText(getApplication(), "Password cannot be blank", Toast.LENGTH_SHORT).show();
                 }else{
-                    String URL = "http://52.91.100.201:8080/user";
+                    String URL = "http://52.91.100.201:8080/api/user/login";
+                    //String URL = "http://52.91.100.201:8080/user";
                     new JSONTask().execute(URL);
                 }
 
@@ -100,8 +101,8 @@ public class LoginActivity extends Activity {
             StringBuffer buffer = new StringBuffer();
 
             try {
-                URL object = new URL(params[0]);
-                connection = (HttpURLConnection) object.openConnection();
+                URL url = new URL(params[0]);
+                connection = (HttpURLConnection) url.openConnection();
                 connection.setDoInput(true);
                 connection.setDoOutput(true);
                 connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
@@ -124,32 +125,29 @@ public class LoginActivity extends Activity {
                     allowLogin = true;
 
                     br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "utf-8"));
-//                    String line;
-//                    while ((line = br.readLine()) != null) {
-//                        memberID.append(line + "\n");
-//                    }
-//                    br.close();
-
                     String line;
-
                     while ((line = br.readLine()) != null) {
                         buffer.append(line);
                     }
 
                     String finalJSON = buffer.toString();
-                    JSONObject obj = new JSONObject(finalJSON);
+                    //JSONObject obj = new JSONObject(finalJSON);
+                    JSONArray arr = new JSONArray(finalJSON);
+                    JSONObject obj = arr.getJSONObject(0);
                     prefManager.setName(obj.getString("name"));
                     prefManager.setPassword(obj.getString("password"));
                     prefManager.setEmail(obj.getString("email"));
                     prefManager.setId(obj.getString("_id"));
                     memberID = obj.getString("_id");
-                    //todo store list items
+                    //todo store list items locally
 
                     return "Successfully logged in!";
                 } else if (HttpResult ==HttpURLConnection.HTTP_FORBIDDEN){
                    return "Incorrect password";
                 } else if (HttpResult == HttpURLConnection.HTTP_NOT_FOUND){
                     return "Incorrect email";
+                }else if (HttpResult == HttpURLConnection.HTTP_BAD_REQUEST){
+                    return "Login information incorrect";
                 }
 
             } catch (MalformedURLException ex) {

@@ -77,7 +77,7 @@ public class ChangePasswordFragment extends Fragment implements View.OnClickList
                 Toast.makeText(getActivity(), "Passwords do not match", Toast.LENGTH_SHORT).show();
             }else{
                 prefManager.setPassword(newPassword);
-                String URL = "http://52.91.100.201:8080/user/" + member_id;
+                String URL = "http://52.91.100.201:8080/api/user/" + member_id;
                 new JSONTaskUpdate().execute(URL, newPassword);
             }
         }

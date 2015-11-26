@@ -68,7 +68,7 @@ public class ProfileActivity extends FragmentActivity {
         
         if (v.getId() == R.id.go_to_delete_fragment){
 
-            String URL = "http://52.91.100.201:8080/user/" + member_id;
+            String URL = "http://52.91.100.201:8080/api/user/" + member_id;
 
             new JSONTaskDelete().execute(URL);
             prefManager.removeAllPreferences();
