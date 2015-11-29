@@ -1,7 +1,7 @@
 package com.ipfw.myezshopper;
 
 import android.app.Activity;
-import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -9,12 +9,14 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,10 +40,11 @@ public class ListFragment extends Fragment{ // implements View.OnClickListener{
     private ShoppingAdapter mAdapter;
     private int itemListLength;  //may want to move this to a newIntent method in ProfileFragment
     private ArrayList<String> shoppingList;
-    private String member_id, itemToDelete;
+    private String member_id, itemToDelete, itemToEdit;
     public static String EXTRA_PRODUCT_SEARCH = "com.ipfw.myezshopper.myProductName", ADD_ITEM = "add item";
     public static final int ADD_ITEM_REQUEST_CODE = 0;
     private FloatingActionButton floatingActionButton;
+    private EditText editedItem;
 
     private PreferencesManager prefManager;
 
@@ -95,12 +98,23 @@ public class ListFragment extends Fragment{ // implements View.OnClickListener{
     private class ShoppingListHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         private TextView mMyProductName;
         private Button mDeleteButton;
+        private Button mEditButton;
+        private Button mSearchDealResults;
 
         public ShoppingListHolder(View itemView)
         {
             super(itemView);
-            itemView.setOnClickListener(this);
+            //itemView.setOnClickListener(this);
             mMyProductName = (TextView) itemView.findViewById(R.id.my_product);
+            mEditButton = (Button) itemView.findViewById(R.id.edit_button);
+            mEditButton.setOnClickListener(new View.OnClickListener(){
+                @Override
+            public void onClick(View v){
+                    showEditDialog(mMyProductName.getText().toString());
+                }
+            });
+            mSearchDealResults = (Button) itemView.findViewById(R.id.search_button);
+            mSearchDealResults.setOnClickListener(this);
             mDeleteButton = (Button) itemView.findViewById(R.id.delete_button);
             mDeleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -154,6 +168,33 @@ public class ListFragment extends Fragment{ // implements View.OnClickListener{
         mAdapter = new ShoppingAdapter(shoppingList);
         mShoppingRecyclerView.setAdapter(mAdapter);
     }
+
+    private void showEditDialog(String itemToEdit)
+    {
+        View v = LayoutInflater.from(getActivity()).inflate(R.layout.add_shopping_list_item, null);
+        editedItem = (EditText) v.findViewById(R.id.item_to_add);
+        editedItem.setText(itemToEdit.toString());
+        this.itemToEdit = itemToEdit;
+
+        AlertDialog editItemAlert =  new AlertDialog.Builder(getActivity()).setView(v).setTitle(R.string.edit_existing_item).setNegativeButton(android.R.string.cancel, editDialogListener).setPositiveButton(android.R.string.ok, editDialogListener).show();
+    }
+
+    DialogInterface.OnClickListener editDialogListener = new DialogInterface.OnClickListener(){
+        @Override
+        public void onClick(DialogInterface dialog, int which)
+        {
+            switch(which){
+                case DialogInterface.BUTTON_POSITIVE:
+                    shoppingList.remove(itemToEdit);
+                    shoppingList.add(editedItem.getText().toString());
+                    new JSONTaskPost().execute("http://52.91.100.201:8080/api/user/" + member_id);
+                    break;
+                case DialogInterface.BUTTON_NEGATIVE:
+                    break;
+            }
+        }
+
+    };
 
     private void showDeleteDialog(String itemToDelete)
     {
