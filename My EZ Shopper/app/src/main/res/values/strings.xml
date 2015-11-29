@@ -31,5 +31,4 @@
     <string name="spinner_category_title">Search By...</string>
     <string name="add_new_item">Add Item to Shopping List:</string>
     <string name="edit_existing_item">Edit Item in Shopping List:</string>
-    <string name="edit_text">Edit</string>
 </resources>
