@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#303030"
+    >
+
+    <TextView
+        android:id="@+id/user_product_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Here's some text"
+        android:textColor="#fafafa"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:paddingLeft="12dp"
+        android:gravity="center_vertical"
+        android:layout_weight="8"/>
+
+
+        <Button
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:background="@drawable/thumb_up"
+            android:layout_margin="8dp"
+            android:layout_marginRight="24dp"
+            android:layout_toRightOf="@id/user_product_textview"
+            android:id="@+id/thumb_up"
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical"/>
+
+        <Button
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_margin="8dp"
+            android:layout_marginRight="24dp"
+            android:id="@+id/thumb_down"
+            android:background="@drawable/thumb_down"
+            android:layout_toRightOf="@id/thumb_up"
+            android:textColor="#ffffff"
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical"/>
+
+</LinearLayout>

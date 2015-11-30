@@ -6,6 +6,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -45,12 +47,17 @@ public class SearchDealsActivity extends Fragment {
     EditText txtName;
     Spinner categorySpinner;
     Button searchButton, searchAllButton;
-    private TextView tvResponse, productText;
     SharedPreferences pref;
     String token, TAG = "SearchDealsActivity", queryText, concatenatedText;
     private final String walmartAPIkey = "e9rgk7ujvh43jaqxsytfcucm";
     private String builtString = "";
     private final int PRODUCTS_PER_API = 2;
+    private RecyclerView mSearchRecyclerView, mApiRecyclerView;
+    private ArrayList<String> searchResultList, apiResultList;
+    private DealAdapter mAdapter;
+    private ApiDealAdapter mApiAdapter;
+    private TextView mApiTextView, mUserDealTextView;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -65,12 +72,23 @@ public class SearchDealsActivity extends Fragment {
         View v = inflater.inflate(R.layout.activity_search_deals, container, false);
        // setContentView(R.layout.activity_search_deals);
 
+        mApiTextView = (TextView) v.findViewById(R.id.top_api_deals);
+        mUserDealTextView = (TextView) v.findViewById(R.id.top_user_deals);
+
+        mSearchRecyclerView = (RecyclerView) v.findViewById(R.id.deals_recycler_view);
+        mSearchRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        searchResultList = new ArrayList<String>();
+        updateUI();
+
+        mApiRecyclerView = (RecyclerView) v.findViewById(R.id.api_recycler_view);
+        mApiRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        apiResultList = new ArrayList<String>();
+        updateApiUI();
+
         txtName = (EditText) v.findViewById(R.id.txtName);
         categorySpinner = (Spinner) v.findViewById(R.id.category_spinner);
-        productText = (TextView) v.findViewById(R.id.product);
         searchButton = (Button) v.findViewById(R.id.search_button);
         searchAllButton = (Button) v.findViewById(R.id.search_all_button);
-        tvResponse = (TextView) v.findViewById(R.id.database_response);
 
         List<String> categories = new ArrayList<String>();
         categories.add("Product Name");
@@ -87,19 +105,16 @@ public class SearchDealsActivity extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 queryText = parent.getItemAtPosition(position).toString();
 
-                if(queryText.equals("Product Name")){
+                if (queryText.equals("Product Name")) {
                     txtName.setHint("Enter Product Name");
                     queryText = "name";
-                }
-                else if(queryText.equals("Store Name")){
+                } else if (queryText.equals("Store Name")) {
                     txtName.setHint("Enter Store Name");
                     queryText = "storeName";
-                }
-                else if(queryText.equals("Location")){
+                } else if (queryText.equals("Location")) {
                     txtName.setHint("Enter Location");
                     queryText = "location";
-                }
-                else if(queryText.equals("Category")){
+                } else if (queryText.equals("Category")) {
                     txtName.setHint("Enter Category");
                     queryText = "category";
                 }
@@ -116,7 +131,8 @@ public class SearchDealsActivity extends Fragment {
 
             @Override
             public void onClick(View v) {
-
+                mApiTextView.setText(Html.fromHtml("<b><u>Top Advertised Deals</b></u>:"));
+                mUserDealTextView.setText(Html.fromHtml("<b><u>Top User Submitted Deals</b></u>:"));
                 String inputText = txtName.getText().toString();
                 //queryText = txtQuery.getText().toString();
 
@@ -127,6 +143,8 @@ public class SearchDealsActivity extends Fragment {
                     //reset the string that we'll display to the user
                     builtString = "";
                     concatenatedText = "";
+                    searchResultList.clear();
+                    apiResultList.clear();
 
                     StringTokenizer st = new StringTokenizer(inputText, " ");
 
@@ -150,12 +168,18 @@ public class SearchDealsActivity extends Fragment {
 
         searchAllButton.setOnClickListener(new View.OnClickListener() {
 
+
             @Override
             public void onClick(View v) {
+                mApiTextView.setText("");
+                mUserDealTextView.setText(Html.fromHtml("<b><u>Top User Submitted Deals</b></u>:"));
+
 
                 String URL = "http://52.91.100.201:8080/api/deal";
 
                 builtString = "";
+                searchResultList.clear();
+                apiResultList.clear();
                 new JSONTaskSearchAll().execute(URL);
             }
         });//end setOnclickListener
@@ -186,6 +210,13 @@ public class SearchDealsActivity extends Fragment {
                 //remove last + symbol
                 concatenatedText = concatenatedText.substring(0, concatenatedText.length() - 1);
 
+                builtString = "";
+                searchResultList.clear();
+                apiResultList.clear();
+
+                mApiTextView.setText(Html.fromHtml("<b><u>Top Advertised Deals</b></u>:"));
+                mUserDealTextView.setText(Html.fromHtml("<b><u>Top User Submitted Deals</b></u>:"));
+
                 //get walmart deals
                 String walmartURL = "http://api.walmartlabs.com/v1/search?query=" + concatenatedText + "&format=json&apiKey=" + walmartAPIkey;
                 new JSONTaskSearchWalMart().execute(walmartURL, "walmart");
@@ -199,6 +230,116 @@ public class SearchDealsActivity extends Fragment {
 
         return v;
     }//end onCreate
+
+    private class DealHolder extends RecyclerView.ViewHolder{
+        private TextView mUserProductTextView;
+        private Button thumbUp, thumbDown;
+
+        public DealHolder(View itemView){
+            super(itemView);
+
+            mUserProductTextView = (TextView) itemView.findViewById(R.id.user_product_textview);
+            thumbUp = (Button) itemView.findViewById(R.id.thumb_up);
+            thumbDown = (Button) itemView.findViewById(R.id.thumb_down);
+
+            thumbUp.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v)
+                {
+                    Toast.makeText(getActivity(), "You clicked the thumb up", Toast.LENGTH_LONG).show();
+                }
+            });
+
+            thumbDown.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v)
+                {
+                    Toast.makeText(getActivity(), "You clicked the thumb down", Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+    }
+
+    private class DealAdapter extends RecyclerView.Adapter<DealHolder>{
+        private List<String> mDeals;
+
+        private DealAdapter(List<String> deals){
+            mDeals = deals;
+        }
+
+        @Override
+        public DealHolder onCreateViewHolder(ViewGroup parent, int viewType){
+            LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
+            View view = layoutInflater.inflate(R.layout.single_user_deal_result, parent, false);
+            return new DealHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder (DealHolder holder, int position){
+            String deal = mDeals.get(position);
+            holder.mUserProductTextView.setText(Html.fromHtml(deal));
+        }
+
+        @Override
+        public int getItemCount()
+        {
+            return mDeals.size();
+        }
+    }
+
+    private void updateUI()
+    {
+        mAdapter = new DealAdapter(searchResultList);
+        mSearchRecyclerView.setAdapter(mAdapter);
+    }
+
+
+
+    //set up the recycler view for the api results
+    private class ApiDealHolder extends RecyclerView.ViewHolder{
+        private TextView mApiTextView;
+
+        public ApiDealHolder(View itemView){
+            super(itemView);
+
+            mApiTextView = (TextView) itemView.findViewById(R.id.api_deal_textview);
+        }
+    }
+
+    private class ApiDealAdapter extends RecyclerView.Adapter<ApiDealHolder>{
+        private List<String> mApiDeals;
+
+        private ApiDealAdapter(List<String> apiDeals){
+            mApiDeals = apiDeals;
+        }
+
+        @Override
+        public ApiDealHolder onCreateViewHolder(ViewGroup parent, int viewType){
+            LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
+            View view = layoutInflater.inflate(R.layout.single_shopping_api_result, parent, false);
+            return new ApiDealHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder (ApiDealHolder holder, int position){
+            String deal = mApiDeals.get(position);
+            holder.mApiTextView.setText(Html.fromHtml(deal));
+        }
+
+        @Override
+        public int getItemCount()
+        {
+            return mApiDeals.size();
+        }
+    }
+
+    private void updateApiUI()
+    {
+        mApiAdapter = new ApiDealAdapter(apiResultList);
+        mApiRecyclerView.setAdapter(mApiAdapter);
+    }
+
+
 
 
 
@@ -251,6 +392,7 @@ public class SearchDealsActivity extends Fragment {
                             for (int i = 0; i < PRODUCTS_PER_API; i++) {
                                 //convert the next product in the array into JSON
                                 JSONObject thisWalmartProduct = walmartJSON.getJSONObject(i);
+                                builtString = "";
 
                                 if (i != 0) {
                                     builtString += "<br>";
@@ -268,6 +410,7 @@ public class SearchDealsActivity extends Fragment {
                                 if (thisWalmartProduct.has("shortDescription")) {
                                     builtString += "<br><b>Description: </b>" + thisWalmartProduct.get("shortDescription");
                                 }
+                                apiResultList.add(builtString);
                             }
                             //for now, we will display the entire string on the TextView
                             //builtString += buffer.toString();
@@ -286,9 +429,6 @@ public class SearchDealsActivity extends Fragment {
 
                     String finalJSON = buffer.toString();
                     JSONArray parentArray = new JSONArray(finalJSON);
-
-                    //begin building up the results for user posted deals
-                    builtString += "<br><h4><b><u>User Submitted Deals</u>:</b></h4>";
 
                     //count the products that are returned
                     int hitsCounter = 0;
@@ -351,10 +491,13 @@ public class SearchDealsActivity extends Fragment {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
+            updateApiUI();
+            updateUI();
+
             if (result.equals("No network connection")){
                 Toast.makeText(getActivity(), result, Toast.LENGTH_LONG).show();
             }else{
-                productText.setText(Html.fromHtml(result.toString()));
+               // productText.setText(Html.fromHtml(result.toString()));
             }
         }
     }
@@ -375,7 +518,7 @@ public class SearchDealsActivity extends Fragment {
                     reader = new BufferedReader(new InputStreamReader(stream));
                     StringBuffer buffer = new StringBuffer();
 
-                    builtString += "";
+                    builtString = "";
 
                     String line;
 
@@ -386,18 +529,23 @@ public class SearchDealsActivity extends Fragment {
                     String finalJSON = buffer.toString();
                     JSONArray parentArray = new JSONArray(finalJSON);
 
-                    //begin building up the results for user posted deals
-                    builtString += "<br><h4><b><u>User Submitted Deals</u>:</b></h4>";
+
 
                     //count the products that are returned
                     int hitsCounter = 0;
 
                     if (parentArray.length() == 0){
-                        builtString += "<br>No user submitted deals found";
+                        builtString += "<br><br>No user submitted deals found";
                     }
                     else{
                         for (int i = 0; i < parentArray.length(); i++)
                         {
+                            if(hitsCounter == 0)
+                            {
+                                //begin building up the results for user posted deals
+                                builtString += "<br><h4><b><u>User Submitted Deals</u>:</b></h4>";
+                            }
+                            builtString = "";
                             hitsCounter++;
 
                             JSONObject obj = parentArray.getJSONObject(i);
@@ -416,6 +564,7 @@ public class SearchDealsActivity extends Fragment {
                                     + "<br><b>Store:</b> " + obj.getString("storeName") + "<br><b>Location:</b> " + obj.getString("location")
                                     + "<br><b>Details:</b> " + obj.get("description") + "<br><b>Category:</b> " + obj.get("category")
                                     + "<br><b>Expiration Date:</b> " +expDate + "<br><br>";
+                            searchResultList.add(builtString);
                         }
                     }
 
@@ -455,10 +604,13 @@ public class SearchDealsActivity extends Fragment {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
+            updateUI();
+            updateApiUI();
+
             if (result.equals("No network connection")){
                 Toast.makeText(getActivity(), result, Toast.LENGTH_LONG).show();
             }else{
-                productText.setText(Html.fromHtml(result.toString()));
+               // productText.setText(Html.fromHtml(result.toString()));
             }
         }
     }
@@ -548,8 +700,6 @@ public class SearchDealsActivity extends Fragment {
                     String finalJSON = buffer.toString();
                     JSONArray parentArray = new JSONArray(finalJSON);
 
-                    //begin building up the results for user posted deals
-                    builtString += "<br><h4><b><u>User Submitted Deals</u>:</b></h4>";
 
                     //count the products that are returned
                     int hitsCounter = 0;
@@ -560,6 +710,7 @@ public class SearchDealsActivity extends Fragment {
                     else{
                         for (int i = 0; i < parentArray.length(); i++)
                         {
+
                             hitsCounter++;
 
                             JSONObject obj = parentArray.getJSONObject(i);
@@ -611,11 +762,13 @@ public class SearchDealsActivity extends Fragment {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
+            updateUI();
+            updateApiUI();
 
             if (result.equals("No network connection")){
                 Toast.makeText(getActivity(), result, Toast.LENGTH_LONG).show();
             }else{
-                productText.setText(Html.fromHtml(result.toString()));
+              //  productText.setText(Html.fromHtml(result.toString()));
             }
         }
     }
@@ -635,7 +788,7 @@ public class SearchDealsActivity extends Fragment {
                 reader = new BufferedReader(new InputStreamReader(stream));
                 StringBuffer buffer = new StringBuffer();
 
-                builtString += "";
+                builtString = "";
 
                     String line;
 
@@ -646,8 +799,6 @@ public class SearchDealsActivity extends Fragment {
                     String finalJSON = buffer.toString();
                     JSONArray parentArray = new JSONArray(finalJSON);
 
-                    //begin building up the results for user posted deals
-                    builtString += "<br><h4><b><u>User Submitted Deals</u>:</b></h4>";
 
                     //count the products that are returned
                     int hitsCounter = 0;
@@ -676,6 +827,8 @@ public class SearchDealsActivity extends Fragment {
                                     + "<br><b>Store:</b> " + obj.getString("storeName") + "<br><b>Location:</b> " + obj.getString("location")
                                     + "<br><b>Details:</b> " + obj.get("description") + "<br><b>Category:</b> " + obj.get("category")
                                     + "<br><b>Expiration Date:</b> " +expDate + "<br><br>";
+                            searchResultList.add(builtString);
+                            builtString = "";
                         }
                     }
 
@@ -710,10 +863,13 @@ public class SearchDealsActivity extends Fragment {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
+            updateUI();
+            updateApiUI();
+
             if (result.equals("No network connection")){
                 Toast.makeText(getActivity(), result, Toast.LENGTH_LONG).show();
             }else{
-                productText.setText(Html.fromHtml(result.toString()));
+              //  productText.setText(Html.fromHtml(result.toString()));
             }
         }
     }

@@ -29,7 +29,7 @@
         <Button
             android:layout_width="45dp"
             android:layout_height="45dp"
-            android:background="@drawable/magnifying_glass"
+            android:background="@drawable/magnifying_glass_small"
             android:layout_margin="8dp"
             android:layout_marginRight="24dp"
             android:id="@+id/search_button" />
@@ -40,7 +40,7 @@
             android:layout_margin="8dp"
             android:layout_marginRight="24dp"
             android:id="@+id/edit_button"
-            android:background="@drawable/pencil"
+            android:background="@drawable/pencil_small"
             android:textColor="#ffffff"/>
 
         <Button
