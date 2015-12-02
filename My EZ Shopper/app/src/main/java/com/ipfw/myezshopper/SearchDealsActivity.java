@@ -50,13 +50,15 @@ public class SearchDealsActivity extends Fragment {
     SharedPreferences pref;
     String token, TAG = "SearchDealsActivity", queryText, concatenatedText;
     private final String walmartAPIkey = "e9rgk7ujvh43jaqxsytfcucm";
-    private String builtString = "";
+    private String builtString = "", memberId;
     private final int PRODUCTS_PER_API = 2;
     private RecyclerView mSearchRecyclerView, mApiRecyclerView;
-    private ArrayList<String> searchResultList, apiResultList;
+    private ArrayList<String> searchResultList, searchIdList, apiResultList;
     private DealAdapter mAdapter;
     private ApiDealAdapter mApiAdapter;
     private TextView mApiTextView, mUserDealTextView;
+    private PreferencesManager prefManager;
+
 
 
     @Override
@@ -67,8 +69,12 @@ public class SearchDealsActivity extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        prefManager = new PreferencesManager(this.getContext());
+
+        memberId = prefManager.getId();
+
         View v = inflater.inflate(R.layout.activity_search_deals, container, false);
        // setContentView(R.layout.activity_search_deals);
 
@@ -78,6 +84,7 @@ public class SearchDealsActivity extends Fragment {
         mSearchRecyclerView = (RecyclerView) v.findViewById(R.id.deals_recycler_view);
         mSearchRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         searchResultList = new ArrayList<String>();
+        searchIdList = new ArrayList<String>();
         updateUI();
 
         mApiRecyclerView = (RecyclerView) v.findViewById(R.id.api_recycler_view);
@@ -144,6 +151,7 @@ public class SearchDealsActivity extends Fragment {
                     builtString = "";
                     concatenatedText = "";
                     searchResultList.clear();
+                    searchIdList.clear();
                     apiResultList.clear();
 
                     StringTokenizer st = new StringTokenizer(inputText, " ");
@@ -179,6 +187,7 @@ public class SearchDealsActivity extends Fragment {
 
                 builtString = "";
                 searchResultList.clear();
+                searchIdList.clear();
                 apiResultList.clear();
                 new JSONTaskSearchAll().execute(URL);
             }
@@ -212,6 +221,7 @@ public class SearchDealsActivity extends Fragment {
 
                 builtString = "";
                 searchResultList.clear();
+                searchIdList.clear();
                 apiResultList.clear();
 
                 mApiTextView.setText(Html.fromHtml("<b><u>Top Advertised Deals</b></u>:"));
@@ -234,6 +244,7 @@ public class SearchDealsActivity extends Fragment {
     private class DealHolder extends RecyclerView.ViewHolder{
         private TextView mUserProductTextView;
         private Button thumbUp, thumbDown;
+        String productID;
 
         public DealHolder(View itemView){
             super(itemView);
@@ -246,7 +257,7 @@ public class SearchDealsActivity extends Fragment {
                 @Override
                 public void onClick(View v)
                 {
-                    Toast.makeText(getActivity(), "You clicked the thumb up", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), "Your ID is " + memberId + " and you clicked the thumb up on ID " + productID, Toast.LENGTH_LONG).show();
                 }
             });
 
@@ -254,7 +265,7 @@ public class SearchDealsActivity extends Fragment {
                 @Override
                 public void onClick(View v)
                 {
-                    Toast.makeText(getActivity(), "You clicked the thumb down", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), "Your ID is " + memberId + " and you clicked the thumb down on ID " + productID, Toast.LENGTH_LONG).show();
                 }
             });
         }
@@ -262,9 +273,11 @@ public class SearchDealsActivity extends Fragment {
 
     private class DealAdapter extends RecyclerView.Adapter<DealHolder>{
         private List<String> mDeals;
+        private List<String> mDealIds;
 
-        private DealAdapter(List<String> deals){
+        private DealAdapter(List<String> deals, List<String> dealIds){
             mDeals = deals;
+            mDealIds = dealIds;
         }
 
         @Override
@@ -278,6 +291,7 @@ public class SearchDealsActivity extends Fragment {
         public void onBindViewHolder (DealHolder holder, int position){
             String deal = mDeals.get(position);
             holder.mUserProductTextView.setText(Html.fromHtml(deal));
+            holder.productID = mDealIds.get(position);
         }
 
         @Override
@@ -289,7 +303,7 @@ public class SearchDealsActivity extends Fragment {
 
     private void updateUI()
     {
-        mAdapter = new DealAdapter(searchResultList);
+        mAdapter = new DealAdapter(searchResultList, searchIdList);
         mSearchRecyclerView.setAdapter(mAdapter);
     }
 
@@ -550,6 +564,7 @@ public class SearchDealsActivity extends Fragment {
 
                             JSONObject obj = parentArray.getJSONObject(i);
 
+                            Log.i("JSON response", obj.toString());
                             String format = "yyyy-MM-dd";
                             SimpleDateFormat sdf = new SimpleDateFormat(format);
                             Date d = sdf.parse(obj.getString("expirationDate"));
@@ -565,6 +580,7 @@ public class SearchDealsActivity extends Fragment {
                                     + "<br><b>Details:</b> " + obj.get("description") + "<br><b>Category:</b> " + obj.get("category")
                                     + "<br><b>Expiration Date:</b> " +expDate + "<br><br>";
                             searchResultList.add(builtString);
+                            searchIdList.add(obj.getString("_id"));
                         }
                     }
 
@@ -828,6 +844,7 @@ public class SearchDealsActivity extends Fragment {
                                     + "<br><b>Details:</b> " + obj.get("description") + "<br><b>Category:</b> " + obj.get("category")
                                     + "<br><b>Expiration Date:</b> " +expDate + "<br><br>";
                             searchResultList.add(builtString);
+                            searchIdList.add(obj.getString("_id"));
                             builtString = "";
                         }
                     }
