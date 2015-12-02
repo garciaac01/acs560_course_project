@@ -257,7 +257,8 @@ public class SearchDealsActivity extends Fragment {
                 @Override
                 public void onClick(View v)
                 {
-                    Toast.makeText(getActivity(), "Your ID is " + memberId + " and you clicked the thumb up on ID " + productID, Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getActivity(), "Your ID is " + memberId + " and you clicked the thumb up on ID " + productID, Toast.LENGTH_LONG).show();
+                    new JSONTaskLikeDeal().execute("http://52.91.100.201:8080/api/deal/like/" + productID, memberId, "like");
                 }
             });
 
@@ -265,7 +266,8 @@ public class SearchDealsActivity extends Fragment {
                 @Override
                 public void onClick(View v)
                 {
-                    Toast.makeText(getActivity(), "Your ID is " + memberId + " and you clicked the thumb down on ID " + productID, Toast.LENGTH_LONG).show();
+                   // Toast.makeText(getActivity(), "Your ID is " + memberId + " and you clicked the thumb down on ID " + productID, Toast.LENGTH_LONG).show();
+                    new JSONTaskLikeDeal().execute("http://52.91.100.201:8080/api/deal/like/" + productID, memberId, "dislike");
                 }
             });
         }
@@ -891,7 +893,82 @@ public class SearchDealsActivity extends Fragment {
         }
     }
 
+    public class JSONTaskLikeDeal extends AsyncTask<String,String, String> {
+        @Override
+        protected String doInBackground(String... params) {
 
+            HttpURLConnection connection = null;
+            BufferedReader br = null;
+            try{
+                URL url = new URL(params[0]);
+                String userID = params[1];
+                String likeDeal = params[2];
+                connection = (HttpURLConnection)url.openConnection();
+                connection.setDoInput(true);
+                connection.setDoOutput(true);
+                connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+                connection.setRequestProperty("Accept", "application/json");
+                connection.setRequestMethod("PUT");
+
+                JSONObject userInformation = new JSONObject();
+
+                userInformation.put("userId", userID);
+                userInformation.put("type", likeDeal);
+
+                OutputStream os = connection.getOutputStream();
+                os.write(userInformation.toString().getBytes("UTF-8"));
+                os.flush();
+
+                StringBuilder sb = new StringBuilder();
+                int HttpResult = connection.getResponseCode();
+                if (HttpResult == HttpURLConnection.HTTP_OK) {
+                    br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "utf-8"));
+                    String line = null;
+                    while ((line = br.readLine()) != null) {
+                        sb.append(line + "\n");
+                    }
+
+                    br.close();
+                  //  Toast.makeText(getActivity(), sb.toString(), Toast.LENGTH_LONG).show();
+                    //System.out.println("" + sb.toString());
+                   System.out.println(connection.getResponseMessage());
+                    System.out.println(sb.toString());
+                    return "Deal updated successfully";
+                } else {
+                    System.out.println(connection.getResponseMessage());
+                    return ("You've already voted on this deal");
+                }
+
+
+            }catch(MalformedURLException ex){
+                ex.printStackTrace();
+            }catch(IOException ex){
+                ex.printStackTrace();
+                return "No network connection";
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } finally{
+                if (connection != null) {
+                    connection.disconnect();
+                }
+                try {
+                    if (br != null){
+                        br.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            Toast.makeText(getActivity(), result, Toast.LENGTH_SHORT).show();
+        }
+
+    }//end JSONTaskGet class
 
 //    @Override
 //    public boolean onCreateOptionsMenu(Menu menu) {
