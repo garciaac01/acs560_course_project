@@ -932,11 +932,19 @@ public class SearchDealsActivity extends Fragment {
                     }
 
                     br.close();
-                  //  Toast.makeText(getActivity(), sb.toString(), Toast.LENGTH_LONG).show();
-                    //System.out.println("" + sb.toString());
-                   System.out.println("Connection response: " + connection.getResponseMessage());
-                    System.out.println("SB response: " + sb.toString());
-                    return "You have " + params[2] + "d this deal";
+
+                    JSONObject obj = new JSONObject(sb.toString());
+
+                    if(obj.getString("voteChanged").equals("true"))
+                    {
+                        return "You changed your vote to \"" + params[2] + "\"";
+                    }
+                    else
+                    {
+                        return "You " + params[2] + "d this deal";
+                    }
+
+
                 } else {
                     System.out.println("Else connection response: " + connection.getResponseMessage());
                     return ("You've already voted on this deal");
@@ -986,7 +994,7 @@ public class SearchDealsActivity extends Fragment {
                 searchResultList.clear();
                 searchIdList.clear();
                 apiResultList.clear();
-                
+
                 String walmartURL = "http://api.walmartlabs.com/v1/search?query=" + lastSearch + "&format=json&apiKey=" + walmartAPIkey;
                 new JSONTaskSearchWalMart().execute(walmartURL, "walmart");
 
