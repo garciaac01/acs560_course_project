@@ -57,18 +57,11 @@
             android:background="#303030"
             android:layout_weight="1"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/top_api_deals"
-        android:textColor="#fafafa" />
-
-
     <android.support.v7.widget.RecyclerView
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/api_recycler_view"
         android:layout_width="fill_parent"
-        android:layout_height="180dp"
+        android:layout_height="200dp"
         android:background="#303030"
         android:layout_weight="1"/>
 
