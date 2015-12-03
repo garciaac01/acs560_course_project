@@ -982,6 +982,11 @@ public class SearchDealsActivity extends Fragment {
             }
             else
             {
+                builtString = "";
+                searchResultList.clear();
+                searchIdList.clear();
+                apiResultList.clear();
+                
                 String walmartURL = "http://api.walmartlabs.com/v1/search?query=" + lastSearch + "&format=json&apiKey=" + walmartAPIkey;
                 new JSONTaskSearchWalMart().execute(walmartURL, "walmart");
 
