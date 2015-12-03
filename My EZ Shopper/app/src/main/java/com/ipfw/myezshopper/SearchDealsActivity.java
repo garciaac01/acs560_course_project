@@ -49,8 +49,8 @@ public class SearchDealsActivity extends Fragment {
     Button searchButton, searchAllButton;
     SharedPreferences pref;
     String token, TAG = "SearchDealsActivity", queryText, concatenatedText;
-    private final String walmartAPIkey = "e9rgk7ujvh43jaqxsytfcucm";
-    private String builtString = "", memberId;
+    private final String walmartAPIkey = "e9rgk7ujvh43jaqxsytfcucm", SEARCH_ALL = "com.ipfw.myezshopper.search_all";
+    private String builtString = "", memberId, lastSearch = "";
     private final int PRODUCTS_PER_API = 2;
     private RecyclerView mSearchRecyclerView, mApiRecyclerView;
     private ArrayList<String> searchResultList, searchIdList, apiResultList;
@@ -170,6 +170,7 @@ public class SearchDealsActivity extends Fragment {
                       //get user created deals
                     String URL = "http://52.91.100.201:8080/api/deal/search/name/" + concatenatedText;
                     new JSONTaskSearchParker().execute(URL);
+                    lastSearch = concatenatedText; //store this search to use after thumb up/down call
                 }
             }
         });//end setOnclickListener
@@ -190,6 +191,7 @@ public class SearchDealsActivity extends Fragment {
                 searchIdList.clear();
                 apiResultList.clear();
                 new JSONTaskSearchAll().execute(URL);
+                lastSearch = SEARCH_ALL; //store this search to use after thumb up/down call
             }
         });//end setOnclickListener
 
@@ -235,6 +237,7 @@ public class SearchDealsActivity extends Fragment {
                 //what's going on here--this seems to be a duplicate of code above.  is this doing anything?
                 String URL = "http://52.91.100.201:8080/api/deal/search/name/" + concatenatedText;
                 new JSONTaskSearchParker().execute(URL);
+                lastSearch = concatenatedText; //store this search to use after thumb up/down deal
             }
         }
 
@@ -580,7 +583,7 @@ public class SearchDealsActivity extends Fragment {
                             builtString += "<b>" + hitsCounter + ". " + obj.getString("name") + "<br>Price:</b> $" + obj.getDouble("price")
                                     + "<br><b>Store:</b> " + obj.getString("storeName") + "<br><b>Location:</b> " + obj.getString("location")
                                     + "<br><b>Details:</b> " + obj.get("description") + "<br><b>Category:</b> " + obj.get("category")
-                                    + "<br><b>Expiration Date:</b> " +expDate + "<br><br>";
+                                    + "<br><b>Likes: </b>" + obj.get("likeCount") + "<br><b>Dislikes: </b>" + obj.get("dislikeCount") + "<br><b>Expiration Date:</b> " +expDate + "<br><br>";
                             searchResultList.add(builtString);
                             searchIdList.add(obj.getString("_id"));
                         }
@@ -844,7 +847,7 @@ public class SearchDealsActivity extends Fragment {
                             builtString += "<b>" + hitsCounter + ". " + obj.getString("name") + "<br>Price:</b> $" + obj.getDouble("price")
                                     + "<br><b>Store:</b> " + obj.getString("storeName") + "<br><b>Location:</b> " + obj.getString("location")
                                     + "<br><b>Details:</b> " + obj.get("description") + "<br><b>Category:</b> " + obj.get("category")
-                                    + "<br><b>Expiration Date:</b> " +expDate + "<br><br>";
+                                    + "<br><b>Likes: </b>" + obj.get("likeCount") + "<br><b>Dislikes: </b>" + obj.get("dislikeCount") + "<br><b>Expiration Date:</b> " +expDate + "<br><br>";
                             searchResultList.add(builtString);
                             searchIdList.add(obj.getString("_id"));
                             builtString = "";
@@ -931,11 +934,11 @@ public class SearchDealsActivity extends Fragment {
                     br.close();
                   //  Toast.makeText(getActivity(), sb.toString(), Toast.LENGTH_LONG).show();
                     //System.out.println("" + sb.toString());
-                   System.out.println(connection.getResponseMessage());
-                    System.out.println(sb.toString());
-                    return "Deal updated successfully";
+                   System.out.println("Connection response: " + connection.getResponseMessage());
+                    System.out.println("SB response: " + sb.toString());
+                    return "You have " + params[2] + "d this deal";
                 } else {
-                    System.out.println(connection.getResponseMessage());
+                    System.out.println("Else connection response: " + connection.getResponseMessage());
                     return ("You've already voted on this deal");
                 }
 
@@ -966,6 +969,26 @@ public class SearchDealsActivity extends Fragment {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
             Toast.makeText(getActivity(), result, Toast.LENGTH_SHORT).show();
+
+            if(lastSearch.equals(SEARCH_ALL))
+            {
+                String URL = "http://52.91.100.201:8080/api/deal";
+
+                builtString = "";
+                searchResultList.clear();
+                searchIdList.clear();
+                apiResultList.clear();
+                new JSONTaskSearchAll().execute(URL);
+            }
+            else
+            {
+                String walmartURL = "http://api.walmartlabs.com/v1/search?query=" + lastSearch + "&format=json&apiKey=" + walmartAPIkey;
+                new JSONTaskSearchWalMart().execute(walmartURL, "walmart");
+
+                //get user created deals
+                String URL = "http://52.91.100.201:8080/api/deal/search/name/" + lastSearch;
+                new JSONTaskSearchParker().execute(URL);
+            }
         }
 
     }//end JSONTaskGet class
