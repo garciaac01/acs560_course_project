@@ -1,3 +1,0 @@
---In Client, Search All crashes client when server down
-
---In Client, Search All: prices that are integer values need displayed to 2 places.

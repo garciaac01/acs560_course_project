@@ -1,5 +1,3 @@
-1. Edit list items
-2. Thumb Up/Down
 3. Best Buy API
 
 --?Validate input in Post Deals. Currently adding "No information given"
@@ -7,10 +5,6 @@
 --Encrypt user name and password
 
 --Limit number of login attempts before requiring password reset
-
---Enable "thumbing" up/down deals
-
---Only allow users to "thumb" up/down a deal one time
 
 --Check users shopping list for items against supported APIs (Best Buy, Amazon, etc.)
 
@@ -24,13 +18,9 @@
 
 --Post Deal Location as Online, All Stores, Specific store (use geolocation)
 
---Refactor user interaction to delete self from database; it is fully functional.
-
 --need method for displaying list items in ListFragment
 
 --Enable email activiation????
-
---For change password, consider removing entering old password.
 
 --Change Password needs to return to Profile Activity when user clicks cancel. Perhaps change button to "Return to Profile"
 
