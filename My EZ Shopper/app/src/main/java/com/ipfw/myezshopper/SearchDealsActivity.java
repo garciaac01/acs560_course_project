@@ -49,11 +49,12 @@ public class SearchDealsActivity extends Fragment {
     Button searchButton, searchAllButton;
     SharedPreferences pref;
     String token, TAG = "SearchDealsActivity", queryText, concatenatedText;
-    private final String walmartAPIkey = "e9rgk7ujvh43jaqxsytfcucm", SEARCH_ALL = "com.ipfw.myezshopper.search_all";
-    private String builtString = "", memberId, lastSearch = "";
+    private final String walmartAPIkey = "e9rgk7ujvh43jaqxsytfcucm", SEARCH_ALL = "com.ipfw.myezshopper.search_all",
+        BEST_BUY_API_KEY = "9vachckadjgrvc9htuhz2mn2";
+    private String builtString = "", memberId, lastSearch = "", bestBuySearchString;
     private final int PRODUCTS_PER_API = 2;
     private RecyclerView mSearchRecyclerView, mApiRecyclerView;
-    private ArrayList<String> searchResultList, searchIdList, apiResultList;
+    private ArrayList<String> searchResultList, searchIdList, apiResultList, bestBuySearchWords;
     private DealAdapter mAdapter;
     private ApiDealAdapter mApiAdapter;
     private TextView mApiTextView, mUserDealTextView;
@@ -85,6 +86,8 @@ public class SearchDealsActivity extends Fragment {
         mSearchRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         searchResultList = new ArrayList<String>();
         searchIdList = new ArrayList<String>();
+        bestBuySearchWords = new ArrayList<String>();
+
         updateUI();
 
         mApiRecyclerView = (RecyclerView) v.findViewById(R.id.api_recycler_view);
@@ -153,11 +156,14 @@ public class SearchDealsActivity extends Fragment {
                     searchResultList.clear();
                     searchIdList.clear();
                     apiResultList.clear();
+                    bestBuySearchWords.clear();
 
                     StringTokenizer st = new StringTokenizer(inputText, " ");
 
                     while (st.hasMoreTokens()){
-                        concatenatedText += st.nextToken() + "+";
+                        String nextWord = st.nextToken();
+                        concatenatedText += nextWord + "+";
+                        bestBuySearchWords.add(nextWord);
                     }
 
                     //remove last + symbol
@@ -166,6 +172,30 @@ public class SearchDealsActivity extends Fragment {
                     //get walmart deals
                     String walmartURL = "http://api.walmartlabs.com/v1/search?query=" + concatenatedText + "&format=json&apiKey=" + walmartAPIkey;
                     new JSONTaskSearchWalMart().execute(walmartURL, "walmart");
+
+                    for(int i = 0; i < bestBuySearchWords.size(); i++)
+                    {
+                        if(i == 0)
+                        {
+                            bestBuySearchString += "((";
+                        }
+                        bestBuySearchString += "search=" + bestBuySearchWords.get(i);
+
+                        if(i != bestBuySearchWords.size() - 1)
+                        {
+                            bestBuySearchString += "&";
+                        }
+                        else
+                        {
+                            bestBuySearchString += "))";
+                        }
+                    }
+
+                    String bestBuyURL = "https://api.bestbuy.com/v1/products" + bestBuySearchString +"?apiKey=" + BEST_BUY_API_KEY + "&sort=inStoreAvailability.asc"
+                        + "&show=inStoreAvailability,inStoreAvailabilityText,name,onlineAvailability,onlineAvailabilityText,onSale,regularPrice,salePrice,"
+                        + "shortDescription&callback=JSON_CALLBACK&format=json";
+
+                    new JSONTastSearchBestBuy().execute(bestBuyURL);
 
                       //get user created deals
                     String URL = "http://52.91.100.201:8080/api/deal/search/name/" + concatenatedText;
@@ -190,6 +220,8 @@ public class SearchDealsActivity extends Fragment {
                 searchResultList.clear();
                 searchIdList.clear();
                 apiResultList.clear();
+                bestBuySearchWords.clear();
+
                 new JSONTaskSearchAll().execute(URL);
                 lastSearch = SEARCH_ALL; //store this search to use after thumb up/down call
             }
@@ -215,8 +247,11 @@ public class SearchDealsActivity extends Fragment {
                 StringTokenizer st = new StringTokenizer(inputText, " ");
 
                 while (st.hasMoreTokens()){
-                    concatenatedText += st.nextToken() + "+";
+                    String nextWord = st.nextToken();
+                    concatenatedText += nextWord + "+";
+                    bestBuySearchWords.add(nextWord);
                 }
+
 
                 //remove last + symbol
                 concatenatedText = concatenatedText.substring(0, concatenatedText.length() - 1);
@@ -225,6 +260,7 @@ public class SearchDealsActivity extends Fragment {
                 searchResultList.clear();
                 searchIdList.clear();
                 apiResultList.clear();
+                bestBuySearchWords.clear();
 
                 mApiTextView.setText(Html.fromHtml("<b><u>Top Advertised Deals</b></u>:"));
                 mUserDealTextView.setText(Html.fromHtml("<b><u>Top User Submitted Deals</b></u>:"));
@@ -232,6 +268,31 @@ public class SearchDealsActivity extends Fragment {
                 //get walmart deals
                 String walmartURL = "http://api.walmartlabs.com/v1/search?query=" + concatenatedText + "&format=json&apiKey=" + walmartAPIkey;
                 new JSONTaskSearchWalMart().execute(walmartURL, "walmart");
+
+
+                for(int i = 0; i < bestBuySearchWords.size(); i++)
+                {
+                    if(i == 0)
+                    {
+                        bestBuySearchString += "((";
+                    }
+                    bestBuySearchString += "search=" + bestBuySearchWords.get(i);
+
+                    if(i != bestBuySearchWords.size() - 1)
+                    {
+                        bestBuySearchString += "&";
+                    }
+                    else
+                    {
+                        bestBuySearchString += "))";
+                    }
+                }
+
+                String bestBuyURL = "https://api.bestbuy.com/v1/products" + bestBuySearchString +"?apiKey=" + BEST_BUY_API_KEY + "&sort=inStoreAvailability.asc"
+                        + "&show=inStoreAvailability,inStoreAvailabilityText,name,onlineAvailability,onlineAvailabilityText,onSale,regularPrice,salePrice,"
+                        + "shortDescription&callback=JSON_CALLBACK&format=json";
+
+                new JSONTastSearchBestBuy().execute(bestBuyURL);
 
 
                 //what's going on here--this seems to be a duplicate of code above.  is this doing anything?
