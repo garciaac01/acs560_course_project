@@ -42,11 +42,11 @@ public class DealFragment extends Fragment implements View.OnClickListener{
     private EditText productDescription;
     private Button submitDeal;
     private Spinner productCategorySpinner, locationSpinner;
-    private String product, price, store, location, expiration, description, cat,
+    private String product, price, store, location, expiration, description, cat, date,
             categoryText,  //holds the dropdown category choice
             locationText; //holds the dropdown location choice
     String expDate;
-    private static final String DIALOG_DATE = "DialogDate";
+    private static final String DIALOG_DATE = "DialogDate", EXPIRATION_DATE = "com.ipfw.myezshopper.expdate";
     private static final int REQUEST_DATE = 0;
 
 
@@ -59,12 +59,19 @@ public class DealFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle onSavedInstanceState){
+
         View v = inflater.inflate(R.layout.fragment_new_deal, container, false);
 
         productName = (EditText) v.findViewById(R.id.productName);
         productPrice = (EditText) v.findViewById(R.id.productPrice);
         storeName = (EditText) v.findViewById(R.id.storeName);
         expirationDate = (Button) v.findViewById(R.id.expirationDate);
+
+        if(onSavedInstanceState != null)
+        {
+            date = onSavedInstanceState.getString(EXPIRATION_DATE, "Set Expiration Date");
+            expirationDate.setText(date);
+        }
         expirationDate.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
@@ -325,10 +332,17 @@ public class DealFragment extends Fragment implements View.OnClickListener{
         }
 
         if(requestCode == REQUEST_DATE){
-            String date = data.getStringExtra(DatePickerFragment.EXTRA_DATE);
+            date = data.getStringExtra(DatePickerFragment.EXTRA_DATE);
             expirationDate.setText(date.toString());
             expDate = data.getStringExtra(DatePickerFragment.EXTRA_LONG_DATE);
 
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState)
+    {
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putString(EXPIRATION_DATE, date);
     }
 }

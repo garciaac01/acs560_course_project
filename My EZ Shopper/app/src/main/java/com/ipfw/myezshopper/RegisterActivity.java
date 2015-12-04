@@ -3,6 +3,7 @@ package com.ipfw.myezshopper;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -24,7 +25,14 @@ public class RegisterActivity extends Activity {
     DBHelper helper = new DBHelper(this);
     User newUser;
     PreferencesManager prefManager;
-
+    private final String REGISTER_ENABLED = "com.ipfw.myezshopper.register_enabled";
+    private final String EMAIL_ENABLED = "com.ipfw.myezshopper.email_enabled";
+    private final String NAME_ENABLED = "com.ipfw.myezshopper.name_enabled";
+    private final String LOGIN_ENABLED = "com.ipfw.myezshopper.login_enabled";
+    private final String PASSWORD_ENABLED = "com.ipfw.myezshopper.password_enabled";
+    private final String NAME = "com.ipfw.myezshopper.name";
+    private final String PASSWORD = "com.ipfw.myezshopper.password";
+    private final String EMAIL = "com.ipfw.myezshopper.email";
     EditText email,password, name;
     Button login,register;
     String emailtxt,passwordtxt, nametxt;
@@ -46,6 +54,30 @@ public class RegisterActivity extends Activity {
         login = (Button)findViewById(R.id.login);
         login.setEnabled(false);
         login.setBackgroundColor(Color.GRAY);
+
+
+        if(savedInstanceState != null)
+        {
+            name.setEnabled(savedInstanceState.getBoolean(NAME_ENABLED));
+            email.setEnabled(savedInstanceState.getBoolean(EMAIL_ENABLED));
+            password.setEnabled(savedInstanceState.getBoolean(PASSWORD_ENABLED));
+            register.setEnabled(savedInstanceState.getBoolean(REGISTER_ENABLED));
+            login.setEnabled(savedInstanceState.getBoolean(LOGIN_ENABLED));
+            name.setText(savedInstanceState.getString(NAME));
+            email.setText(savedInstanceState.getString(EMAIL));
+            password.setText(savedInstanceState.getString(PASSWORD));
+
+            if(!register.isEnabled())
+            {
+                register.setBackgroundColor(Color.GRAY);
+            }
+
+            if(login.isEnabled())
+            {
+                login.setBackgroundColor(Color.parseColor("#99D9EA"));
+            }
+        }
+
 
     }//end onCreate
 
@@ -200,6 +232,7 @@ public class RegisterActivity extends Activity {
                 password.setEnabled(false);
                 email.setEnabled(false);
 
+
                 Toast.makeText(getApplication(), result, Toast.LENGTH_SHORT).show();
             }else{
                 Toast.makeText(getApplication(), result, Toast.LENGTH_SHORT).show();
@@ -207,5 +240,18 @@ public class RegisterActivity extends Activity {
         }
 
     }//end JSONTask class
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState)
+    {
+        savedInstanceState.putBoolean(REGISTER_ENABLED, register.isEnabled());
+        savedInstanceState.putBoolean(LOGIN_ENABLED, login.isEnabled());
+        savedInstanceState.putBoolean(NAME_ENABLED, name.isEnabled());
+        savedInstanceState.putBoolean(PASSWORD_ENABLED, password.isEnabled());
+        savedInstanceState.putBoolean(EMAIL_ENABLED, email.isEnabled());
+        savedInstanceState.putString(NAME, name.getText().toString());
+        savedInstanceState.putString(EMAIL, email.getText().toString());
+        savedInstanceState.putString(PASSWORD, password.getText().toString());
+    }
 
 }//end RegisterActivity class

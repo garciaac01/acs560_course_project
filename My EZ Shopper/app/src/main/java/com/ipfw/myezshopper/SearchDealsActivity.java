@@ -48,7 +48,7 @@ public class SearchDealsActivity extends Fragment {
     Spinner categorySpinner;
     Button searchButton, searchAllButton;
     SharedPreferences pref;
-    String token, TAG = "SearchDealsActivity", queryText, concatenatedText;
+    String token, TAG = "SearchDealsActivity", queryText = "name", concatenatedText;
     private final String walmartAPIkey = "e9rgk7ujvh43jaqxsytfcucm", SEARCH_ALL = "com.ipfw.myezshopper.search_all",
         BEST_BUY_API_KEY = "9vachckadjgrvc9htuhz2mn2";
     private String builtString = "", memberId, lastSearch = "", bestBuySearchString = "", lastBestBuySearch = "";
@@ -102,8 +102,6 @@ public class SearchDealsActivity extends Fragment {
         List<String> categories = new ArrayList<String>();
         categories.add("Product Name");
         categories.add("Store Name");
-        categories.add("Location");
-        categories.add("Category");
 
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, categories);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -200,7 +198,7 @@ public class SearchDealsActivity extends Fragment {
                     new JSONTaskSearchBestBuy().execute(bestBuyURL);
 
                       //get user created deals
-                    String URL = "http://52.91.100.201:8080/api/deal/search/name/" + concatenatedText;
+                    String URL = "http://52.91.100.201:8080/api/deal/search/" + queryText + "/" + concatenatedText;
                     new JSONTaskSearchParker().execute(URL);
                     lastSearch = concatenatedText; //store this search to use after thumb up/down call
                 }
@@ -1191,7 +1189,7 @@ public class SearchDealsActivity extends Fragment {
                 new JSONTaskSearchBestBuy().execute(bestBuyURL);
 
                 //get user created deals
-                String URL = "http://52.91.100.201:8080/api/deal/search/name/" + lastSearch;
+                String URL = "http://52.91.100.201:8080/api/deal/search/" + queryText + "/" + lastSearch;
                 new JSONTaskSearchParker().execute(URL);
             }
         }
