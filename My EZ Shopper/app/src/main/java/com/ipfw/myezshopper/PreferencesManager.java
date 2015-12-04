@@ -76,11 +76,13 @@ public class PreferencesManager{
     }
 
     public String getEmail(){
-        return sharedPref.getString(PREFERENCE_EMAIL, "");
+        String s = sharedPref.getString(PREFERENCE_EMAIL, "");
+        return s;
     }
 
     public String getPassword(){
-        return sharedPref.getString(PREFERENCE_PASSWORD, "");
+        String p = sharedPref.getString(PREFERENCE_PASSWORD, "");
+        return p;
     }
 
     public String getId(){

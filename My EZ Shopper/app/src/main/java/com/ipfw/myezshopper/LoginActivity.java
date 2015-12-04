@@ -5,6 +5,8 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -61,9 +63,14 @@ public class LoginActivity extends Activity {
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent regactivity = new Intent(LoginActivity.this,RegisterActivity.class);
-                startActivity(regactivity);
-                finish();
+
+                if (isConnected()){
+                    Intent regactivity = new Intent(LoginActivity.this,RegisterActivity.class);
+                    startActivity(regactivity);
+                    finish();
+                }else{
+                    Toast.makeText(getApplication(), "No network connection", Toast.LENGTH_SHORT).show();
+                }
             }
         });//end register setOnClickListener
 
@@ -76,22 +83,47 @@ public class LoginActivity extends Activity {
                 emailtxt = email.getText().toString();
                 passwordtxt = password.getText().toString();
 
-                if (emailtxt.equals("")){
+                if (emailtxt.equals("")) {
                     Toast.makeText(getApplication(), "Email cannot be blank", Toast.LENGTH_SHORT).show();
-                }else if (passwordtxt.equals("")){
+                } else if (passwordtxt.equals("")) {
                     Toast.makeText(getApplication(), "Password cannot be blank", Toast.LENGTH_SHORT).show();
-                }else{
+                }
+
+                if (isConnected()) {
                     String URL = "http://52.91.100.201:8080/api/user/login";
-                    //String URL = "http://52.91.100.201:8080/user";
                     new JSONTask().execute(URL);
+                }else if (prefManager.getEmail()!=""){
+                    String pass = prefManager.getPassword();
+                    String email = prefManager.getEmail();
+                    if (emailtxt.equals(email) && passwordtxt.equals(pass)){
+                        prefManager.setLoggedin(true);
+                        Intent i = ProfileActivity.newIntent(LoginActivity.this);
+                        startActivity(i);
+                        finish();
+                    }else{
+                        Toast.makeText(getApplication(), "Login information incorrect", Toast.LENGTH_SHORT).show();
+                    }
+
+                }else{
+                    Toast.makeText(getApplication(), "No network connection", Toast.LENGTH_SHORT).show();
                 }
 
             }//end event handler
         });//end login setOnClickListener
 
-
-
     }//end onCreate
+
+    private boolean isConnected(){
+        boolean connected;
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+        NetworkInfo ni = cm.getActiveNetworkInfo();
+        if (ni != null && ni.isConnected()){
+            connected = true;
+        }else{
+            connected = false;
+        }
+        return connected;
+    }
 
     public class JSONTask extends AsyncTask<String,String, String> {
         @Override
@@ -154,7 +186,7 @@ public class LoginActivity extends Activity {
                 ex.printStackTrace();
             } catch (IOException ex) {
                 ex.printStackTrace();
-                return "No network connection";
+                return "The EZ Shopper Server is down";
             } catch (JSONException e) {
                 e.printStackTrace();
             } finally {
@@ -182,6 +214,7 @@ public class LoginActivity extends Activity {
                 prefManager.setLoggedin(true);
                 prefManager.setId(memberID.toString());
                 prefManager.setEmail(emailtxt);
+                prefManager.setPassword(passwordtxt);
 
                 Intent i = ProfileActivity.newIntent(LoginActivity.this);
                 startActivity(i);
