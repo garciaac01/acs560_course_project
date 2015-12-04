@@ -46,6 +46,7 @@ public class DealFragment extends Fragment implements View.OnClickListener{
             categoryText,  //holds the dropdown category choice
             locationText; //holds the dropdown location choice
     String expDate;
+    private PreferencesManager prefManager;
     private static final String DIALOG_DATE = "DialogDate", EXPIRATION_DATE = "com.ipfw.myezshopper.expdate";
     private static final int REQUEST_DATE = 0;
 
@@ -61,7 +62,7 @@ public class DealFragment extends Fragment implements View.OnClickListener{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle onSavedInstanceState){
 
         View v = inflater.inflate(R.layout.fragment_new_deal, container, false);
-
+        prefManager = new PreferencesManager((this.getContext()));
         productName = (EditText) v.findViewById(R.id.productName);
         productPrice = (EditText) v.findViewById(R.id.productPrice);
         storeName = (EditText) v.findViewById(R.id.storeName);
@@ -270,6 +271,8 @@ public class DealFragment extends Fragment implements View.OnClickListener{
                     productInformation.put("category", "Not Given");
                 }
 
+                productInformation.put("userId", prefManager.getId());
+
                 OutputStream os = connection.getOutputStream();
                 os.write(productInformation.toString().getBytes("UTF-8"));
                 os.flush();
@@ -287,6 +290,8 @@ public class DealFragment extends Fragment implements View.OnClickListener{
 
                     System.out.println("" + sb.toString());
                     return "Deal successfully added";
+                } else if (HttpResult == HttpURLConnection.HTTP_FORBIDDEN){
+                    return "You have already added this deal";
                 } else {
                     System.out.println(connection.getResponseMessage());
                     return ("Error adding deal");
