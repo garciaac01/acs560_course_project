@@ -33,6 +33,7 @@ import java.util.List;
 
 public class LoginActivity extends Activity {
     PreferencesManager prefManager;
+    NetworkHelper netHelper;
     DBHelper helper = new DBHelper(this);
 
     EditText email,password,res_email,code,newpass;
@@ -47,6 +48,7 @@ public class LoginActivity extends Activity {
         setContentView(R.layout.activity_login);
 
         prefManager = new PreferencesManager(this);
+        netHelper = new NetworkHelper(this);
 
 
         if (prefManager.getLoggedIn()){
@@ -64,7 +66,7 @@ public class LoginActivity extends Activity {
             @Override
             public void onClick(View view) {
 
-                if (isConnected()){
+                if (netHelper.isConnected()){
                     Intent regactivity = new Intent(LoginActivity.this,RegisterActivity.class);
                     startActivity(regactivity);
                     finish();
@@ -89,7 +91,7 @@ public class LoginActivity extends Activity {
                     Toast.makeText(getApplication(), "Password cannot be blank", Toast.LENGTH_SHORT).show();
                 }
 
-                if (isConnected()) {
+                if (netHelper.isConnected()) {
                     String URL = "http://52.91.100.201:8080/api/user/login";
                     new JSONTask().execute(URL);
                 }else if (prefManager.getEmail()!=""){
@@ -112,18 +114,6 @@ public class LoginActivity extends Activity {
         });//end login setOnClickListener
 
     }//end onCreate
-
-    private boolean isConnected(){
-        boolean connected;
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-        NetworkInfo ni = cm.getActiveNetworkInfo();
-        if (ni != null && ni.isConnected()){
-            connected = true;
-        }else{
-            connected = false;
-        }
-        return connected;
-    }
 
     public class JSONTask extends AsyncTask<String,String, String> {
         @Override
@@ -212,9 +202,6 @@ public class LoginActivity extends Activity {
             if (allowLogin){
 
                 prefManager.setLoggedin(true);
-                prefManager.setId(memberID.toString());
-                prefManager.setEmail(emailtxt);
-                prefManager.setPassword(passwordtxt);
 
                 Intent i = ProfileActivity.newIntent(LoginActivity.this);
                 startActivity(i);

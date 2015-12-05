@@ -57,7 +57,6 @@ public class ProfileActivity extends FragmentActivity {
     public void onButtonClick(View v){
 
         if (v.getId() == R.id.go_to_logout_fragment){
-
             prefManager.setLoggedin(false);
             Toast msg = Toast.makeText(this, "You have logged out", Toast.LENGTH_SHORT);
             msg.show();
@@ -69,7 +68,6 @@ public class ProfileActivity extends FragmentActivity {
         if (v.getId() == R.id.go_to_delete_fragment){
 
             String URL = "http://52.91.100.201:8080/api/user/" + member_id;
-
             new JSONTaskDelete().execute(URL);
             prefManager.removeAllPreferences();
             Intent i = new Intent(ProfileActivity.this, LoginActivity.class);
@@ -84,79 +82,6 @@ public class ProfileActivity extends FragmentActivity {
         Intent i = new Intent(packageContext, ProfileActivity.class);
         return i;
     }
-
-//    public class JSONTask extends AsyncTask<String,String, String> {
-//        @Override
-//        protected String doInBackground(String... params) {
-//
-//            HttpURLConnection connection = null;
-//            BufferedReader reader = null;
-//            try{
-//                URL url = new URL(params[0]);
-//                connection = (HttpURLConnection)url.openConnection();
-//
-//                InputStream stream = connection.getInputStream();
-//
-//                reader = new BufferedReader(new InputStreamReader(stream));
-//                StringBuffer buffer = new StringBuffer();
-//
-//                String line;
-//
-//                while ((line = reader.readLine()) != null) {
-//                    buffer.append(line);
-//                }
-//
-//                String finalJSON = buffer.toString();
-//                JSONObject jsonResponse = new JSONObject(new String(finalJSON));
-//                JSONArray items = jsonResponse.getJSONArray("list");
-//                String builtString = "";
-//
-//                shoppingListLength = items.length();
-//
-//                if (items.length() == 0){
-//                    builtString = "No list items";
-//                }
-//                else{
-//                    for (int i = 0; i < items.length(); i++){
-//                        builtString += items.getString(i) + ",";
-//                    }
-//                }
-//                return builtString;
-//            }catch(MalformedURLException ex){
-//                ex.printStackTrace();
-//            }catch(IOException ex){
-//                ex.printStackTrace();
-//                return "No network connection";
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//                System.out.println(e.getMessage());
-//            }finally{
-//                if (connection != null) {
-//                    connection.disconnect();
-//                }
-//                try {
-//                    if (reader != null){
-//                        reader.close();
-//                    }
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//            return null;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(String result) {
-//            super.onPostExecute(result);
-//
-//            if (result.equals("No network connection")){
-//                Toast.makeText(getApplication(), result, Toast.LENGTH_SHORT).show();
-//            }else{
-//                Toast.makeText(getApplication(), result, Toast.LENGTH_SHORT).show();
-//            }
-//        }
-//
-//    }
 
     public class JSONTaskDelete extends AsyncTask<String,String, String> {
         @Override
@@ -219,9 +144,4 @@ public class ProfileActivity extends FragmentActivity {
             return;
         }
     }
-
-
-
 }
-
-

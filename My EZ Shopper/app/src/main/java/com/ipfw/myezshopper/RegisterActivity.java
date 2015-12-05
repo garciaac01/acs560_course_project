@@ -25,6 +25,7 @@ public class RegisterActivity extends Activity {
     DBHelper helper = new DBHelper(this);
     User newUser;
     PreferencesManager prefManager;
+    NetworkHelper netHelper;
     private final String REGISTER_ENABLED = "com.ipfw.myezshopper.register_enabled";
     private final String EMAIL_ENABLED = "com.ipfw.myezshopper.email_enabled";
     private final String NAME_ENABLED = "com.ipfw.myezshopper.name_enabled";
@@ -46,6 +47,7 @@ public class RegisterActivity extends Activity {
         setContentView(R.layout.activity_register);
 
         prefManager = new PreferencesManager(this);
+        netHelper = new NetworkHelper(this);
 
         name = (EditText)findViewById(R.id.name);
         email = (EditText)findViewById(R.id.email);
@@ -78,46 +80,48 @@ public class RegisterActivity extends Activity {
             }
         }
 
-
     }//end onCreate
 
     public void onButtonClick(View v){
 
-        if (v.getId() == R.id.login){
-            allowLogin = false;
-            emailtxt = email.getText().toString();
-            passwordtxt = password.getText().toString();
+        if (netHelper.isConnected()){
+            if (v.getId() == R.id.login){
+                allowLogin = false;
+                emailtxt = email.getText().toString();
+                passwordtxt = password.getText().toString();
 
-            if (emailtxt.equals("")) {
-                Toast.makeText(getApplication(), "Email cannot be blank", Toast.LENGTH_SHORT).show();
-            } else if (passwordtxt.equals("")) {
-                Toast.makeText(getApplication(), "Password cannot be blank", Toast.LENGTH_SHORT).show();
-            }else {
-                String URL = "http://52.91.100.201:8080/api/user/login";
-                isLogin = true;
-                new JSONTask().execute(URL);
+                if (emailtxt.equals("")) {
+                    Toast.makeText(getApplication(), "Email cannot be blank", Toast.LENGTH_SHORT).show();
+                } else if (passwordtxt.equals("")) {
+                    Toast.makeText(getApplication(), "Password cannot be blank", Toast.LENGTH_SHORT).show();
+                }else {
+                    String URL = "http://52.91.100.201:8080/api/user/login";
+                    isLogin = true;
+                    new JSONTask().execute(URL);
+                }
             }
-        }
 
-        if (v.getId() == R.id.registerbtn){
-            isLogin = false;
-            allowLogin = false;
-            emailtxt = email.getText().toString();
-            passwordtxt = password.getText().toString();
-            nametxt = name.getText().toString();
+            if (v.getId() == R.id.registerbtn){
+                isLogin = false;
+                allowLogin = false;
+                emailtxt = email.getText().toString();
+                passwordtxt = password.getText().toString();
+                nametxt = name.getText().toString();
 
-            if (emailtxt.equals("")) {
-                Toast.makeText(getApplication(), "User name cannot be blank", Toast.LENGTH_SHORT).show();
-            }else if (passwordtxt.equals("")) {
-                Toast.makeText(getApplication(), "Password cannot be blank", Toast.LENGTH_SHORT).show();
-            }else if (nametxt.equals("")) {
-                Toast.makeText(getApplication(), "Name cannot be blank", Toast.LENGTH_SHORT).show();
-            }else {
-                String URL = "http://52.91.100.201:8080/api/user";
-                new JSONTask().execute(URL);
+                if (emailtxt.equals("")) {
+                    Toast.makeText(getApplication(), "User name cannot be blank", Toast.LENGTH_SHORT).show();
+                }else if (passwordtxt.equals("")) {
+                    Toast.makeText(getApplication(), "Password cannot be blank", Toast.LENGTH_SHORT).show();
+                }else if (nametxt.equals("")) {
+                    Toast.makeText(getApplication(), "Name cannot be blank", Toast.LENGTH_SHORT).show();
+                }else {
+                    String URL = "http://52.91.100.201:8080/api/user";
+                    new JSONTask().execute(URL);
+                }
             }
+        }else{
+            Toast.makeText(getApplication(), "No network connection", Toast.LENGTH_SHORT).show();
         }
-
     }
 
     public class JSONTask extends AsyncTask<String,String, String> {
@@ -231,7 +235,6 @@ public class RegisterActivity extends Activity {
                 name.setEnabled(false);
                 password.setEnabled(false);
                 email.setEnabled(false);
-
 
                 Toast.makeText(getApplication(), result, Toast.LENGTH_SHORT).show();
             }else{
