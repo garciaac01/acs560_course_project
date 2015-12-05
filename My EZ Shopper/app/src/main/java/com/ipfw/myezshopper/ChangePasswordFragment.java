@@ -43,7 +43,7 @@ public class ChangePasswordFragment extends Fragment implements View.OnClickList
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle onSavedInstanceState){
 
-        prefManager = new PreferencesManager((this.getContext()));
+        prefManager = new PreferencesManager(this.getContext());
 
         View v = inflater.inflate(R.layout.chgpassword_frag, container, false);
         member_id = prefManager.getId();

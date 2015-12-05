@@ -83,10 +83,6 @@ public class ListFragment extends Fragment{ // implements View.OnClickListener{
 
         //btnSubmitListItem.setOnClickListener(this);   Should bring this back later as a floating button
 
-        //Access users shopping list on database.
-        //Store items locally
-        //Display items in list textView
-        //get user's list from database
         String URL = "http://52.91.100.201:8080/api/user/" + member_id;
 
         new JSONTaskGet().execute(URL);
@@ -240,21 +236,6 @@ public class ListFragment extends Fragment{ // implements View.OnClickListener{
         }
     }
 
-   /* @Override
-    public void onClick(View v){
-        product = productName.getText().toString();
-
-        if (product.equals("")){
-            Toast.makeText(getActivity(), "Product name cannot be blank", Toast.LENGTH_SHORT).show();
-        }
-        else{
-            //todo save new product locally
-            //add item to local list
-            shoppingList.add(product);
-
-            new JSONTaskPost().execute("http://52.91.100.201:8080/user/" + member_id);
-        }
-    }*/
 
     public class JSONTaskPost extends AsyncTask<String,String, String> {
         @Override
@@ -328,14 +309,15 @@ public class ListFragment extends Fragment{ // implements View.OnClickListener{
             super.onPostExecute(result);
             Toast.makeText(getActivity(), result, Toast.LENGTH_LONG).show();
 
-            //loop through local list and display
-            String builtString = "";
-            for (String str : shoppingList){
-                builtString += str + ",";
-            }
+            if (result == "Shopping list updated"){
+                //loop through local list and display
+                String builtString = "";
+                for (String str : shoppingList){
+                    builtString += str + ",";
+                }
 
-            updateUI();
-            //txtList.setText(builtString);
+                updateUI();
+            }
         }
 
     }//end JSONTaskPost class

@@ -1,29 +1,15 @@
-3. Best Buy API
-
 --?Validate input in Post Deals. Currently adding "No information given"
 
 --Encrypt user name and password
 
 --Limit number of login attempts before requiring password reset
 
---Check users shopping list for items against supported APIs (Best Buy, Amazon, etc.)
-
 --cache users list on client
 
 --Cache last search on client side
-
---Cache user name and password on client for offline use
-
---SearchDeals by Category...should include drop down list
-
---Post Deal Location as Online, All Stores, Specific store (use geolocation)
 
 --need method for displaying list items in ListFragment
 
 --Enable email activiation????
 
 --Change Password needs to return to Profile Activity when user clicks cancel. Perhaps change button to "Return to Profile"
-
---Submit deals: Include date added by using system time.
-
---Deals need to use Date and TimeZone stamp.
