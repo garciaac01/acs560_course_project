@@ -25,7 +25,6 @@ public class ProfileActivity extends FragmentActivity {
     private PreferencesManager prefManager;
 
     Button btnLogout;
-    //todo remove shoppingListLength
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +58,6 @@ public class ProfileActivity extends FragmentActivity {
         }
         
         if (v.getId() == R.id.go_to_delete_fragment){
-
             String URL = "http://52.91.100.201:8080/api/user/" + member_id;
             new JSONTaskDelete().execute(URL);
             prefManager.removeAllPreferences();
