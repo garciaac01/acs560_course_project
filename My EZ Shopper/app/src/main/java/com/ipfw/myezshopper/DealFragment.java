@@ -50,10 +50,7 @@ public class DealFragment extends Fragment implements View.OnClickListener{
     private static final String DIALOG_DATE = "DialogDate", EXPIRATION_DATE = "com.ipfw.myezshopper.expdate";
     private static final int REQUEST_DATE = 0;
 
-
-
     @Override
-
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
@@ -111,7 +108,6 @@ public class DealFragment extends Fragment implements View.OnClickListener{
             }
         });
 
-
         //Set up the drop down list for product categories
         productCategorySpinner = (Spinner) v.findViewById(R.id.product_category_dropdown);
 
@@ -145,7 +141,6 @@ public class DealFragment extends Fragment implements View.OnClickListener{
         });
 
         submitDeal = (Button) v.findViewById(R.id.submit_deal_button);
-
         submitDeal.setOnClickListener(this);
         return v;
     }
@@ -181,12 +176,11 @@ public class DealFragment extends Fragment implements View.OnClickListener{
             }
             if (enteredExpirationDate.getTimeInMillis() < today.getTime()){
                 Toast.makeText(getActivity(), "Expiration date is invalid", Toast.LENGTH_SHORT).show();
+            }else if (!tryParseDouble(price)){
+                Toast.makeText(getActivity(), "Price is not valid", Toast.LENGTH_SHORT).show();
             }else{
-                Double.parseDouble(price);
                 new JSONTask().execute("http://52.91.100.201:8080/api/deal");
             }
-        }catch(NumberFormatException e){
-            Toast.makeText(getActivity(), R.string.invalid_price, Toast.LENGTH_SHORT).show();
         }catch(ParseException e){
             Toast.makeText(getActivity(), "No date is entered", Toast.LENGTH_SHORT).show();
         }
@@ -204,67 +198,46 @@ public class DealFragment extends Fragment implements View.OnClickListener{
                 connection.setDoInput(true);
                 connection.setDoOutput(true);
                 connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-
                 connection.setRequestProperty("Accept", "application/json");
                 connection.setRequestMethod("POST");
 
-
                 JSONObject productInformation = new JSONObject();
 
-                if(!product.equals(""))
-                {
+                if(!product.equals("")){
                     productInformation.put("name", product);
-                }
-                else
-                {
+                }else{
                     productInformation.put("name", "No Product Given");
                 }
 
                 productInformation.put("price", Double.parseDouble(price));
 
-
-                if(!store.equals(""))
-                {
+                if(!store.equals("")){
                     productInformation.put("storeName", store);
-                }
-                else
-                {
+                }else{
                     productInformation.put("storeName", "No Store Given");
                 }
 
-                if(!location.equals(""))
-                {
+                if(!location.equals("")){
                     productInformation.put("location", location);
-                }
-                else
-                {
+                }else{
                     productInformation.put("location", "No Location Given");
                 }
 
-                if(!expiration.equals("Set Expiration Date"))
-                {
+                if(!expiration.equals("Set Expiration Date")){
                     productInformation.put("expirationDate", expiration);
-                }
-                else
-                {
+                }else{
                     productInformation.put("expirationDate", "No Expiration Date Given");
                 }
 
-                if(!description.equals(""))
-                {
+                if(!description.equals("")){
                     productInformation.put("description", description);
-                }
-                else
-                {
+                }else{
                     productInformation.put("description", "No description given");
                 }
 
-                if(!cat.equals(""))
-                {
+                if(!cat.equals("")){
                     productInformation.put("category", cat);
-                }
-                else
-                {
+                }else{
                     productInformation.put("category", "Not Given");
                 }
 
@@ -287,9 +260,9 @@ public class DealFragment extends Fragment implements View.OnClickListener{
 
                     System.out.println("" + sb.toString());
                     return "Deal successfully added";
-                } else if (HttpResult == HttpURLConnection.HTTP_FORBIDDEN){
+                }else if(HttpResult == HttpURLConnection.HTTP_FORBIDDEN){
                     return "You have already added this deal";
-                } else {
+                }else{
                     System.out.println(connection.getResponseMessage());
                     return ("Error adding deal");
                 }
@@ -315,7 +288,6 @@ public class DealFragment extends Fragment implements View.OnClickListener{
                     e.printStackTrace();
                 }
             }
-
             return null;
         }
 
@@ -324,7 +296,6 @@ public class DealFragment extends Fragment implements View.OnClickListener{
             super.onPostExecute(result);
             Toast.makeText(getActivity(), result, Toast.LENGTH_LONG).show();
         }
-
     }
 
     @Override
@@ -337,7 +308,6 @@ public class DealFragment extends Fragment implements View.OnClickListener{
             date = data.getStringExtra(DatePickerFragment.EXTRA_DATE);
             expirationDate.setText(date.toString());
             expDate = data.getStringExtra(DatePickerFragment.EXTRA_LONG_DATE);
-
         }
     }
 
@@ -346,5 +316,16 @@ public class DealFragment extends Fragment implements View.OnClickListener{
     {
         super.onSaveInstanceState(savedInstanceState);
         savedInstanceState.putString(EXPIRATION_DATE, date);
+    }
+
+    private boolean tryParseDouble(String value){
+        boolean isDouble;
+        try{
+            Double.parseDouble(value);
+            isDouble = true;
+        }catch (NumberFormatException ex){
+            isDouble = false;
+        }
+        return isDouble;
     }
 }

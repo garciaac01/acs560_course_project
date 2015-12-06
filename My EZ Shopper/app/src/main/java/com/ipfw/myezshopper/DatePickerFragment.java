@@ -57,7 +57,6 @@ public class DatePickerFragment extends DialogFragment {
                 sendResult(Activity.RESULT_OK, date, time);
             }
         }).create();
-
     }
 
     public void sendResult(int resultCode, String strDate, String longDate){
@@ -71,6 +70,4 @@ public class DatePickerFragment extends DialogFragment {
 
         getTargetFragment().onActivityResult(getTargetRequestCode(), resultCode, intent);
     }
-
-
 }
