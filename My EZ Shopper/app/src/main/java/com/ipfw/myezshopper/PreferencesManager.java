@@ -4,7 +4,6 @@ package com.ipfw.myezshopper;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-
 public class PreferencesManager{
 
     private SharedPreferences sharedPref;
@@ -16,7 +15,6 @@ public class PreferencesManager{
     private final String PREFERENCE_ID = "id";
     private final String PREFERENCE_LOGGEDIN = "loggedin";
     private final String PREFERENCES = "userInfo";
-
 
     public PreferencesManager(Context context){
         sharedPref = context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE);
@@ -88,5 +86,4 @@ public class PreferencesManager{
     public String getId(){
         return sharedPref.getString(PREFERENCE_ID, "");
     }
-
 }
