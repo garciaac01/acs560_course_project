@@ -1,7 +1,5 @@
 package com.ipfw.myezshopper;
 
-import android.content.SharedPreferences;
-
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -41,46 +39,38 @@ import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
 
-
 public class SearchDealsActivity extends Fragment {
 
     EditText txtName;
     Spinner categorySpinner;
     Button searchButton, searchAllButton;
-    SharedPreferences pref;
-    String token, TAG = "SearchDealsActivity", queryText = "name", concatenatedText;
+    String queryText = "name", concatenatedText;
     private final String walmartAPIkey = "e9rgk7ujvh43jaqxsytfcucm", SEARCH_ALL = "com.ipfw.myezshopper.search_all",
         BEST_BUY_API_KEY = "9vachckadjgrvc9htuhz2mn2";
     private String builtString = "", memberId, lastSearch = "", bestBuySearchString = "", lastBestBuySearch = "";
     private final int PRODUCTS_PER_API = 5;
     private RecyclerView mSearchRecyclerView, mApiRecyclerView;
     private ArrayList<String> searchResultList, searchIdList, apiResultList, bestBuySearchWords;
-    private DealAdapter mAdapter;
-    private ApiDealAdapter mApiAdapter;
+    DealAdapter mAdapter;
+    ApiDealAdapter mApiAdapter;
     private TextView mUserDealTextView;
-    private PreferencesManager prefManager;
-
-
+    PreferencesManager prefManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         prefManager = new PreferencesManager(this.getContext());
-
         memberId = prefManager.getId();
 
         View v = inflater.inflate(R.layout.activity_search_deals, container, false);
        // setContentView(R.layout.activity_search_deals);
 
         mUserDealTextView = (TextView) v.findViewById(R.id.top_user_deals);
-
         mSearchRecyclerView = (RecyclerView) v.findViewById(R.id.deals_recycler_view);
         mSearchRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         searchResultList = new ArrayList<String>();
@@ -125,7 +115,6 @@ public class SearchDealsActivity extends Fragment {
                     txtName.setHint("Enter Category");
                     queryText = "category";
                 }
-
             }
 
             @Override
@@ -140,7 +129,6 @@ public class SearchDealsActivity extends Fragment {
             public void onClick(View v) {
                 mUserDealTextView.setText(Html.fromHtml("<b><u>Top User Submitted Deals</b></u>:"));
                 String inputText = txtName.getText().toString();
-                //queryText = txtQuery.getText().toString();
 
                 if (inputText.equals("")){
                     Toast.makeText(getActivity(), "Search field cannot be blank", Toast.LENGTH_LONG).show();
@@ -171,20 +159,15 @@ public class SearchDealsActivity extends Fragment {
 
                     bestBuySearchString = ""; //reset the best buy product search string
 
-                    for(int i = 0; i < bestBuySearchWords.size(); i++)
-                    {
-                        if(i == 0)
-                        {
+                    for(int i = 0; i < bestBuySearchWords.size(); i++){
+                        if(i == 0){
                             bestBuySearchString += "((";
                         }
                         bestBuySearchString += "search=" + bestBuySearchWords.get(i);
 
-                        if(i != bestBuySearchWords.size() - 1)
-                        {
+                        if(i != bestBuySearchWords.size() - 1){
                             bestBuySearchString += "&";
-                        }
-                        else
-                        {
+                        }else{
                             bestBuySearchString += "))";
                         }
                     }
@@ -212,7 +195,6 @@ public class SearchDealsActivity extends Fragment {
             public void onClick(View v) {
                 mUserDealTextView.setText(Html.fromHtml("<b><u>Top User Submitted Deals</b></u>:"));
 
-
                 String URL = "http://52.91.100.201:8080/api/deal";
 
                 builtString = "";
@@ -224,25 +206,22 @@ public class SearchDealsActivity extends Fragment {
                 new JSONTaskSearchAll().execute(URL);
                 lastSearch = SEARCH_ALL; //store this search to use after thumb up/down call
             }
-        });//end setOnclickListener
+        });
 
         if(getArguments() != null)
         {
             //User is searching for an item that has been clicked in their list.
 
             String myListProduct = getArguments().getString(ListFragment.EXTRA_PRODUCT_SEARCH, null);
-            //Toast.makeText(getActivity(), myListProduct, Toast.LENGTH_LONG).show();
             txtName.setText(myListProduct);
 
             String concatenatedText = "";
             String inputText = myListProduct;
-            //queryText = txtQuery.getText().toString();
 
             //todo andy: can this if statement be removed????
             if (inputText.equals("")){
                 Toast.makeText(getActivity(), "Search field cannot be blank", Toast.LENGTH_LONG).show();
-            }
-            else{
+            }else{
                 StringTokenizer st = new StringTokenizer(inputText, " ");
 
                 while (st.hasMoreTokens()){
@@ -250,7 +229,6 @@ public class SearchDealsActivity extends Fragment {
                     concatenatedText += nextWord + "+";
                     bestBuySearchWords.add(nextWord);
                 }
-
 
                 //remove last + symbol
                 concatenatedText = concatenatedText.substring(0, concatenatedText.length() - 1);
@@ -269,20 +247,15 @@ public class SearchDealsActivity extends Fragment {
 
                 bestBuySearchString = ""; //reset the best buy product search string
 
-                for(int i = 0; i < bestBuySearchWords.size(); i++)
-                {
-                    if(i == 0)
-                    {
+                for(int i = 0; i < bestBuySearchWords.size(); i++){
+                    if(i == 0){
                         bestBuySearchString += "((";
                     }
                     bestBuySearchString += "search=" + bestBuySearchWords.get(i);
 
-                    if(i != bestBuySearchWords.size() - 1)
-                    {
+                    if(i != bestBuySearchWords.size() - 1){
                         bestBuySearchString += "&";
-                    }
-                    else
-                    {
+                    }else{
                         bestBuySearchString += "))";
                     }
                 }
@@ -300,7 +273,6 @@ public class SearchDealsActivity extends Fragment {
                 lastSearch = concatenatedText; //store this search to use after thumb up/down deal
             }
         }
-
         return v;
     }//end onCreate
 
@@ -372,8 +344,6 @@ public class SearchDealsActivity extends Fragment {
         mSearchRecyclerView.setAdapter(mAdapter);
     }
 
-
-
     //set up the recycler view for the api results
     private class ApiDealHolder extends RecyclerView.ViewHolder{
         private TextView mApiTextView;
@@ -418,10 +388,6 @@ public class SearchDealsActivity extends Fragment {
         mApiRecyclerView.setAdapter(mApiAdapter);
     }
 
-
-
-
-
     public class JSONTaskSearchWalMart extends AsyncTask<String,String, String> {
         @Override
         protected String doInBackground(String... params) {
@@ -453,26 +419,19 @@ public class SearchDealsActivity extends Fragment {
                         String walmartString = buffer.toString();
                         JSONObject walmartDeals = new JSONObject(new String(walmartString));
 
-
-                        Log.i("Total Results", walmartDeals.get("totalResults").toString());
-
                         if (Integer.parseInt(walmartDeals.get("totalResults").toString()) == 0) {
                             builtString += "<br><br>No Results Found from Walmart";
-                        }
-                        else {
+                        }else {
                             JSONArray walmartJSON = walmartDeals.getJSONArray("items");
 
                             for (int i = 0; i < PRODUCTS_PER_API; i++) {
                                 //convert the next product in the array into JSON
                                 JSONObject thisWalmartProduct = walmartJSON.getJSONObject(i);
 
-                                if(i == 0)
-                                {
+                                if(i == 0){
                                     //begin building up the string with walmart results
                                     builtString += "<br><h4><b><u>Top Results from Walmart</b></u></h4>";
-                                }
-                                else
-                                {
+                                }else{
                                     builtString = "<br>";
                                 }
 
@@ -493,9 +452,6 @@ public class SearchDealsActivity extends Fragment {
                             }
                             //for now, we will display the entire string on the TextView
                             //builtString += buffer.toString();
-
-                            Log.i("Search Walmart", builtString);
-
                         }
                     }
                 }
@@ -617,13 +573,10 @@ public class SearchDealsActivity extends Fragment {
                     JSONArray bestBuyJSON = bestBuyDeals.getJSONArray("products");
 
                     for (int i = 0; i < PRODUCTS_PER_API; i++) {
-                        if(i == 0)
-                        {
+                        if(i == 0){
                             //begin building up the string with best buy results
                             builtString = "<br><h4><b><u>Top Results from Best Buy</b></u></h4>";
-                        }
-                        else
-                        {
+                        }else{
                             builtString = "<br>";
 
                         }
@@ -632,24 +585,19 @@ public class SearchDealsActivity extends Fragment {
 
                         builtString += "<br><b>" + (i + 1) + ". Product Name: </b>" + thisBestBuyProduct.get("name");
 
-                        if(thisBestBuyProduct.has("salePrice"))
-                        {
+                        if(thisBestBuyProduct.has("salePrice")){
                             builtString += "<br><b>Price: </b> $" + thisBestBuyProduct.get("salePrice");
-                        }
-                        else
-                        {
+                        }else{
                             builtString += "<br><b>Price: </b> $" + thisBestBuyProduct.get("regularPrice");
                         }
 
                         builtString += "<br><b>Location: </b>";
 
-                        if (thisBestBuyProduct.get("inStoreAvailability").toString().equals("true") && thisBestBuyProduct.get("onlineAvailability").toString().equals("true"))
-                        {
+                        if (thisBestBuyProduct.get("inStoreAvailability").toString().equals("true") && thisBestBuyProduct.get("onlineAvailability").toString().equals("true")){
                             builtString += "Online and In-Store";
                         } else if(thisBestBuyProduct.get("inStoreAvailability").toString().equals("true")){
                             builtString += "In-Store only";
-                        }else
-                        {
+                        }else{
                             builtString += "Online only";
                         }
 
@@ -661,10 +609,7 @@ public class SearchDealsActivity extends Fragment {
                             //for now, we will display the entire string on the TextView
                             //builtString += buffer.toString();
 
-                            Log.i("Search Best Buy", builtString);
-
-                        }
-
+                }
                 return builtString;
             }catch(MalformedURLException ex){
                 ex.printStackTrace();
@@ -739,10 +684,8 @@ public class SearchDealsActivity extends Fragment {
                         builtString += "<br><br>No user submitted deals found";
                     }
                     else{
-                        for (int i = 0; i < parentArray.length(); i++)
-                        {
-                            if(hitsCounter == 0)
-                            {
+                        for (int i = 0; i < parentArray.length(); i++){
+                            if(hitsCounter == 0){
                                 //begin building up the results for user posted deals
                                 builtString += "<br><h4><b><u>User Submitted Deals</u>:</b></h4>";
                             }
@@ -770,7 +713,6 @@ public class SearchDealsActivity extends Fragment {
                             searchIdList.add(obj.getString("_id"));
                         }
                     }
-
                 }else if (HttpResult == 404){
                     builtString += "<br>No user submitted deals found";
                 }else{
@@ -812,8 +754,6 @@ public class SearchDealsActivity extends Fragment {
 
             if (result.equals("No network connection")){
                 Toast.makeText(getActivity(), result, Toast.LENGTH_LONG).show();
-            }else{
-               // productText.setText(Html.fromHtml(result.toString()));
             }
         }
     }
@@ -852,17 +792,13 @@ public class SearchDealsActivity extends Fragment {
                         //begin building up the string with walmart results
                         builtString += "<h4><b><u>Top Results from Walmart</b></u></h4>";
 
-                        Log.i("Total Results", walmartDeals.get("totalResults").toString());
-
                         if (Integer.parseInt(walmartDeals.get("totalResults").toString()) == 0) {
                             builtString += "<br><br>No Results Found from Walmart";
-                        }
-                        else {
+                        }else {
                             JSONArray walmartJSON = walmartDeals.getJSONArray("items");
 
                             //this JSON object will hold the JSON each time we loop through the products
                             JSONObject nextWalmartProduct;
-
 
                             for (int i = 0; i < PRODUCTS_PER_API; i++) {
                                 //convert the next product in the array into JSON
@@ -887,9 +823,6 @@ public class SearchDealsActivity extends Fragment {
                             }
                             //for now, we will display the entire string on the TextView
                             //builtString += buffer.toString();
-
-                            Log.i("Search Walmart", builtString);
-
                         }
                     }
                 }
@@ -903,7 +836,6 @@ public class SearchDealsActivity extends Fragment {
                     String finalJSON = buffer.toString();
                     JSONArray parentArray = new JSONArray(finalJSON);
 
-
                     //count the products that are returned
                     int hitsCounter = 0;
 
@@ -911,8 +843,7 @@ public class SearchDealsActivity extends Fragment {
                         builtString += "<br>No user submitted deals found";
                     }
                     else{
-                        for (int i = 0; i < parentArray.length(); i++)
-                        {
+                        for (int i = 0; i < parentArray.length(); i++){
 
                             hitsCounter++;
 
@@ -970,8 +901,6 @@ public class SearchDealsActivity extends Fragment {
 
             if (result.equals("No network connection")){
                 Toast.makeText(getActivity(), result, Toast.LENGTH_LONG).show();
-            }else{
-              //  productText.setText(Html.fromHtml(result.toString()));
             }
         }
     }
@@ -1010,8 +939,7 @@ public class SearchDealsActivity extends Fragment {
                         builtString += "<br>No user submitted deals found";
                     }
                     else{
-                        for (int i = 0; i < parentArray.length(); i++)
-                        {
+                        for (int i = 0; i < parentArray.length(); i++){
                             hitsCounter++;
 
                             JSONObject obj = parentArray.getJSONObject(i);
@@ -1035,7 +963,6 @@ public class SearchDealsActivity extends Fragment {
                             builtString = "";
                         }
                     }
-
                 return builtString;
             }catch(MalformedURLException ex){
                 ex.printStackTrace();
@@ -1072,8 +999,6 @@ public class SearchDealsActivity extends Fragment {
 
             if (result.equals("No network connection")){
                 Toast.makeText(getActivity(), result, Toast.LENGTH_LONG).show();
-            }else{
-              //  productText.setText(Html.fromHtml(result.toString()));
             }
         }
     }
@@ -1117,21 +1042,15 @@ public class SearchDealsActivity extends Fragment {
 
                     JSONObject obj = new JSONObject(sb.toString());
 
-                    if(obj.getString("voteChanged").equals("true"))
-                    {
+                    if(obj.getString("voteChanged").equals("true")){
                         return "You changed your vote to \"" + params[2] + "\"";
-                    }
-                    else
-                    {
+                    }else{
                         return "You " + params[2] + "d this deal";
                     }
-
-
                 } else {
                     System.out.println("Else connection response: " + connection.getResponseMessage());
                     return ("You've already voted on this deal");
                 }
-
 
             }catch(MalformedURLException ex){
                 ex.printStackTrace();
@@ -1193,30 +1112,6 @@ public class SearchDealsActivity extends Fragment {
                 new JSONTaskSearchParker().execute(URL);
             }
         }
-
-    }//end JSONTaskGet class
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu_search, menu);
-//        return true;
-//    }//end onCreateOptionsMenu
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        int id = item.getItemId();
-//
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }//end onOptionsItemSelected
-
+    }
 }
 
