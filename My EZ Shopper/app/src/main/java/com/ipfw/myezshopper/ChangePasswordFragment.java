@@ -113,9 +113,7 @@ public class ChangePasswordFragment extends Fragment implements View.OnClickList
                 int HttpResult = connection.getResponseCode();
                 if (HttpResult == HttpURLConnection.HTTP_OK){
                     return "Password updated";
-                }
-                else
-                {
+                }else{
                     return "Error updating password";
                 }
 
@@ -155,5 +153,4 @@ public class ChangePasswordFragment extends Fragment implements View.OnClickList
             return;
         }
     }
-
 }
