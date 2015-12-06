@@ -1,7 +1,6 @@
 package com.ipfw.myezshopper;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -81,8 +80,6 @@ public class ListFragment extends Fragment{ // implements View.OnClickListener{
             }
         });
 
-        //btnSubmitListItem.setOnClickListener(this);   Should bring this back later as a floating button
-
         String URL = "http://52.91.100.201:8080/api/user/" + member_id;
 
         new JSONTaskGet().execute(URL);
@@ -97,8 +94,7 @@ public class ListFragment extends Fragment{ // implements View.OnClickListener{
         private Button mEditButton;
         private Button mSearchDealResults;
 
-        public ShoppingListHolder(View itemView)
-        {
+        public ShoppingListHolder(View itemView){
             super(itemView);
             //itemView.setOnClickListener(this);
             mMyProductName = (TextView) itemView.findViewById(R.id.my_product);
@@ -139,16 +135,14 @@ public class ListFragment extends Fragment{ // implements View.OnClickListener{
         }
 
         @Override
-        public ShoppingListHolder onCreateViewHolder(ViewGroup parent, int viewType)
-        {
+        public ShoppingListHolder onCreateViewHolder(ViewGroup parent, int viewType){
             LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
             View view = layoutInflater.inflate(R.layout.fragment_single_shopping_item, parent, false);
             return new ShoppingListHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(ShoppingListHolder holder, int position)
-        {
+        public void onBindViewHolder(ShoppingListHolder holder, int position){
             String shoppingListItem = mShoppingItems.get(position);
             holder.mMyProductName.setText(shoppingListItem);
         }
@@ -165,8 +159,7 @@ public class ListFragment extends Fragment{ // implements View.OnClickListener{
         mShoppingRecyclerView.setAdapter(mAdapter);
     }
 
-    private void showEditDialog(String itemToEdit)
-    {
+    private void showEditDialog(String itemToEdit){
         View v = LayoutInflater.from(getActivity()).inflate(R.layout.add_shopping_list_item, null);
         editedItem = (EditText) v.findViewById(R.id.item_to_add);
         editedItem.setText(itemToEdit.toString());
@@ -192,8 +185,7 @@ public class ListFragment extends Fragment{ // implements View.OnClickListener{
 
     };
 
-    private void showDeleteDialog(String itemToDelete)
-    {
+    private void showDeleteDialog(String itemToDelete){
         this.itemToDelete = itemToDelete;
         AlertDialog.Builder ab = new AlertDialog.Builder(getActivity());
         ab.setMessage("Delete " + itemToDelete + " from shopping list?").setPositiveButton("Yes", dialogClickListener).setNegativeButton("No", dialogClickListener).show();
@@ -228,9 +220,7 @@ public class ListFragment extends Fragment{ // implements View.OnClickListener{
                 shoppingList.add(data.getStringExtra(AddItemFragment.EXTRA_NEW_ITEM));
 
                 new JSONTaskPost().execute("http://52.91.100.201:8080/api/user/" + member_id);
-            }
-            else
-            {
+            }else{
                 Toast.makeText(getActivity(), "Product name cannot be blank", Toast.LENGTH_LONG).show();
             }
         }
@@ -315,7 +305,6 @@ public class ListFragment extends Fragment{ // implements View.OnClickListener{
                 for (String str : shoppingList){
                     builtString += str + ",";
                 }
-
                 updateUI();
             }
         }
@@ -398,6 +387,4 @@ public class ListFragment extends Fragment{ // implements View.OnClickListener{
         }
 
     }//end JSONTaskGet class
-
-
 }
