@@ -3,37 +3,26 @@ package com.ipfw.myezshopper;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Html;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link ProfileFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link ProfileFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class ProfileFragment extends Fragment {
 
-    private PreferencesManager prefManager;
+    PreferencesManager prefManager;
 
-    private Button goToSearchFragment;
-    private Button goToAddDealFragment;
-    private Button goToListFragment;
-    private Button goToChangePasswordFragment;
-    private TextView userEmailTextView;
-    private String name, member_id;
+    Button goToSearchFragment;
+    Button goToAddDealFragment;
+    Button goToListFragment;
+    Button goToChangePasswordFragment;
+    TextView userEmailTextView;
+    String name, member_id;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -86,9 +75,6 @@ public class ProfileFragment extends Fragment {
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, newPassword).addToBackStack(null).commit();
             }
         });
-
         return v;
     }
-
-
 }
