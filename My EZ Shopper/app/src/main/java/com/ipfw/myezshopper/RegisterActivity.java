@@ -3,7 +3,6 @@ package com.ipfw.myezshopper;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -57,9 +56,7 @@ public class RegisterActivity extends Activity {
         login.setEnabled(false);
         login.setBackgroundColor(Color.GRAY);
 
-
-        if(savedInstanceState != null)
-        {
+        if(savedInstanceState != null){
             name.setEnabled(savedInstanceState.getBoolean(NAME_ENABLED));
             email.setEnabled(savedInstanceState.getBoolean(EMAIL_ENABLED));
             password.setEnabled(savedInstanceState.getBoolean(PASSWORD_ENABLED));
@@ -69,17 +66,14 @@ public class RegisterActivity extends Activity {
             email.setText(savedInstanceState.getString(EMAIL));
             password.setText(savedInstanceState.getString(PASSWORD));
 
-            if(!register.isEnabled())
-            {
+            if(!register.isEnabled()){
                 register.setBackgroundColor(Color.GRAY);
             }
 
-            if(login.isEnabled())
-            {
+            if(login.isEnabled()){
                 login.setBackgroundColor(Color.parseColor("#99D9EA"));
             }
         }
-
     }//end onCreate
 
     public void onButtonClick(View v){
@@ -136,10 +130,8 @@ public class RegisterActivity extends Activity {
                 connection.setDoInput(true);
                 connection.setDoOutput(true);
                 connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-
                 connection.setRequestProperty("Accept", "application/json");
                 connection.setRequestMethod("POST");
-
 
                 JSONObject registerInformation = new JSONObject();
 
@@ -202,22 +194,18 @@ public class RegisterActivity extends Activity {
                     e.printStackTrace();
                 }
             }
-
             return null;
         }
-
 
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
             if (isLogin && allowLogin) {
-
                 prefManager.setLoggedin(true);
                 //todo return user to Login screen
                 Intent i = ProfileActivity.newIntent(RegisterActivity.this);
                 startActivity(i);
-
                 finish();
             }else if (result == "Successfully added"){
                 newUser = new User();
@@ -257,4 +245,4 @@ public class RegisterActivity extends Activity {
         savedInstanceState.putString(PASSWORD, password.getText().toString());
     }
 
-}//end RegisterActivity class
+}
