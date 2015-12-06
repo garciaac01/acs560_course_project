@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -22,9 +21,7 @@ import java.net.URL;
 
 public class ProfileActivity extends FragmentActivity {
 
-    public static final String EXTRA_USER_EMAIL = "com.ipfw.myezshopper.user_email";
-    public static final String EXTRA_MEMBER_ID = "com.ipfw.myezshopper.member_id";
-    private String email, member_id;
+    private String member_id;
     private PreferencesManager prefManager;
 
     Button btnLogout;
@@ -39,9 +36,7 @@ public class ProfileActivity extends FragmentActivity {
 
         btnLogout = (Button) findViewById(R.id.go_to_logout_fragment);
 
-        email = prefManager.getEmail();
         member_id = prefManager.getId();
-
 
         FragmentManager fm = getSupportFragmentManager();
         Fragment fragment = fm.findFragmentById(R.id.fragment_container);
@@ -51,8 +46,6 @@ public class ProfileActivity extends FragmentActivity {
             fm.beginTransaction().add(R.id.fragment_container, fragment).commit();
         }
     }
-
-
 
     public void onButtonClick(View v){
 
@@ -75,7 +68,6 @@ public class ProfileActivity extends FragmentActivity {
             finish();
         }
     }
-
 
     public static Intent newIntent(Context packageContext)
     {
@@ -102,11 +94,9 @@ public class ProfileActivity extends FragmentActivity {
                 if (HttpResult == HttpURLConnection.HTTP_OK){
                     return "User deleted";
                 }
-                else
-                {
+                else{
                     return "Error deleting user";
                 }
-
             }catch(MalformedURLException ex){
                 ex.printStackTrace();
             }catch(IOException ex){
@@ -116,11 +106,11 @@ public class ProfileActivity extends FragmentActivity {
                 if (connection != null) {
                     connection.disconnect();
                 }
-                try {
+                try{
                     if (reader != null){
                         reader.close();
                     }
-                } catch (IOException e) {
+                }catch (IOException e) {
                     e.printStackTrace();
                 }
             }
@@ -135,8 +125,7 @@ public class ProfileActivity extends FragmentActivity {
                 Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT).show();
             }
         }
-
-    }//end JSONTaskGet class
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data){

@@ -34,9 +34,8 @@ import java.util.List;
 public class LoginActivity extends Activity {
     PreferencesManager prefManager;
     NetworkHelper netHelper;
-    DBHelper helper = new DBHelper(this);
 
-    EditText email,password,res_email,code,newpass;
+    EditText email,password;
     Button login,register;
     String emailtxt,passwordtxt;
     boolean allowLogin;
@@ -87,11 +86,9 @@ public class LoginActivity extends Activity {
 
                 if (emailtxt.equals("")) {
                     Toast.makeText(getApplication(), "Email cannot be blank", Toast.LENGTH_SHORT).show();
-                } else if (passwordtxt.equals("")) {
+                }else if (passwordtxt.equals("")) {
                     Toast.makeText(getApplication(), "Password cannot be blank", Toast.LENGTH_SHORT).show();
-                }
-
-                if (netHelper.isConnected()) {
+                }else if (netHelper.isConnected()) {
                     String URL = "http://52.91.100.201:8080/api/user/login";
                     new JSONTask().execute(URL);
                 }else if (prefManager.getEmail()!=""){
@@ -105,15 +102,12 @@ public class LoginActivity extends Activity {
                     }else{
                         Toast.makeText(getApplication(), "Login information incorrect", Toast.LENGTH_SHORT).show();
                     }
-
                 }else{
                     Toast.makeText(getApplication(), "No network connection", Toast.LENGTH_SHORT).show();
                 }
-
-            }//end event handler
-        });//end login setOnClickListener
-
-    }//end onCreate
+            }
+        });
+    }
 
     public class JSONTask extends AsyncTask<String,String, String> {
         @Override
@@ -164,10 +158,6 @@ public class LoginActivity extends Activity {
                     //todo store list items locally
 
                     return "Successfully logged in!";
-                } else if (HttpResult ==HttpURLConnection.HTTP_FORBIDDEN){
-                   return "Incorrect password";
-                } else if (HttpResult == HttpURLConnection.HTTP_NOT_FOUND){
-                    return "Incorrect email";
                 }else if (HttpResult == HttpURLConnection.HTTP_BAD_REQUEST){
                     return "Login information incorrect";
                 }
@@ -191,7 +181,6 @@ public class LoginActivity extends Activity {
                     e.printStackTrace();
                 }
             }
-
             return null;
         }
 
@@ -210,7 +199,5 @@ public class LoginActivity extends Activity {
                 Toast.makeText(getApplication(), result, Toast.LENGTH_SHORT).show();
             }
         }
-
-    }//end JSONTask class
-
-}//end LoginActivity class
+    }
+}
