@@ -130,61 +130,7 @@ public class SearchDealsActivity extends Fragment {
                 mUserDealTextView.setText(Html.fromHtml("<b><u>Top User Submitted Deals</b></u>:"));
                 String inputText = txtName.getText().toString();
 
-                if (inputText.equals("")){
-                    Toast.makeText(getActivity(), "Search field cannot be blank", Toast.LENGTH_LONG).show();
-                }
-                else{
-                    //reset the string that we'll display to the user
-                    builtString = "";
-                    concatenatedText = "";
-                    searchResultList.clear();
-                    searchIdList.clear();
-                    apiResultList.clear();
-                    bestBuySearchWords.clear();
-
-                    StringTokenizer st = new StringTokenizer(inputText, " ");
-
-                    while (st.hasMoreTokens()){
-                        String nextWord = st.nextToken();
-                        concatenatedText += nextWord + "+";
-                        bestBuySearchWords.add(nextWord);
-                    }
-
-                    //remove last + symbol
-                    concatenatedText = concatenatedText.substring(0, concatenatedText.length() - 1);
-
-                    //get walmart deals
-                    String walmartURL = "http://api.walmartlabs.com/v1/search?query=" + concatenatedText + "&format=json&apiKey=" + walmartAPIkey;
-                    new JSONTaskSearchWalMart().execute(walmartURL, "walmart");
-
-                    bestBuySearchString = ""; //reset the best buy product search string
-
-                    for(int i = 0; i < bestBuySearchWords.size(); i++){
-                        if(i == 0){
-                            bestBuySearchString += "((";
-                        }
-                        bestBuySearchString += "search=" + bestBuySearchWords.get(i);
-
-                        if(i != bestBuySearchWords.size() - 1){
-                            bestBuySearchString += "&";
-                        }else{
-                            bestBuySearchString += "))";
-                        }
-                    }
-
-                    lastBestBuySearch = bestBuySearchString; //store this best buy search to use again after a thumb up/down
-
-                    String bestBuyURL = "https://api.bestbuy.com/v1/products" + bestBuySearchString +"?apiKey=" + BEST_BUY_API_KEY + "&sort=inStoreAvailability.asc"
-                        + "&show=inStoreAvailability,inStoreAvailabilityText,name,onlineAvailability,onlineAvailabilityText,onSale,regularPrice,salePrice,"
-                        + "shortDescription&format=json";
-
-                    new JSONTaskSearchBestBuy().execute(bestBuyURL);
-
-                      //get user created deals
-                    String URL = "http://52.91.100.201:8080/api/deal/search/" + queryText + "/" + concatenatedText;
-                    new JSONTaskSearchParker().execute(URL);
-                    lastSearch = concatenatedText; //store this search to use after thumb up/down call
-                }
+                searchForDeals(inputText);
             }
         });//end setOnclickListener
 
@@ -208,75 +154,78 @@ public class SearchDealsActivity extends Fragment {
             }
         });
 
-        if(getArguments() != null)
-        {
+        if(getArguments() != null) {
             //User is searching for an item that has been clicked in their list.
 
             String myListProduct = getArguments().getString(ListFragment.EXTRA_PRODUCT_SEARCH, null);
             txtName.setText(myListProduct);
 
-            String concatenatedText = "";
             String inputText = myListProduct;
-
-            //todo andy: can this if statement be removed????
-            if (inputText.equals("")){
-                Toast.makeText(getActivity(), "Search field cannot be blank", Toast.LENGTH_LONG).show();
-            }else{
-                StringTokenizer st = new StringTokenizer(inputText, " ");
-
-                bestBuySearchWords.clear();
-
-                while (st.hasMoreTokens()){
-                    String nextWord = st.nextToken();
-                    concatenatedText += nextWord + "+";
-                    bestBuySearchWords.add(nextWord);
-                }
-
-                //remove last + symbol
-                concatenatedText = concatenatedText.substring(0, concatenatedText.length() - 1);
-
-                builtString = "";
-                searchResultList.clear();
-                searchIdList.clear();
-                apiResultList.clear();
-
-
-                mUserDealTextView.setText(Html.fromHtml("<b><u>Top User Submitted Deals</b></u>:"));
-
-                //get walmart deals
-                String walmartURL = "http://api.walmartlabs.com/v1/search?query=" + concatenatedText + "&format=json&apiKey=" + walmartAPIkey;
-                new JSONTaskSearchWalMart().execute(walmartURL, "walmart");
-
-                bestBuySearchString = ""; //reset the best buy product search string
-
-                for(int i = 0; i < bestBuySearchWords.size(); i++){
-                    if(i == 0){
-                        bestBuySearchString += "((";
-                    }
-                    bestBuySearchString += "search=" + bestBuySearchWords.get(i);
-
-                    if(i != bestBuySearchWords.size() - 1){
-                        bestBuySearchString += "&";
-                    }else{
-                        bestBuySearchString += "))";
-                    }
-                }
-
-                lastBestBuySearch = bestBuySearchString; //store this search to use again after thumb up/down
-
-                String bestBuyURL = "https://api.bestbuy.com/v1/products" + bestBuySearchString +"?apiKey=" + BEST_BUY_API_KEY + "&sort=inStoreAvailability.asc"
-                        + "&show=inStoreAvailability,inStoreAvailabilityText,name,onlineAvailability,onlineAvailabilityText,onSale,regularPrice,salePrice,"
-                        + "shortDescription&format=json";
-
-                new JSONTaskSearchBestBuy().execute(bestBuyURL);
-
-                String URL = "http://52.91.100.201:8080/api/deal/search/name/" + concatenatedText;
-                new JSONTaskSearchParker().execute(URL);
-                lastSearch = concatenatedText; //store this search to use after thumb up/down deal
-            }
+            searchForDeals(inputText);
         }
-        return v;
+
+            return v;
+
     }//end onCreate
+
+    public void searchForDeals(String inputText)
+    {
+        if (inputText.equals("")){
+            Toast.makeText(getActivity(), "Search field cannot be blank", Toast.LENGTH_LONG).show();
+        }
+        else {
+            //reset the string that we'll display to the user
+            builtString = "";
+            concatenatedText = "";
+            searchResultList.clear();
+            searchIdList.clear();
+            apiResultList.clear();
+            bestBuySearchWords.clear();
+
+            StringTokenizer st = new StringTokenizer(inputText, " ");
+
+            while (st.hasMoreTokens()) {
+                String nextWord = st.nextToken();
+                concatenatedText += nextWord + "+";
+                bestBuySearchWords.add(nextWord);
+            }
+
+            //remove last + symbol
+            concatenatedText = concatenatedText.substring(0, concatenatedText.length() - 1);
+
+             bestBuySearchString = ""; //reset the best buy product search string
+
+            for (int i = 0; i < bestBuySearchWords.size(); i++) {
+                if (i == 0) {
+                    bestBuySearchString += "((";
+                }
+                bestBuySearchString += "search=" + bestBuySearchWords.get(i);
+
+                if (i != bestBuySearchWords.size() - 1) {
+                    bestBuySearchString += "&";
+                } else {
+                    bestBuySearchString += "))";
+                }
+            }
+
+            lastBestBuySearch = bestBuySearchString; //store this best buy search to use again after a thumb up/down
+
+            String bestBuyURL = "https://api.bestbuy.com/v1/products" + bestBuySearchString + "?apiKey=" + BEST_BUY_API_KEY + "&sort=inStoreAvailability.asc"
+                    + "&show=inStoreAvailability,inStoreAvailabilityText,name,onlineAvailability,onlineAvailabilityText,onSale,regularPrice,salePrice,"
+                    + "shortDescription&format=json";
+
+            //get walmart deals
+            String walmartURL = "http://api.walmartlabs.com/v1/search?query=" + concatenatedText + "&format=json&apiKey=" + walmartAPIkey;
+
+            //get user created deals
+            String URL = "http://52.91.100.201:8080/api/deal/search/" + queryText + "/" + concatenatedText;
+
+            new JSONTaskSearchWalMart().execute(walmartURL, "walmart");
+            new JSONTaskSearchBestBuy().execute(bestBuyURL);
+            new JSONTaskSearchParker().execute(URL);
+            lastSearch = concatenatedText; //store this search to use after thumb up/down call
+        }
+    }
 
     private class DealHolder extends RecyclerView.ViewHolder{
         private TextView mUserProductTextView;
@@ -374,6 +323,11 @@ public class SearchDealsActivity extends Fragment {
         @Override
         public void onBindViewHolder (ApiDealHolder holder, int position){
             String deal = mApiDeals.get(position);
+            System.out.println("Old deal: " + deal);
+            deal = deal.replace("&lt;p&gt", "");
+            deal = deal.replace("&lt;/p&gt", "");
+            deal = deal.replace(";", " ");
+            System.out.println("New deal: " + deal);
             holder.mApiTextView.setText(Html.fromHtml(deal));
         }
 
@@ -754,153 +708,6 @@ public class SearchDealsActivity extends Fragment {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
-            updateUI();
-            updateApiUI();
-
-            if (result.equals("No network connection")){
-                Toast.makeText(getActivity(), result, Toast.LENGTH_LONG).show();
-            }
-        }
-    }
-
-    public class JSONTaskSearch extends AsyncTask<String,String, String> {
-        @Override
-        protected String doInBackground(String... params) {
-
-            HttpURLConnection connection = null;
-            BufferedReader reader = null;
-            try{
-                URL url = new URL(params[0]);
-                connection = (HttpURLConnection)url.openConnection();
-
-                InputStream stream = connection.getInputStream();
-
-                reader = new BufferedReader(new InputStreamReader(stream));
-                StringBuffer buffer = new StringBuffer();
-
-                builtString += "";
-
-                //there will be more than one parameter when we are searching the shopping APIs
-                if(params.length > 1)
-                {
-                    String line;
-
-                    //if the extra parameter is walmart, we will parse the walmart response and add it to builtString
-                    if(params[1].equals("walmart")) {
-                        while ((line = reader.readLine()) != null) {
-                            buffer.append(line);
-                        }
-
-                        String walmartString = buffer.toString();
-                        JSONObject walmartDeals = new JSONObject(new String(walmartString));
-
-                        //begin building up the string with walmart results
-                        builtString += "<h4><b><u>Top Results from Walmart</b></u></h4>";
-
-                        if (Integer.parseInt(walmartDeals.get("totalResults").toString()) == 0) {
-                            builtString += "<br><br>No Results Found from Walmart";
-                        }else {
-                            JSONArray walmartJSON = walmartDeals.getJSONArray("items");
-
-                            //this JSON object will hold the JSON each time we loop through the products
-                            JSONObject nextWalmartProduct;
-
-                            for (int i = 0; i < PRODUCTS_PER_API; i++) {
-                                //convert the next product in the array into JSON
-                                JSONObject thisWalmartProduct = walmartJSON.getJSONObject(i);
-
-                                if (i != 0) {
-                                    builtString += "<br>";
-                                }
-                                builtString += "<br><b>" + (i + 1) + ". Product Name: </b>" + thisWalmartProduct.get("name");
-                                builtString += "<br><b>Price: </b> $" + thisWalmartProduct.get("salePrice");
-                                builtString += "<br><b>Location: </b>";
-
-                                if (thisWalmartProduct.get("availableOnline").toString().equals("true")) {
-                                    builtString += "Online and In-Store";
-                                } else {
-                                    builtString += "In-Store";
-                                }
-
-                                if (thisWalmartProduct.has("shortDescription")) {
-                                    builtString += "<br><b>Description: </b>" + thisWalmartProduct.get("shortDescription");
-                                }
-                            }
-                            //for now, we will display the entire string on the TextView
-                            //builtString += buffer.toString();
-                        }
-                    }
-                }
-                else{
-                    String line;
-
-                    while ((line = reader.readLine()) != null) {
-                        buffer.append(line);
-                    }
-
-                    String finalJSON = buffer.toString();
-                    JSONArray parentArray = new JSONArray(finalJSON);
-
-                    //count the products that are returned
-                    int hitsCounter = 0;
-
-                    if (parentArray.length() == 0){
-                        builtString += "<br>No user submitted deals found";
-                    }
-                    else{
-                        for (int i = 0; i < parentArray.length(); i++){
-
-                            hitsCounter++;
-
-                            JSONObject obj = parentArray.getJSONObject(i);
-
-                            String format = "yyyy-MM-dd";
-                            SimpleDateFormat sdf = new SimpleDateFormat(format);
-                            Date d = sdf.parse(obj.getString("expirationDate"));
-                            Calendar cal = Calendar.getInstance();
-                            cal.setTime(d);
-                            String expDate = "";
-                            expDate += cal.get(Calendar.MONTH) + 1 + "/";
-                            expDate += cal.get(Calendar.DATE) + "/";
-                            expDate += cal.get(Calendar.YEAR);
-
-                            builtString += "<b>" + hitsCounter + ". " + obj.getString("name") + "<br>Price:</b> $" + obj.getDouble("price")
-                                    + "<br><b>Store:</b> " + obj.getString("storeName") + "<br><b>Location:</b> " + obj.getString("location")
-                                    + "<br><b>Details:</b> " + obj.get("description") + "<br><b>Category:</b> " + obj.get("category")
-                                    + "<br><b>Expiration Date:</b> " +expDate + "<br><br>";
-                        }
-                    }
-                }
-                return builtString;
-            }catch(MalformedURLException ex){
-                ex.printStackTrace();
-            }catch(IOException ex){
-                ex.printStackTrace();
-                return "No network connection";
-            }catch (JSONException e) {
-                e.printStackTrace();
-                System.out.println(e.getMessage());
-            }catch (ParseException ex){
-                return "DATE EXCEPTION";
-            }
-            finally{
-                if (connection != null) {
-                    connection.disconnect();
-                }
-                try {
-                    if (reader != null){
-                        reader.close();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
             updateUI();
             updateApiUI();
 
