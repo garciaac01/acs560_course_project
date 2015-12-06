@@ -224,6 +224,8 @@ public class SearchDealsActivity extends Fragment {
             }else{
                 StringTokenizer st = new StringTokenizer(inputText, " ");
 
+                bestBuySearchWords.clear();
+
                 while (st.hasMoreTokens()){
                     String nextWord = st.nextToken();
                     concatenatedText += nextWord + "+";
@@ -237,7 +239,7 @@ public class SearchDealsActivity extends Fragment {
                 searchResultList.clear();
                 searchIdList.clear();
                 apiResultList.clear();
-                bestBuySearchWords.clear();
+
 
                 mUserDealTextView.setText(Html.fromHtml("<b><u>Top User Submitted Deals</b></u>:"));
 
@@ -602,7 +604,10 @@ public class SearchDealsActivity extends Fragment {
                         }
 
                         if (thisBestBuyProduct.has("shortDescription")) {
-                            builtString += "<br><b>Description: </b>" + thisBestBuyProduct.get("shortDescription");
+                            if(!thisBestBuyProduct.get("shortDescription").toString().equals("null")) {
+                                builtString += "<br><b>Description: </b>" + thisBestBuyProduct.get("shortDescription");
+                                System.out.println(thisBestBuyProduct.get("shortDescription"));
+                            }
                         }
                         apiResultList.add(builtString);
                     }
