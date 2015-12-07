@@ -49,7 +49,7 @@ public class SearchDealsActivity extends Fragment {
         BEST_BUY_API_KEY = "9vachckadjgrvc9htuhz2mn2", DEAL_LIST = "com.ipfw.myezshopper.deal_list",
         ID_LIST = "com.ipfw.myezshopper.id_list", API_LIST = "com.ipfw.myezshopper.api_list";
     private String builtString = "", memberId, lastSearch = "", bestBuySearchString = "", lastBestBuySearch = "";
-    private final int PRODUCTS_PER_API = 5;
+    private int numWalmartResults = 5, numBestBuyResults = 5;
     private RecyclerView mSearchRecyclerView, mApiRecyclerView;
     private ArrayList<String> searchResultList, searchIdList, apiResultList, bestBuySearchWords;
     DealAdapter mAdapter;
@@ -380,11 +380,16 @@ public class SearchDealsActivity extends Fragment {
                 JSONObject walmartDeals = new JSONObject(new String(walmartString));
 
                 if (Integer.parseInt(walmartDeals.get("totalResults").toString()) == 0) {
-                    builtString += "<br><br>No Results Found from Walmart";
+                    builtString += "<br><br><b>No Results Found from Walmart</b>";
+                    apiResultList.add(builtString);
                 } else {
+
+                    if(Integer.parseInt(walmartDeals.get("totalResults").toString()) < 5)
+                        numWalmartResults = Integer.parseInt(walmartDeals.get("totalResults").toString());
+
                     JSONArray walmartJSON = walmartDeals.getJSONArray("items");
 
-                    for (int i = 0; i < PRODUCTS_PER_API; i++) {
+                    for (int i = 0; i < numWalmartResults; i++) {
                         //convert the next product in the array into JSON
                         JSONObject thisWalmartProduct = walmartJSON.getJSONObject(i);
 
@@ -413,6 +418,8 @@ public class SearchDealsActivity extends Fragment {
                     //for now, we will display the entire string on the TextView
                     //builtString += buffer.toString();
                 }
+                numWalmartResults = 5; //reset the number of walmart results we use
+
                 return builtString;
             }catch(MalformedURLException ex){
                 ex.printStackTrace();
@@ -469,7 +476,7 @@ public class SearchDealsActivity extends Fragment {
                 reader = new BufferedReader(new InputStreamReader(stream));
                 StringBuffer buffer = new StringBuffer();
 
-                builtString += "";
+                builtString = "";
 
                 String line;
 
@@ -483,12 +490,18 @@ public class SearchDealsActivity extends Fragment {
                 Log.i("Total Results", bestBuyDeals.get("products").toString());
 
                 if (Integer.parseInt(bestBuyDeals.get("total").toString()) == 0) {
-                    builtString += "<br><br>No Results Found from Best Buy";
+                    builtString += "<br><br><b>No Results Found from Best Buy</b>";
+                    apiResultList.add(builtString);
                 }
                 else {
                     JSONArray bestBuyJSON = bestBuyDeals.getJSONArray("products");
 
-                    for (int i = 0; i < PRODUCTS_PER_API; i++) {
+                    if(Integer.parseInt(bestBuyDeals.get("total").toString()) < 5)
+                    {
+                        numBestBuyResults = Integer.parseInt(bestBuyDeals.get("total").toString());
+                    }
+
+                    for (int i = 0; i < numBestBuyResults; i++) {
                         if(i == 0){
                             //begin building up the string with best buy results
                             builtString = "<br><h4><b><u>Top Results from Best Buy</b></u></h4>";
@@ -529,6 +542,8 @@ public class SearchDealsActivity extends Fragment {
                             //builtString += buffer.toString();
 
                 }
+                numBestBuyResults = 5; //reset the number of results we want from best buy
+
                 return builtString;
             }catch(MalformedURLException ex){
                 ex.printStackTrace();
