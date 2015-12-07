@@ -1,6 +1,7 @@
 package com.ipfw.myezshopper;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -14,6 +15,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -166,6 +168,7 @@ public class ListFragment extends Fragment{ // implements View.OnClickListener{
         this.itemToEdit = itemToEdit;
 
         AlertDialog editItemAlert =  new AlertDialog.Builder(getActivity()).setView(v).setTitle(R.string.edit_existing_item).setNegativeButton(android.R.string.cancel, editDialogListener).setPositiveButton(android.R.string.ok, editDialogListener).show();
+        restoreDialog(editItemAlert);
     }
 
     DialogInterface.OnClickListener editDialogListener = new DialogInterface.OnClickListener(){
@@ -387,4 +390,14 @@ public class ListFragment extends Fragment{ // implements View.OnClickListener{
         }
 
     }//end JSONTaskGet class
+
+    // Prevent dialog dismiss when orientation changes
+    private static void restoreDialog(Dialog dialog){
+        WindowManager.LayoutParams params = new WindowManager.LayoutParams();
+        params.copyFrom(dialog.getWindow().getAttributes());
+        params.width = WindowManager.LayoutParams.WRAP_CONTENT;
+        params.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        dialog.getWindow().setAttributes(params);
+    }
+
 }

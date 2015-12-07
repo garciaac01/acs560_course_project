@@ -2,6 +2,7 @@ package com.ipfw.myezshopper;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -58,14 +60,33 @@ public class ProfileActivity extends FragmentActivity {
         }
         
         if (v.getId() == R.id.go_to_delete_fragment){
-            String URL = "http://52.91.100.201:8080/api/user/" + member_id;
-            new JSONTaskDelete().execute(URL);
-            prefManager.removeAllPreferences();
-            Intent i = new Intent(ProfileActivity.this, LoginActivity.class);
-            startActivity(i);
-            finish();
+            showDeleteDialog();
         }
     }
+
+    private void showDeleteDialog(){
+        AlertDialog.Builder ab = new AlertDialog.Builder(this);
+        ab.setMessage("Are you sure you want to delete your MyEZShopper profile?").setPositiveButton("Yes", dialogClickListener).setNegativeButton("No", dialogClickListener).show();
+    }
+
+    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener(){
+        @Override
+        public void onClick(DialogInterface dialog, int which)
+        {
+            switch(which){
+                case DialogInterface.BUTTON_POSITIVE:
+                    String URL = "http://52.91.100.201:8080/api/user/" + member_id;
+                    new JSONTaskDelete().execute(URL);
+                    prefManager.removeAllPreferences();
+                    Intent i = new Intent(ProfileActivity.this, LoginActivity.class);
+                    startActivity(i);
+                    finish();
+                    break;
+                case DialogInterface.BUTTON_NEGATIVE:
+                    break;
+            }
+        }
+    };
 
     public static Intent newIntent(Context packageContext)
     {
