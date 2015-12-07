@@ -212,7 +212,7 @@ public class SearchDealsActivity extends Fragment {
                 if (i != bestBuySearchWords.size() - 1) {
                     bestBuySearchString += "&";
                 } else {
-                    bestBuySearchString += "))";
+                    bestBuySearchString += ")&bestSellingRank<150&customerReviewCount>50)";
                 }
             }
 
