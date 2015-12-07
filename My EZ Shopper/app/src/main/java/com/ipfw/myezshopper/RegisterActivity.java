@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -38,7 +39,7 @@ public class RegisterActivity extends Activity {
     String emailtxt,passwordtxt, nametxt;
     boolean isLogin = false;
     boolean allowLogin;
-    StringBuilder memberID;
+    String memberID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,7 +134,7 @@ public class RegisterActivity extends Activity {
         protected String doInBackground(String... params) {
             HttpURLConnection connection = null;
             BufferedReader br = null;
-
+            StringBuffer buffer = new StringBuffer();
             try {
                 URL object = new URL(params[0]);
                 connection = (HttpURLConnection) object.openConnection();
@@ -160,7 +161,7 @@ public class RegisterActivity extends Activity {
                 os.write(registerInformation.toString().getBytes("UTF-8"));
                 os.flush();
 
-                memberID = new StringBuilder();
+
                 int HttpResult = connection.getResponseCode();
                 if (HttpResult == HttpURLConnection.HTTP_OK) {
                     if (isLogin){
@@ -168,14 +169,22 @@ public class RegisterActivity extends Activity {
                     }
 
                     br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "utf-8"));
-                    String line = null;
+                    String line;
                     while ((line = br.readLine()) != null) {
-                        memberID.append(line + "\n");
+                        buffer.append(line);
                     }
 
                     br.close();
 
-                    System.out.println("" + memberID.toString());
+                    String finalJSON = buffer.toString();
+                    JSONObject obj = new JSONObject(finalJSON);
+
+                    prefManager.setName(obj.getString("name"));
+                    prefManager.setPassword(obj.getString("password"));
+                    prefManager.setEmail(obj.getString("email"));
+                    prefManager.setId(obj.getString("_id"));
+                    memberID = obj.getString("_id");
+
                     if (!isLogin){
 
                         return "Successfully added";
@@ -240,7 +249,7 @@ public class RegisterActivity extends Activity {
             }
         }
 
-    }//end JSONTask class
+    }
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState)
@@ -254,5 +263,4 @@ public class RegisterActivity extends Activity {
         savedInstanceState.putString(EMAIL, email.getText().toString());
         savedInstanceState.putString(PASSWORD, password.getText().toString());
     }
-
 }
