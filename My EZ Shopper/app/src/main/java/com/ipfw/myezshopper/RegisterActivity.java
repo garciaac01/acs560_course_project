@@ -86,7 +86,8 @@ public class RegisterActivity extends Activity {
 
                 if (emailtxt.equals("")) {
                     Toast.makeText(getApplication(), "Email cannot be blank", Toast.LENGTH_SHORT).show();
-                } else if (passwordtxt.equals("")) {
+                }
+                else if (passwordtxt.equals("")) {
                     Toast.makeText(getApplication(), "Password cannot be blank", Toast.LENGTH_SHORT).show();
                 }else {
                     String URL = "http://52.91.100.201:8080/api/user/login";
@@ -102,8 +103,13 @@ public class RegisterActivity extends Activity {
                 passwordtxt = password.getText().toString();
                 nametxt = name.getText().toString();
 
+                //validate the user's email address
+                boolean emailOk = validateEmail(emailtxt);
+
                 if (emailtxt.equals("")) {
                     Toast.makeText(getApplication(), "User name cannot be blank", Toast.LENGTH_SHORT).show();
+                }else if(!emailOk) {
+                    Toast.makeText(getApplication(), "Invalid email address", Toast.LENGTH_SHORT).show();
                 }else if (passwordtxt.equals("")) {
                     Toast.makeText(getApplication(), "Password cannot be blank", Toast.LENGTH_SHORT).show();
                 }else if (nametxt.equals("")) {
@@ -116,6 +122,10 @@ public class RegisterActivity extends Activity {
         }else{
             Toast.makeText(getApplication(), "No network connection", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public boolean validateEmail(String emailAddress) {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(emailAddress).matches();
     }
 
     public class JSONTask extends AsyncTask<String,String, String> {

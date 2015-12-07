@@ -181,7 +181,7 @@ public class SearchDealsActivity extends Fragment {
         if (inputText.equals("")){
             Toast.makeText(getActivity(), "Search field cannot be blank", Toast.LENGTH_LONG).show();
         }
-        else {
+        else if(queryText.equals("storeName")) {
             //reset the string that we'll display to the user
             builtString = "";
             concatenatedText = "";
@@ -195,44 +195,69 @@ public class SearchDealsActivity extends Fragment {
             while (st.hasMoreTokens()) {
                 String nextWord = st.nextToken();
                 concatenatedText += nextWord + "+";
-                bestBuySearchWords.add(nextWord);
             }
 
             //remove last + symbol
             concatenatedText = concatenatedText.substring(0, concatenatedText.length() - 1);
 
-             bestBuySearchString = ""; //reset the best buy product search string
-
-            for (int i = 0; i < bestBuySearchWords.size(); i++) {
-                if (i == 0) {
-                    bestBuySearchString += "((";
-                }
-                bestBuySearchString += "search=" + bestBuySearchWords.get(i);
-
-                if (i != bestBuySearchWords.size() - 1) {
-                    bestBuySearchString += "&";
-                } else {
-                    bestBuySearchString += ")&bestSellingRank<150&customerReviewCount>50)";
-                }
-            }
-
-            lastBestBuySearch = bestBuySearchString; //store this best buy search to use again after a thumb up/down
-
-            String bestBuyURL = "https://api.bestbuy.com/v1/products" + bestBuySearchString + "?apiKey=" + BEST_BUY_API_KEY + "&sort=inStoreAvailability.asc"
-                    + "&show=inStoreAvailability,inStoreAvailabilityText,name,onlineAvailability,onlineAvailabilityText,onSale,regularPrice,salePrice,"
-                    + "shortDescription&format=json";
-
-            //get walmart deals
-            String walmartURL = "http://api.walmartlabs.com/v1/search?query=" + concatenatedText + "&format=json&apiKey=" + walmartAPIkey;
-
             //get user created deals
             String URL = "http://52.91.100.201:8080/api/deal/search/" + queryText + "/" + concatenatedText;
-
-            new JSONTaskSearchWalMart().execute(walmartURL);
-            new JSONTaskSearchBestBuy().execute(bestBuyURL);
             new JSONTaskSearchParker().execute(URL);
             lastSearch = concatenatedText; //store this search to use after thumb up/down call
         }
+        else
+            {
+                //reset the string that we'll display to the user
+                builtString = "";
+                concatenatedText = "";
+                searchResultList.clear();
+                searchIdList.clear();
+                apiResultList.clear();
+                bestBuySearchWords.clear();
+
+                StringTokenizer st = new StringTokenizer(inputText, " ");
+
+                while (st.hasMoreTokens()) {
+                    String nextWord = st.nextToken();
+                    concatenatedText += nextWord + "+";
+                    bestBuySearchWords.add(nextWord);
+                }
+
+                //remove last + symbol
+                concatenatedText = concatenatedText.substring(0, concatenatedText.length() - 1);
+
+                bestBuySearchString = ""; //reset the best buy product search string
+
+                for (int i = 0; i < bestBuySearchWords.size(); i++) {
+                    if (i == 0) {
+                        bestBuySearchString += "((";
+                    }
+                    bestBuySearchString += "search=" + bestBuySearchWords.get(i);
+
+                    if (i != bestBuySearchWords.size() - 1) {
+                        bestBuySearchString += "&";
+                    } else {
+                        bestBuySearchString += ")&bestSellingRank<150&customerReviewCount>50)";
+                    }
+                }
+
+                lastBestBuySearch = bestBuySearchString; //store this best buy search to use again after a thumb up/down
+
+                String bestBuyURL = "https://api.bestbuy.com/v1/products" + bestBuySearchString + "?apiKey=" + BEST_BUY_API_KEY + "&sort=inStoreAvailability.asc"
+                        + "&show=inStoreAvailability,inStoreAvailabilityText,name,onlineAvailability,onlineAvailabilityText,onSale,regularPrice,salePrice,"
+                        + "shortDescription&format=json";
+
+                //get walmart deals
+                String walmartURL = "http://api.walmartlabs.com/v1/search?query=" + concatenatedText + "&format=json&apiKey=" + walmartAPIkey;
+
+                //get user created deals
+                String URL = "http://52.91.100.201:8080/api/deal/search/" + queryText + "/" + concatenatedText;
+
+                new JSONTaskSearchWalMart().execute(walmartURL);
+                new JSONTaskSearchBestBuy().execute(bestBuyURL);
+                new JSONTaskSearchParker().execute(URL);
+                lastSearch = concatenatedText; //store this search to use after thumb up/down call
+            }
     }
 
     private class DealHolder extends RecyclerView.ViewHolder{

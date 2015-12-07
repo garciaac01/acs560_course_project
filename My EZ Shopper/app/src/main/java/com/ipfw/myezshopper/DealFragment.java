@@ -178,7 +178,11 @@ public class DealFragment extends Fragment implements View.OnClickListener{
                 Toast.makeText(getActivity(), "Expiration date is invalid", Toast.LENGTH_SHORT).show();
             }else if (!tryParseDouble(price)){
                 Toast.makeText(getActivity(), "Price is not valid", Toast.LENGTH_SHORT).show();
-            }else{
+            }else if(product.equals(""))
+            {
+                Toast.makeText(getActivity(), "You must enter a product name", Toast.LENGTH_LONG).show();
+            }
+            else{
                 new JSONTask().execute("http://52.91.100.201:8080/api/deal");
             }
         }catch(ParseException e){
